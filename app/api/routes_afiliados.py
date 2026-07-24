@@ -6,7 +6,6 @@ from app.dependencies import get_afiliados_repository
 
 router = APIRouter()
 
-
 @router.get("/afiliados/{id_usuario}")
 def consultar_afiliado(id_usuario: str) -> dict:
     """RF-03/RF-04: el front consulta esto ANTES de armar la conversación,
