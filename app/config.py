@@ -6,6 +6,11 @@ o de negocio se ajusta AQUÍ. Ver `plan.md` sección 8 para el historial de
 decisiones que originaron cada bloque.
 """
 
+from pathlib import Path
+ 
+# Raíz del proyecto = la carpeta que contiene `app/`.
+BASE_DIR = Path(__file__).resolve().parent.parent
+
 CONFIG = {
     # ==================================================================
     # Generales
@@ -145,11 +150,18 @@ CONFIG = {
     "MAPEO_COLUMNAS_AFILIADOS": {
         "ID_USUARIO": "id_usuario",
         "NOMBRE_COMPLETO": "nombre",
+        "FEC_NACIMIENTO": "fecha_nacimiento",   # ⚠️ falta convertir a `edad` en el repositorio
         "IND_AFILIADO": "afiliado",
         "COD_CATEGORIA": "categoria",
         "AFIL_ANTIGUEDAD_MESES": "antiguedad_meses",
         "TIPO_COTIZANTE": "tipo_cotizante",
+        "INGRESO_BASE_COTIZACION": "ingresos_mensuales",
+        "SEG_EMPRESA": "tipo_empresa",
         "NUM_PERSONAS_A_CARGO": "personas_a_cargo",
+        "ESTRATO": "estrato",
+        "GRUPO_SISBEN": "grupo_sisben",
+        "SUBSIDIO_VIVIENDA_PREVIO": "subsidio_previo",
+        "SUBSIDIO_PREVIO_FUE_ARRENDAMIENTO": "subsidio_previo_fue_arrendamiento",
     },
 
     # ==================================================================

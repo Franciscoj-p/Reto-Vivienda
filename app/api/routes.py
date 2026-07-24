@@ -5,6 +5,7 @@ from typing import Any
 from fastapi import FastAPI, HTTPException
 
 from app.api.schemas import LeadInput
+
 from app.motor import procesar_lead
 
 from app.api.routes_afiliados import router as router_afiliados
@@ -16,7 +17,6 @@ app = FastAPI(
 )
 
 app.include_router(router_afiliados)
-
 
 @app.get("/health")
 def health() -> dict[str, str]:

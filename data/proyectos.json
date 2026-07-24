@@ -1,0 +1,147 @@
+{
+  "proyectos": [
+    {
+      "id": 1,
+      "nombre": "La Macarena",
+      "municipio": "Bogotá",
+      "departamento": "Cundinamarca",
+      "tipo_proyecto": "VIS",
+
+      "buyerPersona": {
+        "afiliacion": [
+          { "valor": "Afiliado", "porcentaje": 63 },
+          { "valor": "No afiliado", "porcentaje": 37 }
+        ],
+
+        "genero": [
+          { "valor": "Hombre", "porcentaje": 47 },
+          { "valor": "Mujer", "porcentaje": 53 }
+        ],
+
+        "salario": [
+          { "valor": "Hasta 2 SMMLV", "porcentaje": 66 },
+          { "valor": "Más de 2 SMMLV", "porcentaje": 34 }
+        ],
+
+        "edad": [
+          { "valor": "20-35", "porcentaje": 50 },
+          { "valor": "36-45", "porcentaje": 29 }
+        ],
+
+        "segmento": [
+          { "valor": "Básico", "porcentaje": 26 },
+          { "valor": "Medio", "porcentaje": 45 },
+          { "valor": "Joven", "porcentaje": 29 }
+        ],
+
+        "familia": [
+          { "valor": "Sin grupo", "porcentaje": 44 },
+          { "valor": "Monoparental", "porcentaje": 35 },
+          { "valor": "Monoparental ampliada", "porcentaje": 6 },
+          { "valor": "Nuclear integrada", "porcentaje": 12 },
+          { "valor": "Pareja conyugal", "porcentaje": 4 }
+        ],
+
+        "pac": [
+          { "valor": "0", "porcentaje": 44 },
+          { "valor": "1", "porcentaje": 27 },
+          { "valor": "2", "porcentaje": 18 },
+          { "valor": "3", "porcentaje": 9 },
+          { "valor": "4", "porcentaje": 2 }
+        ],
+
+        "estrato": [
+          { "valor": "1", "porcentaje": 2 },
+          { "valor": "2", "porcentaje": 13 },
+          { "valor": "3", "porcentaje": 18 },
+          { "valor": "4", "porcentaje": 2 }
+        ],
+
+        "top_empresas": [
+          { "valor": "TEXTILES DE TOCANCIPA S.A.", "porcentaje": 11 },
+          { "valor": "COLSUBSIDIO", "porcentaje": 10 },
+          { "valor": "ALPINA", "porcentaje": 7 },
+          { "valor": "TELEPERFORMANCE", "porcentaje": 6 },
+          { "valor": "CLUB GUAYMARAL", "porcentaje": 5 }
+        ],
+
+        "seg_empresas": [
+          { "valor": "emp top", "porcentaje": 25 },
+          { "valor": "medianas", "porcentaje": 21 },
+          { "valor": "grandes", "porcentaje": 20 },
+          { "valor": "estandar", "porcentaje": 6 },
+          { "valor": "micro", "porcentaje": 29 }
+        ],
+
+        "departamento": [
+          { "valor": "Bogotá", "porcentaje": 45 },
+          { "valor": "Chía", "porcentaje": 5 },
+          { "valor": "Tocancipá", "porcentaje": 5 },
+          { "valor": "Gachancipa", "porcentaje": 2 }
+        ],
+
+        "localidades": [
+          { "valor": "Usaquén", "porcentaje": 6 },
+          { "valor": "Suba", "porcentaje": 8 },
+          { "valor": "Engativá", "porcentaje": 5 },
+          { "valor": "Sin informacion", "porcentaje": 58 }
+        ],
+
+        "entidadesFinancieras": [
+          { "valor": "Colsubsidio", "porcentaje": 61 },
+          { "valor": "Davivienda", "porcentaje": 10 },
+          { "valor": "FNA", "porcentaje": 10 },
+          { "valor": "Otras", "porcentaje": 19 }
+        ]
+      }
+    },
+
+    {
+      "id": 2,
+      "nombre": "Bosques del Norte",
+      "municipio": "Chía",
+      "departamento": "Cundinamarca",
+      "tipo_proyecto": "No VIS",
+
+      "buyerPersona": {
+        "afiliacion": [],
+        "genero": [],
+        "salario": [],
+        "edad": [],
+        "segmento": [],
+        "familia": [],
+        "pac": [],
+        "estrato": [],
+        "top_empresas": [],
+        "seg_empresas": [],
+        "departamento": [],
+        "localidades": [],
+        "entidadesFinancieras": []
+      }
+    },
+
+    {
+      "id": 3,
+      "nombre": "Reserva Campestre",
+      "municipio": "Soacha",
+      "departamento": "Cundinamarca",
+      "tipo_proyecto": "VIS",
+
+      "buyerPersona": {
+        "afiliacion": [],
+        "genero": [],
+        "salario": [],
+        "edad": [],
+        "segmento": [],
+        "familia": [],
+        "pac": [],
+        "estrato": [],
+        "top_empresas": [],
+        "seg_empresas": [],
+        "departamento": [],
+        "localidades": [],
+        "entidadesFinancieras": []
+      }
+    }
+  ]
+}

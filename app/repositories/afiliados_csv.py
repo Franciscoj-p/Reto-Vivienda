@@ -3,7 +3,7 @@ from __future__ import annotations
 import csv
 from pathlib import Path
 
-from app.config import CONFIG
+from app.config import BASE_DIR, CONFIG
 
 
 class AfiliadosCSVRepository:
@@ -23,7 +23,12 @@ class AfiliadosCSVRepository:
     """
 
     def __init__(self, ruta_csv: str | None = None, mapeo_columnas: dict | None = None):
-        self._ruta_csv = Path(ruta_csv or CONFIG["RUTA_CSV_AFILIADOS"])
+        # BUGFIX: antes `Path(ruta_csv or CONFIG[...])` quedaba relativo al
+        # directorio de trabajo del proceso (cwd). Si el servidor arrancaba
+        # desde otro directorio, el archivo "no existía" en silencio y
+        # `obtener_afiliado` siempre devolvía None. Ahora se resuelve
+        # siempre contra la raíz del proyecto (BASE_DIR).
+        self._ruta_csv = Path(ruta_csv) if ruta_csv else BASE_DIR / CONFIG["RUTA_CSV_AFILIADOS"]
         self._mapeo = mapeo_columnas or CONFIG["MAPEO_COLUMNAS_AFILIADOS"]
         self._indice: dict[str, dict] | None = None
 
