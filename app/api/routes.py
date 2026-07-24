@@ -7,6 +7,9 @@ from fastapi import FastAPI, HTTPException
 from app.api.schemas import LeadInput
 from app.motor import procesar_lead
 
+from app.api.routes_afiliados import router as router_afiliados
+app.include_router(router_afiliados)
+
 app = FastAPI(
     title="Motor de Perfilamiento - Asesor Digital de Vivienda",
     description="Recibe un lead en JSON y devuelve validación, score y proyectos recomendados.",

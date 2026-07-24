@@ -326,30 +326,60 @@ Adaptadores CSV (simulación) ←── ETL offline (limpia y agrega la base de 
 - [x] Crear este `plan.md`
 
 ### Fase 1 — Capa de datos (repositorios + adaptadores)
-- [ ] Definir interfaces (`Protocol`) para `AfiliadosRepository`,
+- [x] Definir interfaces (`Protocol`) para `AfiliadosRepository`,
       `ProyectosRepository`, `CompradoresRepository`
-- [ ] Implementar adaptador CSV de afiliados con mapeo de columnas
+- [x] Implementar adaptador CSV de afiliados con mapeo de columnas
       configurable (simula bodega de datos)
-- [ ] Implementar adaptador CSV de proyectos (perfil por proyecto, incluye
-      agrupados sur/norte)
-- [ ] Punto único de selección de adaptador (`DATA_SOURCE` env var)
-- [ ] Endpoint `GET /afiliados/{id_usuario}` (capa delgada sobre
+- [x] Implementar adaptador CSV de proyectos (perfil por proyecto —
+      lectura lista; falta el CSV con datos reales, se genera en Fase 2)
+- [x] Punto único de selección de adaptador (`DATA_SOURCE_AFILIADOS` env
+      var, en `app/dependencies.py`)
+- [x] Endpoint `GET /afiliados/{id_usuario}` (capa delgada sobre
       `AfiliadosRepository`, ver sección 6) — Opción A, sin re-validación en
       `/perfilar`
 
+> Entregado: `app/repositories/{interfaces,afiliados_csv,proyectos_csv}.py`,
+> `app/dependencies.py`, `app/api/routes_afiliados.py`. Probado con
+> `TestClient` de FastAPI (200 en afiliado existente y no existente) y con
+> CSV de ejemplo (`data/afiliados.csv`). Pendiente: `data/perfiles_proyectos.csv`
+> real, se llena en Fase 2 (ETL) — hoy el repositorio ya soporta leerlo, solo
+> falta el archivo.
+
 ### Fase 2 — ETL offline de la base de compradores
-- [ ] Script de limpieza (corregir formato de valor de vivienda, quitar
-      ceros sobrantes)
-- [ ] Generación de CSV de perfil por proyecto desde la base cruda
+- [x] Script de limpieza (corregir formato de valor de vivienda, quitar
+      ceros sobrantes) — `app/etl/limpieza.py`
+- [x] Generación de CSV de perfil por proyecto desde la base cruda —
+      `app/etl/generar_perfiles.py`, agrupa también sur/norte
 - [ ] Validación de que los agregados generados coincidan con los CSV de
-      perfil ya entregados (si existen de referencia)
+      perfil ya entregados (si existen de referencia) — **pendiente**:
+      necesitamos el CSV real de compradores para correr el ETL de verdad y
+      confirmar el factor de corrección del valor de vivienda
+
+> Entregado: `app/repositories/compradores_csv.py`, `app/etl/limpieza.py`,
+> `app/etl/generar_perfiles.py`, `app/identificadores.py` (slug de proyecto
+> compartido entre ETL y consulta en vivo). Probado end-to-end con CSV de
+> ejemplo: exclusión de desistidos, agregación por proyecto y por grupo
+> sur/norte, lectura posterior desde `ProyectosCSVRepository` — todo OK.
+> ⚠️ La fórmula de `corregir_valor_vivienda()` es una suposición razonable
+> sin datos reales todavía; validar en cuanto llegue el CSV real de
+> compradores y ajustar `FACTOR_CORRECCION_VALOR_VIVIENDA` si hace falta.
 
 ### Fase 3 — `config.py`
-- [ ] Agregar todos los parámetros nuevos (topes VIS/VIP, cobertura de
+- [x] Agregar todos los parámetros nuevos (topes VIS/VIP, cobertura de
       zonas, Mi Casa Ya, arrendamiento, segmentación de caja, pesos de score
       separados cesantías/ahorros, penalización no-afiliado, mapeo de
       columnas de afiliados)
-- [ ] Corregir borde de 2 SMMLV en `MATRIZ_SUBSIDIOS` (`<=` en vez de `<`)
+- [x] Corregir borde de 2 SMMLV en `MATRIZ_SUBSIDIOS` (ahora es
+      `max_smmlv` recorrido en orden, en vez de rangos `[min, max)`)
+
+> Entregado: `app/config.py` consolidado (reemplaza el archivo completo).
+> ⚠️ Cambio de formato en `MATRIZ_SUBSIDIOS` (se quitó `min_smmlv`) — el
+> `reglas.py` de la Fase 0 todavía espera el formato viejo y se romperá
+> hasta que se actualice en la Fase 5. No mezclar este `config.py` con ese
+> `reglas.py` en producción; van de la mano en el mismo commit.
+> Pendiente real: `GRUPOS_SISBEN_CALIFICAN_SUBSIDIO` queda vacío a
+> propósito hasta tener la tabla oficial de negocio (bloquea parte de la
+> Fase 6, ya registrado en la sección 10).
 
 ### Fase 4 — `api/schemas.py`
 - [ ] Migrar `LeadInput` a la estructura anidada nueva
@@ -396,3 +426,8 @@ Adaptadores CSV (simulación) ←── ETL offline (limpia y agrega la base de 
   esquema real) — bloquea parte de la Fase 1.
 - Variable "foco" de la base de compradores — fuera de alcance por ahora, no
   bloquea ninguna fase.
+- CSV real de compradores (~4.142 filas) para correr el ETL de verdad y
+  confirmar/ajustar la fórmula de `corregir_valor_vivienda()` en
+  `app/etl/limpieza.py` (hoy funciona con datos de ejemplo, la fórmula es
+  una suposición razonable pendiente de validar) — bloquea el cierre de la
+  Fase 2.
