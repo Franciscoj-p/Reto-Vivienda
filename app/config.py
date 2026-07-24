@@ -67,16 +67,35 @@ CONFIG = {
     "MI_CASA_YA_TOPE_INGRESOS_SMMLV": 2,
     "MI_CASA_YA_SUBSIDIO_ADICIONAL_SMMLV": 20,
 
-    # ==================================================================
-    # Subsidio Concurrente por grupo SISBEN (informativo)
+# ==================================================================
+    # Subsidio Concurrente por grupo SISBEN (RN — tabla oficial recibida)
     # ------------------------------------------------------------------
-    # PENDIENTE DE NEGOCIO: falta la tabla oficial de qué grupos SISBEN
-    # (A1-D21) califican. Mientras tanto la lista queda vacía a propósito
-    # (nadie califica) para no inventar una regla no confirmada. En cuanto
-    # se defina, se llena esta lista y el factor de scoring correspondiente
-    # (Fase 6) empieza a sumar puntos automáticamente, sin tocar código.
+    # PENDIENTE DE NEGOCIO: falta el campo del lead que indique zona
+    # urbana/rural (no viene hoy en el JSON de entrada). Mientras tanto,
+    # scoring.py debe tratar todo lead como "urbana" por defecto (ajustar
+    # aquí cuando se agregue el campo real, ej. lead["zona_tipo"]).
     # ==================================================================
-    "GRUPOS_SISBEN_CALIFICAN_SUBSIDIO": [],  # ej. ["A1", "A2", "B1", ...]
+    "SISBEN_ORDEN_GRUPOS": [
+        "A1", "A2", "A3", "A4", "A5",
+        "B1", "B2", "B3", "B4", "B5", "B6", "B7",
+        "C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9", "C10",
+        "C11", "C12", "C13", "C14", "C15", "C16", "C17", "C18",
+        "D1", "D2", "D3", "D4", "D5", "D6", "D7", "D8", "D9", "D10",
+        "D11", "D12", "D13", "D14", "D15", "D16", "D17", "D18", "D19", "D20", "D21",
+    ],
+
+    "SISBEN_SUBSIDIO_MATRIZ": {
+        "urbana": [
+            {"hasta_grupo": "C7", "subsidio_smmlv": 30},
+            {"hasta_grupo": "D11", "subsidio_smmlv": 20},
+        ],
+        "rural": [
+            {"hasta_grupo": "C14", "subsidio_smmlv": 30},
+            {"hasta_grupo": "D20", "subsidio_smmlv": 20},
+        ],
+    },
+
+    "SISBEN_ZONA_DEFAULT": "urbana",  # ⚠️ pendiente: reemplazar por campo real del lead
 
     # ==================================================================
     # Subsidio de arrendamiento (ruta alterna si no hay cierre financiero)

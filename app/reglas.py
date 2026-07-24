@@ -46,6 +46,24 @@ def _zona_tiene_cobertura_subsidio(zona: str | None) -> bool:
 
 
 # ======================================================================
+# Helpers de acceso a estructura anidada del lead (Fase 4: `finanzas`,
+# `condiciones_especiales`). El lead llega como dict (model_dump() del
+# LeadInput de Pydantic), así que los sub-objetos ya vienen como dicts.
+# ======================================================================
+
+def _finanzas(lead: dict) -> dict:
+    return lead.get("finanzas") or {}
+
+
+def _cesantias(lead: dict) -> float:
+    return _finanzas(lead).get("cesantias", 0) or 0
+
+
+def _ahorros(lead: dict) -> float:
+    return _finanzas(lead).get("ahorros", 0) or 0
+
+
+# ======================================================================
 # Reglas duras de rechazo — cada una es una función independiente que
 # devuelve un mensaje (str) si el lead NO cumple, o None si sí cumple.
 # Agregar una regla nueva = agregar una función aquí + una línea en
@@ -79,7 +97,7 @@ def _regla_beneficiario_subsidio_previo(lead: dict) -> str | None:
     """Si algún miembro del hogar ya recibió subsidio de vivienda antes,
     no puede volver a acceder, EXCEPTO si el subsidio previo fue de
     arrendamiento (RN nueva)."""
-    recibio_subsidio_previo = lead.get("subsidio_vivienda_previo", False)
+    recibio_subsidio_previo = lead.get("subsidio_previo", False)
     fue_arrendamiento = lead.get("subsidio_previo_fue_arrendamiento", False)
     if recibio_subsidio_previo and not fue_arrendamiento:
         return (
@@ -121,9 +139,11 @@ def _evaluar_reglas_rechazo(lead: dict) -> list[str]:
 # ======================================================================
 
 def _calcular_subsidio_por_ingresos(ingresos_en_smmlv: float) -> int:
+    piso_smmlv = 0
     for rango in CONFIG["MATRIZ_SUBSIDIOS"]:
-        if rango["min_smmlv"] <= ingresos_en_smmlv < rango["max_smmlv"]:
+        if piso_smmlv <= ingresos_en_smmlv < rango["max_smmlv"]:
             return rango["subsidio_smmlv"] * CONFIG["SMMLV_2026"]
+        piso_smmlv = rango["max_smmlv"]
     return 0
 
 
@@ -197,6 +217,39 @@ def _evaluar_subsidio_arrendamiento(cierre_viable: bool) -> dict:
 
 
 # ======================================================================
+# Segmentación de Caja (Básico / Medio / Alto / Joven)
+# ------------------------------------------------------------------
+# Regla de negocio confirmada: "personas a cargo registradas" es el
+# tie-breaker entre Joven y el resto, NO un requisito duro aparte para
+# Básico/Medio. Si el lead no califica a Joven (por edad o por tener
+# dependientes), el segmento se decide solo por ingresos.
+# SUPUESTO sin confirmar: alguien de edad >= 39 SIN personas a cargo cae
+# en Básico/Medio/Alto por ingresos igual, aunque la tabla original del
+# plan menciona "grupo familiar" para esos segmentos. Ajustar aquí si el
+# negocio confirma que sí debe ser un requisito duro.
+# ======================================================================
+
+def _calcular_segmentacion_caja(lead: dict, ingresos_en_smmlv: float) -> str:
+    edad = lead.get("edad")
+    personas_a_cargo = lead.get("personas_a_cargo") or 0
+    sin_personas_a_cargo = personas_a_cargo <= 0
+
+    es_joven = (
+        edad is not None
+        and edad < CONFIG["SEGMENTACION_CAJA_JOVEN_EDAD_MAX"]
+        and sin_personas_a_cargo
+    )
+    if es_joven:
+        return "Joven"
+
+    if ingresos_en_smmlv <= CONFIG["SEGMENTACION_CAJA_BASICO_MAX_SMMLV"]:
+        return "Basico"
+    if ingresos_en_smmlv <= CONFIG["SEGMENTACION_CAJA_MEDIO_MAX_SMMLV"]:
+        return "Medio"
+    return "Alto"
+
+
+# ======================================================================
 # Cierre financiero (informativo, no bloquea `puede_comprar`)
 # ======================================================================
 
@@ -206,9 +259,7 @@ def _calcular_cierre_financiero(lead: dict, subsidio_estimado: int) -> dict:
     cuota_inicial_requerida = round(
         precio_referencia * CONFIG["PORCENTAJE_CUOTA_INICIAL_REQUERIDO"]
     )
-    ahorro_disponible = (
-        lead.get("cesantias", 0) + lead.get("ahorros", 0) + subsidio_estimado
-    )
+    ahorro_disponible = _cesantias(lead) + _ahorros(lead) + subsidio_estimado
     cierre_viable = ahorro_disponible >= cuota_inicial_requerida
 
     return {
@@ -232,12 +283,20 @@ def validar_reglas(lead: dict) -> dict:
 
     subsidio = _evaluar_aplicacion_subsidio(lead, ingresos_en_smmlv, motivos_rechazo)
 
+    # Campo separado de `puede_comprar` (sección 3.2 del plan): distingue
+    # "no puede comprar" de "puede comprar pero sin ayuda de la caja".
+    descalifica_subsidio_por_techo_ingresos = (
+        ingresos_en_smmlv > CONFIG["TOPE_INGRESOS_SMMLV"]
+    )
+
     cuota_maxima_mensual = round(ingresos * CONFIG["LIMITE_CUOTA_INGRESO"])
 
     cierre_financiero = _calcular_cierre_financiero(lead, subsidio["subsidio_estimado"])
 
     subsidio_concurrente = _evaluar_subsidio_concurrente_mi_casa_ya(ingresos_en_smmlv)
     subsidio_arrendamiento = _evaluar_subsidio_arrendamiento(cierre_financiero["cierre_viable"])
+
+    segmentacion_caja = _calcular_segmentacion_caja(lead, ingresos_en_smmlv)
 
     return {
         "puede_comprar": len(motivos_rechazo) == 0,
@@ -246,8 +305,10 @@ def validar_reglas(lead: dict) -> dict:
         "aplica_subsidio": subsidio["aplica_subsidio"],
         "subsidio_estimado": subsidio["subsidio_estimado"],
         "condiciones_subsidio": subsidio["condiciones_subsidio"],
+        "descalifica_subsidio_por_techo_ingresos": descalifica_subsidio_por_techo_ingresos,
         "cuota_maxima_mensual": cuota_maxima_mensual,
         "cierre_financiero": cierre_financiero,
         "subsidio_concurrente_mi_casa_ya": subsidio_concurrente,
         "subsidio_arrendamiento_sugerido": subsidio_arrendamiento,
+        "segmentacion_caja": segmentacion_caja,
     }

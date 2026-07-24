@@ -26,15 +26,19 @@ def procesar_lead(lead: dict) -> dict:
             "nombre": lead.get("nombre"),
             "afiliado": lead.get("afiliado", False),
             "prioridad": prioridad_label,
+            "segmentacion_caja": validacion["segmentacion_caja"],
         },
         "financial_score": {
             "viable": "SI" if validacion["puede_comprar"] else "NO",
             "motivos_rechazo": validacion["motivos_rechazo"],
             "subsidio_estimado": validacion["subsidio_estimado"],
+            "descalifica_subsidio_por_techo_ingresos": validacion[
+                "descalifica_subsidio_por_techo_ingresos"
+            ],
             "capacidad_max_cuota": validacion["cuota_maxima_mensual"],
             "cierre_financiero": validacion["cierre_financiero"],
-            "subsidio_concurrente_mi_casa_ya": validacion.get("subsidio_concurrente"),
-            "subsidio_arrendamiento": validacion.get("subsidio_arrendamiento_sugerido"),
+            "subsidio_concurrente_mi_casa_ya": validacion["subsidio_concurrente_mi_casa_ya"],
+            "subsidio_arrendamiento": validacion["subsidio_arrendamiento_sugerido"],
             "condiciones_subsidio": validacion["condiciones_subsidio"],
         },
         "score_detalle": score,
@@ -61,26 +65,33 @@ def _generar_resumen(lead: dict, validacion: dict, score: dict, proyectos: list[
 if __name__ == "__main__":
     leads_ejemplo = [
         {
+            "id_usuario": "1018300400",
             "nombre": "Diana Martínez",
             "afiliado": True,
             "categoria": "B",
             "antiguedad_meses": 24,
+            "tipo_cotizante": "dependiente",
             "ingresos_mensuales": 2_900_000,
+            "grupo_sisben": "C2",
             "edad": 31,
             "personas_a_cargo": 2,
-            "cabeza_de_hogar": True,
-            "tiene_discapacidad_hogar": False,
+            "condiciones_especiales": {
+                "cabeza_de_hogar": True,
+                "discapacidad_hogar": False,
+                "mayor_65_anos": False,
+            },
             "propietario_vivienda": False,
-            "tipo_empresa": "Medianas",
-            "cesantias": 3_000_000,
-            "ahorros": 5_000_000,
-            "zona_preferida": "Bogotá",
-            "origen": "organico",
-            "tipo_cotizante": "dependiente",
-            "subsidio_vivienda_previo": False,
+            "subsidio_previo": False,
             "subsidio_previo_fue_arrendamiento": False,
+            "finanzas": {
+                "cesantias": 3_000_000,
+                "ahorros": 5_000_000,
+                "credito_preaprobado": True,
+            },
+            "tipo_empresa": "Medianas",
+            "zona_preferida": "Bogotá",
             "valor_vivienda_deseada": 150_000_000,
-            
+            "origen": "organico",
         },
     ]
 
