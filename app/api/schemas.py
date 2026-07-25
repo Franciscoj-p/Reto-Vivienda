@@ -42,6 +42,8 @@ class LeadInput(BaseModel):
     subsidio_previo_fue_arrendamiento: bool = False
     finanzas: Finanzas = Field(default_factory=Finanzas)
     tipo_empresa: str | None = None
+    zona: str | None = None                # Zona geográfica ("urbana", "rural", etc.)
     zona_preferida: str | None = None
+    proyecto_interes: str | None = None    # Proyecto por el que llega el lead
     valor_vivienda_deseada: float | None = None   # COP, opcional
     origen: str | None = None

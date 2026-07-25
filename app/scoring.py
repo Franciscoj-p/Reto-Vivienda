@@ -430,6 +430,7 @@ def match_proyectos(lead: dict, validacion: dict, top_n: int = 3) -> list[dict]:
                     "tipo_proyecto": tipo_proyecto,
                     "tipologia": tipologia_sel["nombre"],
                     "precio": tipologia_sel["precio"],
+                    "brochure_url": proyecto.get("brochure_url"),
                     "match_score": match_score,
                     "motivo": motivo,
                     "cierre_financiero": tipologia_sel["cierre_financiero"],
@@ -437,4 +438,98 @@ def match_proyectos(lead: dict, validacion: dict, top_n: int = 3) -> list[dict]:
             )
 
     candidatos.sort(key=lambda c: c["match_score"], reverse=True)
+
+    # Si existe proyecto_interes y es viable, priorizarlo como primera recomendación
+    proyecto_interes_nombre = (lead.get("proyecto_interes") or "").strip().lower()
+    if proyecto_interes_nombre:
+        idx_interes = next(
+            (i for i, c in enumerate(candidatos) if (c.get("proyecto") or "").strip().lower() == proyecto_interes_nombre),
+            None,
+        )
+        if idx_interes is not None:
+            candidato_interes = candidatos.pop(idx_interes)
+            candidato_interes["motivo"] += "; (Proyecto de interés directo del lead - Priorizado)"
+            candidatos.insert(0, candidato_interes)
+
     return candidatos[:top_n]
+
+
+def evaluar_proyecto_interes(lead: dict, validacion: dict) -> dict | None:
+    """Evalúa explícitamente el proyecto de interés declarado por el lead.
+
+    Si no se especifica `proyecto_interes`, devuelve None.
+    Si se especifica y NO es viable, devuelve `viable: false` con el motivo.
+    Si se especifica y SÍ es viable, devuelve `viable: true`.
+    """
+    proyecto_nombre = lead.get("proyecto_interes")
+    if not proyecto_nombre or not str(proyecto_nombre).strip():
+        return None
+
+    nombre_target = str(proyecto_nombre).strip().lower()
+
+    proyecto_encontrado = None
+    for p in CATALOGO_PROYECTOS:
+        if (p.get("nombre") or "").strip().lower() == nombre_target:
+            proyecto_encontrado = p
+            break
+
+    if not proyecto_encontrado:
+        return {
+            "proyecto": proyecto_nombre,
+            "viable": False,
+            "motivo": f"El proyecto de interés '{proyecto_nombre}' no existe en el catálogo activo.",
+        }
+
+    if not validacion.get("puede_comprar", False):
+        motivos = ", ".join(validacion.get("motivos_rechazo", []))
+        return {
+            "proyecto": proyecto_nombre,
+            "viable": False,
+            "motivo": f"El postulante no cumple los requisitos de elegibilidad general ({motivos}).",
+        }
+
+    tipo_proyecto = proyecto_encontrado.get("tipo_proyecto")
+    municipio = proyecto_encontrado.get("municipio")
+    cuota_maxima = validacion["cuota_maxima_mensual"]
+    subsidio_general = validacion["subsidio_estimado"]
+    finanzas = _finanzas(lead)
+    ahorro_base = finanzas.get("cesantias", 0) + finanzas.get("ahorros", 0)
+    monto_credito_estimado = cuota_maxima * 120
+    monto_total_disponible = ahorro_base + subsidio_general + monto_credito_estimado
+
+    tipologias = proyecto_encontrado.get("tipologias", [])
+    if not tipologias:
+        return {
+            "proyecto": proyecto_nombre,
+            "viable": False,
+            "motivo": f"El proyecto '{proyecto_nombre}' no tiene tipologías configuradas.",
+        }
+
+    precios = [t.get("precio") for t in tipologias if t.get("precio") is not None]
+    if not precios:
+        return {
+            "proyecto": proyecto_nombre,
+            "viable": False,
+            "motivo": f"El proyecto '{proyecto_nombre}' no tiene precios de tipología válidos.",
+        }
+
+    precio_minimo = min(precios)
+    if not _valor_vivienda_dentro_de_tope(precio_minimo, municipio, tipo_proyecto):
+        return {
+            "proyecto": proyecto_nombre,
+            "viable": False,
+            "motivo": f"El precio del proyecto '{proyecto_nombre}' excede los topes legales de vivienda {tipo_proyecto or 'VIS'} ({municipio or 'zona'}).",
+        }
+
+    if precio_minimo > monto_total_disponible:
+        return {
+            "proyecto": proyecto_nombre,
+            "viable": False,
+            "motivo": f"El precio mínimo del proyecto (${precio_minimo:,.0f}) excede la capacidad financiera total disponible (${monto_total_disponible:,.0f}).",
+        }
+
+    return {
+        "proyecto": proyecto_nombre,
+        "viable": True,
+        "motivo": "Proyecto de interés viable y priorizado como primera recomendación.",
+    }

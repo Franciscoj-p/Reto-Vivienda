@@ -1,0 +1,648 @@
+<!-- WhatsApp Web - Ana García -->
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>WhatsApp Desktop - Ana García</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+        /* Custom scrollbar for chat list and message area */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, 0.1);
+        }
+        .custom-scrollbar:hover::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, 0.2);
+        }
+        /* Subtle chat pattern background */
+        .chat-bg {
+            background-color: #efeae2;
+            background-image: url("https://www.transparenttextures.com/patterns/cubes.png");
+            background-repeat: repeat;
+        }
+        .incoming-bubble {
+            border-radius: 0 8px 8px 8px;
+            position: relative;
+        }
+        .incoming-bubble::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -8px;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 0 8px 10px 0;
+            border-color: transparent #ffffff transparent transparent;
+        }
+        .outgoing-bubble {
+            border-radius: 8px 0 8px 8px;
+            position: relative;
+        }
+        .outgoing-bubble::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: -8px;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 10px 8px 0 0;
+            border-color: #d9fdd3 transparent transparent transparent;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-high": "#dfeaf2",
+                        "on-surface": "#131d23",
+                        "surface-tint": "#006b53",
+                        "primary": "#006b53",
+                        "primary-container": "#00a884",
+                        "on-primary": "#ffffff",
+                        "surface": "#f5faff",
+                        "surface-container": "#e5eff8",
+                        "on-surface-variant": "#3d4a44",
+                        "outline-variant": "#bccac2",
+                        "outline": "#6c7a74",
+                        "background": "#f5faff",
+                        "secondary-container": "#e0e3e6",
+                        "on-secondary-container": "#626567"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "sidebar-min": "350px",
+                        "sidebar-max": "450px",
+                        "sidebar-width": "30%",
+                        "gutter": "16px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "label-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-md": ["16px", {"lineHeight": "24px", "fontWeight": "600"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "400"}],
+                        "label-xs": ["11px", {"lineHeight": "14px", "fontWeight": "500"}]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background font-body-md text-on-surface h-screen overflow-hidden">
+<div class="flex h-full w-full">
+<!-- Sidebar Navigation Shell -->
+<!-- SideNavBar Implementation -->
+<aside class="flex flex-col h-screen shrink-0 h-full w-[30%] min-w-[350px] max-w-[450px] bg-surface-container border-r border-outline-variant">
+<!-- Sidebar Header -->
+<div class="p-4 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<img class="w-10 h-10 rounded-full object-cover" data-alt="A professional headshot of a young male professional in a clean office setting, soft natural light, minimalist modern aesthetic, neutral colors, corporate yet friendly look." src="https://lh3.googleusercontent.com/aida-public/AB6AXuARBWiw5Mcre1MZnhRyte1g0uvZtVd7hsN1kbMXipmAtiADL4AmHZzRos1mjq7VlpTOSYvY7vxYtHXWU8UeZs993t78YoKmFAnqQtdpM5guAdr0sAkCnB4bYGfZbnEiKD5s4lF4f5ENhlsBBenhTBDkVHuu9aga6Qgg49A5eX7yldVofIcrA8rzA2IFU-BrEuOrZyluKMOhiyQtCCZuPFEnghX5JxUxagKUxlSQK9gJsSMlbrvxeYQGTA5KyfFCftM5wws2c3hxNh0"/>
+<div class="flex flex-col">
+<span class="text-headline-md font-headline-md font-extrabold text-primary">Chats</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">Manage your conversations</span>
+</div>
+</div>
+<div class="flex gap-4 text-on-surface-variant">
+<span class="material-symbols-outlined cursor-pointer hover:bg-surface-variant p-2 rounded-full transition-colors">sync</span>
+<span class="material-symbols-outlined cursor-pointer hover:bg-surface-variant p-2 rounded-full transition-colors">add_comment</span>
+<span class="material-symbols-outlined cursor-pointer hover:bg-surface-variant p-2 rounded-full transition-colors">settings</span>
+</div>
+</div>
+<!-- Search Bar Sidebar -->
+<div class="px-4 pb-2">
+<div class="bg-surface-container-low flex items-center px-3 py-1.5 rounded-lg border border-transparent focus-within:border-primary-container transition-all">
+<span class="material-symbols-outlined text-on-surface-variant text-[20px]">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-body-md w-full px-2 placeholder:text-on-surface-variant" placeholder="Search or start a new chat" type="text"/>
+</div>
+</div>
+<!-- Chat List Content -->
+<div class="flex-grow overflow-y-auto custom-scrollbar">
+<!-- Active Chat Item -->
+<div class="flex items-center gap-3 p-3 bg-surface-container-high cursor-pointer transition-colors duration-200">
+<div class="relative">
+<img class="w-12 h-12 rounded-full object-cover" data-alt="Close-up portrait of Ana García, a friendly woman with warm eyes and a kind smile, professional lighting in a modern interior, soft focus background, high-definition digital photography style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDHF2m9x1ip7jogbVEmeS38L065lX6Dq7TsE-CuknvdSaWyM8MFSehYFsplTJiBLxQMXWKR3xqzsFzS5E4PGhZ8voMOXWSDZeDk5nWizSY_VsxdUrPPTdtwtztoMvvWmGDOMFnZMSJ1yQQqsrbm4ucAbBO50oIcgqsOFartVjb5DUaP7plx6ChTg-PjpzGgJxKY2pwM6n1kNcheOGfEh9MNDqv0jy_S8DMdh0-6wm1nuEQDpFM_4A57-FWtwClNx1LqAyYcoTCtAKI"/>
+<div class="absolute bottom-0 right-0 w-3 h-3 bg-primary rounded-full border-2 border-surface-container-high"></div>
+</div>
+<div class="flex-grow min-w-0 border-b border-outline-variant/30 pb-3">
+<div class="flex justify-between items-baseline">
+<span class="text-body-md font-bold truncate">Ana García</span>
+<span class="text-label-sm text-primary">12:45</span>
+</div>
+<div class="flex justify-between items-center">
+<p class="text-label-sm text-on-surface-variant truncate">Todo bien, ¿y tú?</p>
+<span class="bg-primary text-on-primary text-[10px] font-bold px-1.5 py-0.5 rounded-full">1</span>
+</div>
+</div>
+</div>
+<!-- Other Chat Items -->
+<div class="flex items-center gap-3 p-3 hover:bg-surface-container-high cursor-pointer transition-colors duration-200">
+<img class="w-12 h-12 rounded-full object-cover" data-alt="Portrait of Carlos Ruiz, a creative director in a minimalist studio, soft dramatic lighting, professional photography, clean modern aesthetic, muted tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCgaIcstPzAZFFRSz5lWuL_j1_EBF4KGYlZ13ko3mwUvT0HgmjQEg35jGCO11wWfwt5hrQncCDbvAn7hO0EFAEp-CUNE-0t6S_RMjyvGGhTK7SfqogKEL1B87AaMQuxSHv6lzgjXTJp8GJ3nioNkSEimZgHhun5S6ZpnMfS9zhV_OkATZpeKT_oSf0pQk1AtFUXX6ry0jFIEiW7foLOSf70koq9NBl8hnxsiPJvIjzTRZ_JNAR5KZhJBv8E8NYh-ztTtUxdsaAQYLM"/>
+<div class="flex-grow min-w-0 border-b border-outline-variant/30 pb-3">
+<div class="flex justify-between items-baseline">
+<span class="text-body-md font-medium truncate">Carlos Ruiz</span>
+<span class="text-label-sm text-on-surface-variant">11:30</span>
+</div>
+<p class="text-label-sm text-on-surface-variant truncate">Enviado el archivo de diseño.</p>
+</div>
+</div>
+<div class="flex items-center gap-3 p-3 hover:bg-surface-container-high cursor-pointer transition-colors duration-200">
+<img class="w-12 h-12 rounded-full object-cover" data-alt="A small group avatar representing a family chat, warm inviting lighting, candid and happy mood, high quality digital illustration style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDUOrY4uCX0GJh22WRjVFeA4WNTmEmErN4F99lMgxjumfIdqRSQ3NENM87SHa2vWm9u8TEJaBuagkoTJ_tOZ5pJh54SlqNpnWICtsRcou7bBVJQxCrXVXFLSMuE-VxaZQoOUfBrQfd6YwSlhu_pjjCQrYUY8F0DQNZaPAjeiShGKNPyRmRbb5FF8b6We3vEW0sh901mzEV-RBwDAo3lsJ23exBnHmjfCxdP5-hn9Nb3II3JCJbk3_k1FFON2i26o8R1afeqohDKw7c"/>
+<div class="flex-grow min-w-0 border-b border-outline-variant/30 pb-3">
+<div class="flex justify-between items-baseline">
+<span class="text-body-md font-medium truncate">Familia</span>
+<span class="text-label-sm text-on-surface-variant">Ayer</span>
+</div>
+<p class="text-label-sm text-on-surface-variant truncate">Mamá: ¿Vienen a cenar?</p>
+</div>
+</div>
+<div class="flex items-center gap-3 p-3 hover:bg-surface-container-high cursor-pointer transition-colors duration-200">
+<img class="w-12 h-12 rounded-full object-cover" data-alt="Professional portrait of Maria Lopez, a tech lead in a bright airy office environment, soft sunlight, modern workspace background, high-end commercial photography." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBPCzbfVr3rWXzdBm28t8J5Pn1tZYDn6AmUQgFRdUd0nh0X8mJUAfreUcCzTJNvf-bd5hHAx8OewSJLG2ErUjNG6cEbjfrPTILOIOymcBi7tivkmUEgUzmU1WXbUAzsabPGMjBUSg2-c55mxPn3KjPD2UR43-yemN1gyqxEBvMRSFY1fM8MsciSIM1AJg80yspTo90rMavIg8tKz9sVJlSvYC43jGwS2osmoCA2PTN0ru4efhC7fYoIDonGKXMPdiMQM46IM-CbbYo"/>
+<div class="flex-grow min-w-0 border-b border-outline-variant/30 pb-3">
+<div class="flex justify-between items-baseline">
+<span class="text-body-md font-medium truncate">Maria Lopez</span>
+<span class="text-label-sm text-on-surface-variant">Lunes</span>
+</div>
+<p class="text-label-sm text-on-surface-variant truncate">¡Perfecto! Nos vemos luego.</p>
+</div>
+</div>
+</div>
+<!-- Footer Icons (Shared Components Reference) -->
+<nav class="flex justify-around items-center p-3 border-t border-outline-variant/20 bg-surface-container">
+<span class="material-symbols-outlined text-primary font-bold transition-all cursor-pointer">chat</span>
+<span class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-all cursor-pointer">sync</span>
+<span class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-all cursor-pointer">groups</span>
+<span class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-all cursor-pointer">hub</span>
+</nav>
+</aside>
+<!-- Main Chat Area -->
+<main class="flex flex-col flex-grow h-screen relative bg-surface-container-lowest">
+<!-- TopAppBar Implementation -->
+<header class="flex justify-between items-center w-full px-gutter bg-surface-container-high h-[64px] shrink-0 z-10">
+<div class="flex items-center gap-3">
+<img class="w-10 h-10 rounded-full object-cover" data-alt="Close-up portrait of Ana García, a friendly woman with warm eyes and a kind smile, professional lighting in a modern interior, soft focus background, high-definition digital photography style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDqavCZG-HU1ohVEQVajTKOd_OrTh_-XKS8pR48QjxhrtjGKwCN8KVClmynttUpJnOc-6pyxySsVrB5hp8hWJus5dBpdIL5N_j_QcaN2mK78Ht6MijP4bGOhjT2OdNcL0oV_97C1l-o6sTvfN-cYR3Yq4m2GMulcj17kYLiZTVN9ZcjtWZ4RNFh98nbnP6Obv6XKvEMpGDafK7U9dh_ZqKcDE7rbHP5prUCPtzKb6NM9lZ46OXx1hbRkeqQ92jHzOckLKVlr8q_WUw"/>
+<div class="flex flex-col">
+<span class="text-headline-md font-headline-md font-semibold text-on-surface">Ana García</span>
+<span class="text-label-sm font-label-sm text-primary">online</span>
+</div>
+</div>
+<div class="flex items-center gap-6 text-on-surface-variant">
+<span class="material-symbols-outlined cursor-pointer hover:bg-surface-variant p-2 rounded-full transition-transform active:scale-90">videocam</span>
+<span class="material-symbols-outlined cursor-pointer hover:bg-surface-variant p-2 rounded-full transition-transform active:scale-90">call</span>
+<div class="h-6 w-[1px] bg-outline-variant"></div>
+<span class="material-symbols-outlined cursor-pointer hover:bg-surface-variant p-2 rounded-full transition-transform active:scale-90">search</span>
+<span class="material-symbols-outlined cursor-pointer hover:bg-surface-variant p-2 rounded-full transition-transform active:scale-90">more_vert</span>
+</div>
+</header>
+<!-- Message Area -->
+<div class="flex-grow overflow-y-auto chat-bg p-6 flex flex-col gap-2 custom-scrollbar">
+<div class="flex justify-center mb-4">
+<span class="bg-[#d1d7db] text-[12px] text-[#54656f] uppercase py-1.5 px-3 rounded-lg shadow-sm font-medium">Hoy</span>
+</div>
+<!-- Incoming Message -->
+<div class="flex justify-start mb-2">
+<div class="incoming-bubble bg-white max-w-[65%] p-2 shadow-sm relative">
+<div class="text-body-md text-on-surface pr-10">
+                            ¡Hola! ¿Cómo vas?
+                        </div>
+<div class="absolute bottom-1 right-2 text-[10px] text-on-surface-variant">
+                            12:43
+                        </div>
+</div>
+</div>
+<!-- Outgoing Message -->
+<div class="flex justify-end mb-2">
+<div class="outgoing-bubble bg-[#d9fdd3] max-w-[65%] p-2 shadow-sm relative">
+<div class="text-body-md text-on-surface pr-12">
+                            Todo bien, ¿y tú?
+                        </div>
+<div class="absolute bottom-1 right-2 flex items-center gap-1">
+<span class="text-[10px] text-on-surface-variant">12:45</span>
+<span class="material-symbols-outlined text-[14px] text-[#53bdeb]" style="font-variation-settings: 'FILL' 1;">done_all</span>
+</div>
+</div>
+</div>
+<!-- Spacer for context -->
+<div class="flex justify-start mb-2">
+<div class="incoming-bubble bg-white max-w-[65%] p-2 shadow-sm relative">
+<div class="text-body-md text-on-surface pr-10">
+                            ¿Viste el documento que envié al grupo? Tenemos que revisarlo hoy mismo.
+                        </div>
+<div class="absolute bottom-1 right-2 text-[10px] text-on-surface-variant">
+                            12:46
+                        </div>
+</div>
+</div>
+<!-- Typing indicator simulation -->
+<div class="flex justify-start opacity-0 transition-opacity duration-300" id="typing">
+<div class="bg-white rounded-full px-4 py-2 flex gap-1 items-center shadow-sm">
+<div class="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce"></div>
+<div class="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce [animation-delay:0.2s]"></div>
+<div class="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce [animation-delay:0.4s]"></div>
+</div>
+</div>
+</div>
+<!-- Bottom Bar / Message Input -->
+<footer class="bg-surface-container-high px-4 py-2 flex items-center gap-3">
+<div class="flex gap-2">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:bg-surface-variant p-2 rounded-full transition-colors">sentiment_satisfied</span>
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:bg-surface-variant p-2 rounded-full transition-colors rotate-45">attach_file</span>
+</div>
+<div class="flex-grow relative">
+<input class="w-full bg-surface-container-lowest border-none focus:ring-0 rounded-lg py-2.5 px-4 text-body-md placeholder:text-on-surface-variant shadow-sm" placeholder="Escribe un mensaje" type="text"/>
+</div>
+<div>
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:bg-surface-variant p-2 rounded-full transition-colors">mic</span>
+</div>
+</footer>
+</main>
+</div>
+<script>
+        // Micro-interaction: Toggle typing indicator
+        document.querySelector('input').addEventListener('focus', () => {
+            const typing = document.getElementById('typing');
+            typing.classList.remove('opacity-0');
+        });
+
+        document.querySelector('input').addEventListener('blur', () => {
+            const typing = document.getElementById('typing');
+            typing.classList.add('opacity-0');
+        });
+
+        // Simple send animation placeholder
+        document.querySelector('input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && e.target.value.trim() !== '') {
+                const val = e.target.value;
+                e.target.value = '';
+                
+                // Construct a quick visual feedback bubble (not persistent for demo simplicity)
+                const chatArea = document.querySelector('.chat-bg');
+                const newMsg = document.createElement('div');
+                newMsg.className = 'flex justify-end mb-2 animate-bounce';
+                newMsg.innerHTML = `
+                    <div class="outgoing-bubble bg-[#d9fdd3] max-w-[65%] p-2 shadow-sm relative">
+                        <div class="text-body-md text-on-surface pr-12">${val}</div>
+                        <div class="absolute bottom-1 right-2 flex items-center gap-1">
+                            <span class="text-[10px] text-on-surface-variant">Recién</span>
+                            <span class="material-symbols-outlined text-[14px] text-on-surface-variant">done</span>
+                        </div>
+                    </div>
+                `;
+                chatArea.appendChild(newMsg);
+                chatArea.scrollTop = chatArea.scrollHeight;
+            }
+        });
+    </script>
+</body></html>
+
+<!-- WhatsApp Web - Inicio -->
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>WhatsApp Desktop</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-high": "#dfeaf2",
+                    "on-surface": "#131d23",
+                    "surface-tint": "#006b53",
+                    "on-tertiary-fixed-variant": "#454747",
+                    "inverse-on-surface": "#e8f2fb",
+                    "tertiary-fixed-dim": "#c6c6c7",
+                    "primary-fixed-dim": "#59dcb5",
+                    "surface-container": "#e5eff8",
+                    "surface-container-lowest": "#ffffff",
+                    "secondary": "#5c5f61",
+                    "on-error": "#ffffff",
+                    "surface": "#f5faff",
+                    "tertiary": "#5d5f5f",
+                    "on-background": "#131d23",
+                    "on-secondary-fixed-variant": "#44474a",
+                    "secondary-fixed": "#e0e3e6",
+                    "on-secondary": "#ffffff",
+                    "on-tertiary-container": "#2b2d2d",
+                    "primary-fixed": "#79f9d0",
+                    "surface-dim": "#d1dbe4",
+                    "on-primary-fixed-variant": "#00513e",
+                    "on-primary-fixed": "#002117",
+                    "secondary-fixed-dim": "#c4c7ca",
+                    "primary": "#006b53",
+                    "inverse-primary": "#59dcb5",
+                    "on-error-container": "#93000a",
+                    "error-container": "#ffdad6",
+                    "surface-variant": "#d9e4ec",
+                    "on-primary-container": "#003427",
+                    "tertiary-container": "#939494",
+                    "on-secondary-fixed": "#191c1e",
+                    "surface-container-highest": "#d9e4ec",
+                    "on-surface-variant": "#3d4a44",
+                    "secondary-container": "#e0e3e6",
+                    "on-tertiary": "#ffffff",
+                    "outline-variant": "#bccac2",
+                    "on-tertiary-fixed": "#1a1c1c",
+                    "error": "#ba1a1a",
+                    "tertiary-fixed": "#e2e2e2",
+                    "on-secondary-container": "#626567",
+                    "background": "#f5faff",
+                    "primary-container": "#00a884",
+                    "surface-bright": "#f5faff",
+                    "surface-container-low": "#eaf5fe",
+                    "outline": "#6c7a74",
+                    "inverse-surface": "#283238",
+                    "on-primary": "#ffffff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "sidebar-min": "350px",
+                    "bubble-padding": "8px 12px",
+                    "sidebar-max": "450px",
+                    "stack-md": "12px",
+                    "sidebar-width": "30%",
+                    "stack-sm": "4px",
+                    "gutter": "16px",
+                    "stack-lg": "20px"
+            },
+            "fontFamily": {
+                    "body-md": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "label-xs": ["Inter"]
+            },
+            "fontSize": {
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "headline-md": ["16px", {"lineHeight": "24px", "fontWeight": "600"}],
+                    "body-lg": ["15px", {"lineHeight": "22px", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "400"}],
+                    "label-xs": ["11px", {"lineHeight": "14px", "fontWeight": "500"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        /* Custom scrollbar for sidebar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(0,0,0,0.1);
+        }
+        .custom-scrollbar:hover::-webkit-scrollbar-thumb {
+            background: rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center h-screen overflow-hidden bg-surface-dim">
+<!-- Main App Container -->
+<main class="flex w-full h-full max-w-[1600px] bg-surface-container-lowest overflow-hidden shadow-2xl md:h-[972px] md:w-[95vw]">
+<!-- SIDEBAR (SideNavBar mapping) -->
+<aside class="flex flex-col h-full w-[30%] min-w-[350px] max-w-[450px] bg-surface-container-lowest border-r border-outline-variant shrink-0 overflow-hidden">
+<!-- Sidebar Top Bar -->
+<header class="flex justify-between items-center h-[64px] px-4 bg-surface-container-high shrink-0">
+<div class="w-10 h-10 rounded-full overflow-hidden cursor-pointer hover:opacity-90 transition-opacity">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a smiling young woman with glasses, soft studio lighting against a clean neutral background. The style is modern and clean, fitting a high-end corporate communication application." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDD30nO_2vQH1fRcm7AYiun01MR2D5vAj9FDvDjHm7AsaPd4CBLqdAoHtWxfu3lpChLWp7YzfJgoeTlAoFLwdKeLDqcbuPx_ESF00HgGs1qWOaNzqsf8egr3IIKproULRjY72u4-lmseQ2tqL5DbjaDcss0nqVjIP_njJ29is5f-2yNZ5CemOUpPEdQ1MRjiuM1V45rq48CupKOPI3a-tJdz4JE4Z5n6F79eclQREuzg_Ns_vsSiSK4_tvy5H1pVXAz3j27JjQQBhc"/>
+</div>
+<div class="flex gap-4 items-center text-on-surface-variant">
+<button class="p-2 hover:bg-surface-variant rounded-full transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined text-xl">sync</span>
+</button>
+<button class="p-2 hover:bg-surface-variant rounded-full transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined text-xl">add_comment</span>
+</button>
+<button class="p-2 hover:bg-surface-variant rounded-full transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined text-xl">more_vert</span>
+</button>
+</div>
+</header>
+<!-- Search Area -->
+<div class="px-3 py-2 bg-surface-container-lowest border-b border-outline-variant/30">
+<div class="relative flex items-center bg-surface-container-low rounded-xl px-3 py-1.5">
+<span class="material-symbols-outlined text-on-surface-variant text-lg mr-4">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-body-md w-full placeholder:text-on-surface-variant" placeholder="Search or start new chat" type="text"/>
+</div>
+</div>
+<!-- Chat List (Scrollable) -->
+<div class="flex-1 overflow-y-auto custom-scrollbar bg-surface-container-lowest">
+<!-- Chat Item 1 (Active State) -->
+<div class="flex items-center h-[72px] px-3 cursor-pointer transition-colors bg-surface-variant/30">
+<div class="w-12 h-12 rounded-full overflow-hidden mr-3 shrink-0">
+<img class="w-full h-full object-cover" data-alt="A macro photograph of a vibrant green tropical leaf with intricate dew drops, reflecting soft sunlight. The background is a soft bokeh of lush greenery, creating a fresh and natural mood consistent with a modern messaging aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC34yibJpOzuGDRSAcwlHbhWIx__2oOBYfpelijwtgJUc_gr_HBh6guoeJRcf8Agjz-gBj1UysXL4zDMoq89vrtyUuXF1jsAGoaTZ3tedQU5UQJmUq0PmsIZ2_xAVmEftkKRffoeOBcLpGywfC_RI98f3k40NlBoIRBZie3rtuCP1tKgfCnR2TCajve-m-UvqIyFdRVRJl7CXNnbNL7jyyqedEKfBjSv0-HYNW-H9-WeMdBVLbKNmlSx4h62FqHSW4uGCeY_taShTM"/>
+</div>
+<div class="flex-1 border-b border-outline-variant/30 h-full flex flex-col justify-center min-w-0 pr-1">
+<div class="flex justify-between items-baseline mb-0.5">
+<h3 class="text-headline-md font-headline-md text-on-surface truncate">Product Team</h3>
+<span class="text-label-xs text-primary font-semibold">14:42</span>
+</div>
+<div class="flex justify-between items-center">
+<p class="text-body-md text-on-surface-variant truncate mr-2">Sarah: The final design looks great! Let's ship it.</p>
+<span class="bg-primary-container text-white text-[10px] font-bold h-5 w-5 flex items-center justify-center rounded-full shrink-0">2</span>
+</div>
+</div>
+</div>
+<!-- Chat Item 2 -->
+<div class="flex items-center h-[72px] px-3 cursor-pointer hover:bg-surface-container-low transition-colors">
+<div class="w-12 h-12 rounded-full overflow-hidden mr-3 shrink-0">
+<img class="w-full h-full object-cover" data-alt="A minimal architectural shot of a sleek modern building with clean white lines against a clear blue sky. High-key lighting emphasizes the bright, clean aesthetic and modern design language of the interface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDbpPiR2O6AUbwRNxM3xQ5kOR1rHMKvCo05zott5CpgxFKdd7RVEMFdYnBz9aYwhiVoExv1Yjfq2KpIuxBTI0JRlU5k_UyyqTo4uxg2KaVCZteDH4is9s2grbhqRRlESCnGk6qr_iZ9aDfIJYEjly5FUn-lKGG6FrTohL4GFtNhoaMnqACIMlmjkMRaYBKy6xjB76B3QPbT_gMwASPyT66sZ18ye-jHBksowmQnTjYBi-TLjQpl2WXWGkXym9tlaUDolMK7aKPQP0Q"/>
+</div>
+<div class="flex-1 border-b border-outline-variant/30 h-full flex flex-col justify-center min-w-0 pr-1">
+<div class="flex justify-between items-baseline mb-0.5">
+<h3 class="text-headline-md font-headline-md text-on-surface truncate">Alex Rivera</h3>
+<span class="text-label-xs text-on-surface-variant">Yesterday</span>
+</div>
+<div class="flex items-center">
+<span class="material-symbols-outlined text-sm text-secondary-fixed-dim mr-1" style="font-variation-settings: 'FILL' 1;">done_all</span>
+<p class="text-body-md text-on-surface-variant truncate">Sent the files over email.</p>
+</div>
+</div>
+</div>
+<!-- Chat Item 3 -->
+<div class="flex items-center h-[72px] px-3 cursor-pointer hover:bg-surface-container-low transition-colors">
+<div class="w-12 h-12 rounded-full overflow-hidden mr-3 shrink-0">
+<img class="w-full h-full object-cover" data-alt="Close-up of freshly brewed latte art in a ceramic cup, featuring a perfect heart pattern. Warm, soft lighting creates a cozy, professional lifestyle vibe that balances the clean digital environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAcdsLQ8DB0pKjGbY5EqkwrWpX8fpFOnDKzARvBxEd5Ve6urK1VVbY-IujJ9sp9T95z1KupvxBxB4vvbUq0uDZyo74DT4aadn6fv_vf4Wk925mEAaWwmFpP6rYcAo1-zd17B_aT_eVkMfuxOfESeJuAvdOJde2N4lWfgZCIg492LZIT3fM7aqiqeTfMAKL1ykiScnpZlaWprjgVpU3XpWBQc6jNgDxqDh0hki_0GR9ZZwO_oY0cdgC4MkZiCH492tG9oMXV-1i0h_Q"/>
+</div>
+<div class="flex-1 border-b border-outline-variant/30 h-full flex flex-col justify-center min-w-0 pr-1">
+<div class="flex justify-between items-baseline mb-0.5">
+<h3 class="text-headline-md font-headline-md text-on-surface truncate">Family Group</h3>
+<span class="text-label-xs text-on-surface-variant">Wednesday</span>
+</div>
+<div class="flex items-center">
+<p class="text-body-md text-on-surface-variant truncate">Mom: See you all at dinner tonight! ❤️</p>
+</div>
+</div>
+</div>
+<!-- More Chat items for scrolling demonstration -->
+<div class="flex items-center h-[72px] px-3 cursor-pointer hover:bg-surface-container-low transition-colors">
+<div class="w-12 h-12 rounded-full overflow-hidden mr-3 shrink-0 flex items-center justify-center bg-surface-container-high">
+<span class="material-symbols-outlined text-secondary text-2xl">person</span>
+</div>
+<div class="flex-1 border-b border-outline-variant/30 h-full flex flex-col justify-center min-w-0 pr-1">
+<div class="flex justify-between items-baseline mb-0.5">
+<h3 class="text-headline-md font-headline-md text-on-surface truncate">John Smith</h3>
+<span class="text-label-xs text-on-surface-variant">12/10/2023</span>
+</div>
+<div class="flex items-center">
+<span class="material-symbols-outlined text-sm text-secondary-fixed-dim mr-1">done</span>
+<p class="text-body-md text-on-surface-variant truncate">Okay, thanks for letting me know.</p>
+</div>
+</div>
+</div>
+<div class="flex items-center h-[72px] px-3 cursor-pointer hover:bg-surface-container-low transition-colors">
+<div class="w-12 h-12 rounded-full overflow-hidden mr-3 shrink-0">
+<img class="w-full h-full object-cover" data-alt="A high-tech workspace with multiple monitors glowing in a dimly lit room with subtle blue and purple ambient lighting. The atmosphere is professional, sleek, and focused on productivity and digital communication." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBxb3HdiQG7nW2cf74XBVqs5IJoAHN97DLLOb_6ybiIP1xYHX7laoDCN3VP5jz6I6wAFz8NVXbICd4WljF0Woa3HnHfcZLIGVIH2KBmFgSNoasqQxG0P5rNvMpDxuqtgM4fY2qtIrD16bCrVFu-IxLBQyN2qlLlxAMmf8djQXjB5bFfGVHiC_2Idq9RQM2igV48wbMNWMxc96DDgKJvFTBIHMrkPqdjRYc1AtFDZswLWmwQr55u_SSf7ftgARlghWk-841mC-5OLt4"/>
+</div>
+<div class="flex-1 border-b border-outline-variant/30 h-full flex flex-col justify-center min-w-0 pr-1">
+<div class="flex justify-between items-baseline mb-0.5">
+<h3 class="text-headline-md font-headline-md text-on-surface truncate">Dev Ops Channel</h3>
+<span class="text-label-xs text-on-surface-variant">11/10/2023</span>
+</div>
+<p class="text-body-md text-on-surface-variant truncate">System: Deployment successful to production.</p>
+</div>
+</div>
+<div class="flex items-center h-[72px] px-3 cursor-pointer hover:bg-surface-container-low transition-colors">
+<div class="w-12 h-12 rounded-full overflow-hidden mr-3 shrink-0">
+<img class="w-full h-full object-cover" data-alt="Abstract vibrant colored shapes merging together in a fluid, organic motion. A blend of turquoise, lime green, and soft whites creates a dynamic and energetic visual theme for a creative group chat." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBu98LiRrLkscyJHVZ9NoStOw3OUFyKhI4b7nQ1-tdUzmvklTkwBa21a0Nwj_UZv_dmrCWJQ7db9MoDLWWGRkCUe23ZHWnAyzSLDRf9RLDu3fh_0h2AHYEuACIh52H6gxYUqkiRixbsnF464Ss0Vcoj4YD99IHRiCArFTIaAx3bQIVtxivhEW11ZB--laRKGd1olZGjvxZhoYjwsEvi6NIWPFbnCdLwlXPqn3SG6SRtLYUNTol_6mK9Kx2fcNLPEtr1F5k7dsSW1Sc"/>
+</div>
+<div class="flex-1 border-b border-outline-variant/30 h-full flex flex-col justify-center min-w-0 pr-1">
+<div class="flex justify-between items-baseline mb-0.5">
+<h3 class="text-headline-md font-headline-md text-on-surface truncate">Hiking Buddies</h3>
+<span class="text-label-xs text-on-surface-variant">10/10/2023</span>
+</div>
+<p class="text-body-md text-on-surface-variant truncate">Jordan: Are we still going on Saturday?</p>
+</div>
+</div>
+</div>
+<!-- Footer Nav (Mobile/Responsive style pivot) -->
+<footer class="flex justify-around items-center h-[48px] bg-surface-container-high border-t border-outline-variant/30 md:hidden">
+<button class="flex flex-col items-center justify-center text-primary">
+<span class="material-symbols-outlined">chat</span>
+<span class="text-[10px]">Chats</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined">sync</span>
+<span class="text-[10px]">Status</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined">groups</span>
+<span class="text-[10px]">Communities</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-[10px]">Settings</span>
+</button>
+</footer>
+</aside>
+<!-- CHAT AREA (Placeholder Screen) -->
+<section class="flex-1 flex flex-col items-center justify-center bg-surface-container-low px-8 text-center relative overflow-hidden">
+<!-- Atmospheric micro-animation background element -->
+<div class="absolute inset-0 opacity-[0.03] pointer-events-none">
+<div class="absolute top-0 left-0 w-full h-full" style="background-image: radial-gradient(#00a884 0.5px, transparent 0.5px); background-size: 24px 24px;"></div>
+</div>
+<!-- Central Content -->
+<div class="z-10 max-w-[560px] animate-in fade-in zoom-in duration-700">
+<div class="mb-8 flex justify-center">
+<!-- Placeholder for WhatsApp Desktop Illustration -->
+<div class="relative w-[320px] h-[180px]">
+<img class="w-full h-full object-contain" data-alt="A high-end, minimalist 3D illustration of a desktop computer and a smartphone seamlessly connected by glowing light trails. The color palette features soft teals, whites, and light grays, symbolizing secure digital communication and multi-device synchronization in a modern professional workspace." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA_w9Y0JANgZAGe-QNuiW6gQ9q3fRTf3hJNTV3gJSoAKfysbuBvS7ldOmQ-yHsDnhuN9g0lOmg00bmyMEidMG2CNu8Skv3qkjwRAwSkbTo7APgrp7ih-x85XyNA1zruG9J6x3wAKpX9-j3l7wZctz9htw7NbOKw4hUKTfSUohS9K3hmp8rGc2iscwKgHwy4U_M1ZMYv4HX2yDuU2gls39243cxHIac3mw9ErvnHbnFAQ5mcwUDdexp7CqVYudna0ujry2BjqXnmSQA"/>
+</div>
+</div>
+<h1 class="text-[32px] font-light text-on-surface mb-4">Download WhatsApp for Windows</h1>
+<p class="text-body-md text-on-surface-variant mb-10 leading-relaxed">
+                    Make calls, share your screen and get a faster experience when you download the Windows app.
+                </p>
+<button class="bg-primary-container hover:bg-primary transition-colors text-white font-semibold py-2.5 px-6 rounded-full text-body-md shadow-sm mb-16">
+                    Get from Microsoft Store
+                </button>
+<!-- End-to-end encrypted message -->
+<div class="flex items-center justify-center text-on-surface-variant text-label-sm">
+<span class="material-symbols-outlined text-[16px] mr-2">lock</span>
+                    Your personal messages are end-to-end encrypted
+                </div>
+</div>
+<!-- Bottom decorative accent -->
+<div class="absolute bottom-0 left-0 w-full h-1.5 bg-primary-container/40"></div>
+</section>
+</main>
+<!-- FAB (Contextual suppression applied - only show on mobile or primary view if needed) -->
+<!-- Not rendered here as this is the Desktop interface focus -->
+<script>
+        // Micro-interactions for hover effects
+        const chatItems = document.querySelectorAll('.cursor-pointer');
+        chatItems.forEach(item => {
+            item.addEventListener('mouseenter', () => {
+                item.style.transform = 'scale(0.995)';
+            });
+            item.addEventListener('mouseleave', () => {
+                item.style.transform = 'scale(1)';
+            });
+        });
+
+        // Simple search filter simulation
+        const searchInput = document.querySelector('input[type="text"]');
+        searchInput.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            const chats = document.querySelectorAll('.custom-scrollbar > div');
+            chats.forEach(chat => {
+                const name = chat.querySelector('h3').textContent.toLowerCase();
+                if (name.includes(query)) {
+                    chat.style.display = 'flex';
+                } else {
+                    chat.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body></html>

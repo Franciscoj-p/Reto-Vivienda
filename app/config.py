@@ -29,7 +29,7 @@ CONFIG = {
     # "CRM_TIMEOUT_SEGUNDOS": float(os.getenv("CRM_TIMEOUT_SEGUNDOS", "3")),
 
     "CRM_INTEGRACION_HABILITADA": True,
-    "CRM_ENDPOINT_URL": "",  # Tu webhook real
+    "CRM_ENDPOINT_URL": "http://localhost:8002/webhook/perfilamiento",  # Tu webhook real
     "CRM_TIMEOUT_SEGUNDOS": 10,  # Timeout para la llamada al CRM (en segundos)  
     "CRM_API_KEY":"",
     # ==================================================================
@@ -177,6 +177,8 @@ CONFIG = {
         "SUBSIDIO_PREVIO_FUE_ARRENDAMIENTO": "subsidio_previo_fue_arrendamiento",
         "CELULAR": "celular",
         "CORREO_ELECTRONICO": "email",
+        "EDAD": "edad",
+        "ZONA": "zona",
     },
 
     # ==================================================================
@@ -267,13 +269,4 @@ CONFIG = {
     # checklist). Se deja sin borrar por ahora; limpieza es un pendiente
     # separado del checklist (Fase 3), no forma parte de este cambio.
     # ==================================================================
-    "RUTA_CSV_PROYECTOS_PERFIL": "data/perfiles_proyectos.csv",
-    "RUTA_CSV_COMPRADORES_CRUDO": "data/compradores_crudo.csv",
-    "FACTOR_CORRECCION_VALOR_VIVIENDA": 1000,
-    "ETL_EXCLUIR_DESISTIDOS": True,
-    "MUNICIPIOS_SUR": ["soacha", "ricaurte", "girardot", "fusagasuga"],
-    "MUNICIPIOS_NORTE": ["chia", "cota", "cajica", "zipaquira"],
-    "DIMENSIONES_PERFIL_COMPRADORES": [
-        "afiliado", "categoria", "rango_salarial", "segmento_familiar", "piramide_empresa",
-    ],
 }

@@ -17,7 +17,7 @@ import json
 
 from app.integrations.crm_client import enviar_lead_perfilado
 from app.reglas import validar_reglas
-from app.scoring import calcular_score, match_proyectos
+from app.scoring import calcular_score, evaluar_proyecto_interes, match_proyectos
 
 
 def procesar_lead(lead: dict, enviar_a_crm: bool = True) -> dict:
@@ -32,6 +32,7 @@ def procesar_lead(lead: dict, enviar_a_crm: bool = True) -> dict:
     validacion = validar_reglas(lead)
     score = calcular_score(lead, validacion)
     proyectos = match_proyectos(lead, validacion)
+    evaluacion_interes = evaluar_proyecto_interes(lead, validacion)
 
     prioridad_label = f"{score['prioridad']}"
     if lead.get("afiliado") and score["prioridad"] == "ALTA":
@@ -58,6 +59,7 @@ def procesar_lead(lead: dict, enviar_a_crm: bool = True) -> dict:
             "condiciones_subsidio": validacion["condiciones_subsidio"],
         },
         "score_detalle": score,
+        "evaluacion_proyecto_interes": evaluacion_interes,
         "matching_projects": proyectos,
         "ai_summary": _generar_resumen(lead, validacion, score, proyectos),
         "lead_original": lead,

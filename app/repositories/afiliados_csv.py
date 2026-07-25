@@ -65,11 +65,16 @@ class AfiliadosCSVRepository:
         valor = (valor or "").strip()
         if not valor:
             return None
-        if campo_interno == "afiliado":
+        if campo_interno in ("afiliado", "subsidio_previo", "subsidio_previo_fue_arrendamiento"):
             return valor.lower() in ("1", "true", "si", "sí", "x")
-        if campo_interno in ("antiguedad_meses", "personas_a_cargo"):
+        if campo_interno in ("antiguedad_meses", "personas_a_cargo", "edad", "estrato"):
             try:
                 return int(valor)
+            except ValueError:
+                return None
+        if campo_interno == "ingresos_mensuales":
+            try:
+                return float(valor)
             except ValueError:
                 return None
         return valor
