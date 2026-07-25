@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import unicodedata
+
 from app.catalogo import CATALOGO_PROYECTOS
 from app.config import CONFIG
 
@@ -17,7 +19,15 @@ def _ingresos_a_smmlv(ingresos: float) -> float:
 
 
 def _zona_normalizada(zona: str | None) -> str:
-    return (zona or "").strip().lower()
+    """minúsculas + sin tildes. BUG encontrado y corregido en esta sesión:
+    antes solo hacía `.lower()`, así que "Bogotá" (con tilde) nunca
+    coincidía contra "bogota" en `MUNICIPIOS_PRINCIPALES` ni en
+    `ZONAS_COBERTURA_SUBSIDIO` — el tope VIS y el subsidio general salían
+    mal justo para la ciudad más grande del catálogo."""
+    texto = (zona or "").strip().lower()
+    return "".join(
+        c for c in unicodedata.normalize("NFD", texto) if unicodedata.category(c) != "Mn"
+    )
 
 
 def _zona_coincide(zona: str | None, lista: list[str]) -> bool:
@@ -147,19 +157,56 @@ def _calcular_subsidio_por_ingresos(ingresos_en_smmlv: float) -> int:
     return 0
 
 
-def _valor_vivienda_dentro_de_tope(valor_vivienda: float | None, zona: str | None) -> bool:
-    """El subsidio solo aplica a vivienda VIS (hasta 135/150 SMMLV según
-    municipio) o VIP (hasta 90 SMMLV). Si no se conoce el valor deseado
-    (lead aún no lo definió), no se bloquea por este criterio."""
+def _tope_smmlv_por_tipo_proyecto(tipo_proyecto: str | None, zona: str | None) -> float | None:
+    """Tope de valor (en SMMLV) aplicable según el tipo de proyecto.
+
+    - "VIS": 150 SMMLV en municipio principal, 135 en el resto.
+    - "VIP": 90 SMMLV fijo. Antes estaba definido en config pero nunca
+      conectado aquí — la función comparaba siempre contra el tope VIS
+      sin importar el tipo real del proyecto (pendiente #10 de plan.md,
+      ahora resuelto).
+    - Cualquier otro valor (ej. "NO VIS", mercado libre): sin tope, esas
+      viviendas no están sujetas a la Ley de Vivienda VIS/VIP.
+    - Si no se informa `tipo_proyecto`, se asume "VIS" por compatibilidad
+      con el uso histórico de esta función (validación general del lead,
+      que no está atada a un proyecto concreto del catálogo).
+    """
+    tipo_norm = (tipo_proyecto or "VIS").strip().upper()
+    if tipo_norm == "VIP":
+        return CONFIG["VIP_TOPE_SMMLV"]
+    if tipo_norm == "VIS":
+        return (
+            CONFIG["VIS_TOPE_SMMLV_PRINCIPAL"]
+            if _es_municipio_principal(zona)
+            else CONFIG["VIS_TOPE_SMMLV_OTROS"]
+        )
+    return None
+
+
+def _valor_vivienda_dentro_de_tope(
+    valor_vivienda: float | None,
+    zona: str | None,
+    tipo_proyecto: str | None = "VIS",
+) -> bool:
+    """El subsidio/tope solo aplica a vivienda VIS (hasta 135/150 SMMLV
+    según municipio) o VIP (hasta 90 SMMLV). Si no se conoce el valor
+    deseado, o el tipo de proyecto no tiene tope aplicable (ej. "NO VIS"),
+    no se bloquea por este criterio.
+
+    `tipo_proyecto` es opcional, por defecto "VIS": la validación general
+    de elegibilidad del lead (sección 3.2 del plan, sobre
+    `valor_vivienda_deseada` declarado por el usuario) no está atada a un
+    proyecto específico del catálogo. El matching por proyecto
+    (scoring.py `match_proyectos`) sí pasa el `tipo_proyecto` real de cada
+    tipología candidata.
+    """
     if valor_vivienda is None:
         return True
+    tope_smmlv = _tope_smmlv_por_tipo_proyecto(tipo_proyecto, zona)
+    if tope_smmlv is None:
+        return True
     valor_en_smmlv = _valor_a_smmlv(valor_vivienda)
-    tope_vis = (
-        CONFIG["VIS_TOPE_SMMLV_PRINCIPAL"]
-        if _es_municipio_principal(zona)
-        else CONFIG["VIS_TOPE_SMMLV_OTROS"]
-    )
-    return valor_en_smmlv <= tope_vis
+    return valor_en_smmlv <= tope_smmlv
 
 
 def _evaluar_aplicacion_subsidio(lead: dict, ingresos_en_smmlv: float, motivos_rechazo: list[str]) -> dict:
@@ -218,15 +265,6 @@ def _evaluar_subsidio_arrendamiento(cierre_viable: bool) -> dict:
 
 # ======================================================================
 # Segmentación de Caja (Básico / Medio / Alto / Joven)
-# ------------------------------------------------------------------
-# Regla de negocio confirmada: "personas a cargo registradas" es el
-# tie-breaker entre Joven y el resto, NO un requisito duro aparte para
-# Básico/Medio. Si el lead no califica a Joven (por edad o por tener
-# dependientes), el segmento se decide solo por ingresos.
-# SUPUESTO sin confirmar: alguien de edad >= 39 SIN personas a cargo cae
-# en Básico/Medio/Alto por ingresos igual, aunque la tabla original del
-# plan menciona "grupo familiar" para esos segmentos. Ajustar aquí si el
-# negocio confirma que sí debe ser un requisito duro.
 # ======================================================================
 
 def _calcular_segmentacion_caja(lead: dict, ingresos_en_smmlv: float) -> str:
@@ -250,12 +288,31 @@ def _calcular_segmentacion_caja(lead: dict, ingresos_en_smmlv: float) -> str:
 
 
 # ======================================================================
-# Cierre financiero (informativo, no bloquea `puede_comprar`)
+# Cierre financiero general (informativo, no bloquea `puede_comprar`)
+# ------------------------------------------------------------------
+# Este es el cierre financiero "de referencia" (contra el precio promedio
+# del portafolio VIS), usado en `financial_score.cierre_financiero` de la
+# respuesta general. El cierre financiero POR PROYECTO/tipología candidata
+# vive en scoring.py `match_proyectos` (plan.md §5.4) y es independiente
+# de este.
 # ======================================================================
 
+def _precio_referencia_vis() -> int:
+    """Precio de referencia = promedio de la tipología más barata de cada
+    proyecto VIS del catálogo (aproximación razonable de "entrada" al
+    portafolio VIS). Si no hay proyectos VIS con tipologías, es 0."""
+    precios_minimos = []
+    for proyecto in CATALOGO_PROYECTOS:
+        if (proyecto.get("tipo_proyecto") or "").strip().upper() != "VIS":
+            continue
+        precios = [t["precio"] for t in proyecto.get("tipologias", []) if "precio" in t]
+        if precios:
+            precios_minimos.append(min(precios))
+    return round(sum(precios_minimos) / len(precios_minimos)) if precios_minimos else 0
+
+
 def _calcular_cierre_financiero(lead: dict, subsidio_estimado: int) -> dict:
-    precios_vis = [p["precio"] for p in CATALOGO_PROYECTOS if p["tipo"] == "VIS"]
-    precio_referencia = round(sum(precios_vis) / len(precios_vis)) if precios_vis else 0
+    precio_referencia = _precio_referencia_vis()
     cuota_inicial_requerida = round(
         precio_referencia * CONFIG["PORCENTAJE_CUOTA_INICIAL_REQUERIDO"]
     )
@@ -283,8 +340,6 @@ def validar_reglas(lead: dict) -> dict:
 
     subsidio = _evaluar_aplicacion_subsidio(lead, ingresos_en_smmlv, motivos_rechazo)
 
-    # Campo separado de `puede_comprar` (sección 3.2 del plan): distingue
-    # "no puede comprar" de "puede comprar pero sin ayuda de la caja".
     descalifica_subsidio_por_techo_ingresos = (
         ingresos_en_smmlv > CONFIG["TOPE_INGRESOS_SMMLV"]
     )

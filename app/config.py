@@ -6,12 +6,32 @@ o de negocio se ajusta AQUÍ. Ver `plan.md` sección 8 para el historial de
 decisiones que originaron cada bloque.
 """
 
+import os
 from pathlib import Path
- 
+
 # Raíz del proyecto = la carpeta que contiene `app/`.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 CONFIG = {
+
+    
+    # ==================================================================
+    # Integración con sistema externo (CRM / Salesforce) — RF-11
+    # ------------------------------------------------------------------
+    # El lead perfilado completo (score, subsidios, proyecto sugerido) se
+    # envía a un sistema externo para gestión del asesor humano. Todavía
+    # no tenemos URL/auth reales del CRM -> deshabilitado por defecto para
+    # no romper `/perfilar` mientras se define. Ver app/integrations/crm_client.py.
+    # ==================================================================
+    # "CRM_INTEGRACION_HABILITADA": os.getenv("CRM_INTEGRACION_HABILITADA", "false").lower() == "true",
+    # "CRM_ENDPOINT_URL": os.getenv("CRM_ENDPOINT_URL", ""),
+    # "CRM_API_KEY": os.getenv("CRM_API_KEY", ""),
+    # "CRM_TIMEOUT_SEGUNDOS": float(os.getenv("CRM_TIMEOUT_SEGUNDOS", "3")),
+
+    "CRM_INTEGRACION_HABILITADA": True,
+    "CRM_ENDPOINT_URL": "",  # Tu webhook real
+    "CRM_TIMEOUT_SEGUNDOS": 10,  # Timeout para la llamada al CRM (en segundos)  
+    "CRM_API_KEY":"",
     # ==================================================================
     # Generales
     # ==================================================================
@@ -22,13 +42,6 @@ CONFIG = {
 
     # ==================================================================
     # Matriz de subsidio por rango de ingresos (en SMMLV)
-    # ------------------------------------------------------------------
-    # CORREGIDO (Fase 3): se pasó de rangos [min, max) a un límite superior
-    # (max_smmlv) evaluado en orden con "<=", así el borde queda inclusivo
-    # tal como pide el negocio ("0 a 2 SMMLV" incluye el 2 exacto).
-    # Se recorre en orden y se aplica el primer rango cuyo "max_smmlv" sea
-    # mayor o igual al ingreso. Si no hay coincidencia (ingreso > último
-    # max_smmlv), el subsidio es 0.
     # ==================================================================
     "MATRIZ_SUBSIDIOS": [
         {"max_smmlv": 2, "subsidio_smmlv": 30},   # 0 a 2 SMMLV -> $52.527.150
@@ -48,6 +61,11 @@ CONFIG = {
 
     # ==================================================================
     # Topes de valor de vivienda por tipo (en SMMLV)
+    # ------------------------------------------------------------------
+    # VIS_TOPE_* se usa cuando el proyecto/tipología es "VIS".
+    # VIP_TOPE_SMMLV se usa cuando el proyecto/tipología es "VIP".
+    # Un proyecto "NO VIS" (mercado libre) no está sujeto a ninguno de
+    # estos topes — ver `_tope_smmlv_por_tipo_proyecto` en reglas.py.
     # ==================================================================
     "VIS_TOPE_SMMLV_PRINCIPAL": 150,  # municipios principales (Bogotá, etc.)
     "VIS_TOPE_SMMLV_OTROS": 135,      # resto de municipios
@@ -59,11 +77,16 @@ CONFIG = {
 
     # ==================================================================
     # Cobertura geográfica del subsidio Colsubsidio (Bogotá y Cundinamarca)
+    # ------------------------------------------------------------------
+    # Se agregaron tocancipa/ricaurte/ubate (decisión #20, plan.md sección
+    # 5.2): el catálogo viejo no los traía y era un error, no una decisión
+    # de negocio — todos son municipios de Cundinamarca igual que los que
+    # ya estaban.
     # ==================================================================
     "ZONAS_COBERTURA_SUBSIDIO": [
         "bogota", "soacha", "chia", "cota", "girardot",
         "cundinamarca", "zipaquira", "facatativa", "mosquera", "madrid",
-        "funza", "cajica", "fusagasuga",
+        "funza", "cajica", "fusagasuga", "tocancipa", "ricaurte", "ubate",
     ],
 
     # ==================================================================
@@ -72,13 +95,8 @@ CONFIG = {
     "MI_CASA_YA_TOPE_INGRESOS_SMMLV": 2,
     "MI_CASA_YA_SUBSIDIO_ADICIONAL_SMMLV": 20,
 
-# ==================================================================
+    # ==================================================================
     # Subsidio Concurrente por grupo SISBEN (RN — tabla oficial recibida)
-    # ------------------------------------------------------------------
-    # PENDIENTE DE NEGOCIO: falta el campo del lead que indique zona
-    # urbana/rural (no viene hoy en el JSON de entrada). Mientras tanto,
-    # scoring.py debe tratar todo lead como "urbana" por defecto (ajustar
-    # aquí cuando se agregue el campo real, ej. lead["zona_tipo"]).
     # ==================================================================
     "SISBEN_ORDEN_GRUPOS": [
         "A1", "A2", "A3", "A4", "A5",
@@ -110,7 +128,6 @@ CONFIG = {
 
     # ==================================================================
     # Segmentación de Caja — cortes para clasificar automáticamente al lead
-    # (Básico / Medio / Alto / Joven), según ingresos, personas a cargo y edad
     # ==================================================================
     "SEGMENTACION_CAJA_BASICO_MAX_SMMLV": 1.44,
     "SEGMENTACION_CAJA_MEDIO_MAX_SMMLV": 20,
@@ -119,17 +136,13 @@ CONFIG = {
     # ==================================================================
     # Pesos de scoring (0-100). El score SIEMPRE se expone como número;
     # "prioridad" es solo una etiqueta derivada de estos puntos + el
-    # override de RN-04 (ver reglas de scoring, Fase 6).
-    # ------------------------------------------------------------------
-    # `no_afiliado_penalizacion` es negativo a propósito: aplica la regla
-    # 90/10 activamente restando puntos, no solo dejando de sumar el bono
-    # de `afiliado`.
+    # override de RN-04.
     # ==================================================================
     "SCORING_WEIGHTS": {
         "afiliado": 25,
         "no_afiliado_penalizacion": -10,
         "condicion_especial": 10,
-        "cesantias": 8,          # cesantías inmovilizadas puntúan más que ahorro simple
+        "cesantias": 8,
         "ahorros": 4,
         "grupo_sisben": 8,
         "credito_preaprobado": 10,
@@ -150,7 +163,7 @@ CONFIG = {
     "MAPEO_COLUMNAS_AFILIADOS": {
         "ID_USUARIO": "id_usuario",
         "NOMBRE_COMPLETO": "nombre",
-        "FEC_NACIMIENTO": "fecha_nacimiento",   # ⚠️ falta convertir a `edad` en el repositorio
+        "FEC_NACIMIENTO": "fecha_nacimiento",
         "IND_AFILIADO": "afiliado",
         "COD_CATEGORIA": "categoria",
         "AFIL_ANTIGUEDAD_MESES": "antiguedad_meses",
@@ -162,18 +175,101 @@ CONFIG = {
         "GRUPO_SISBEN": "grupo_sisben",
         "SUBSIDIO_VIVIENDA_PREVIO": "subsidio_previo",
         "SUBSIDIO_PREVIO_FUE_ARRENDAMIENTO": "subsidio_previo_fue_arrendamiento",
+        "CELULAR": "celular",
+        "CORREO_ELECTRONICO": "email",
     },
 
     # ==================================================================
-    # Fase 1/2 — capa de datos: proyectos y perfiles de compradores
+    # Catálogo de proyectos — fuente JSON (reemplaza el CSV, plan.md §5)
     # ==================================================================
-    "RUTA_CSV_PROYECTOS_PERFIL": "data/perfiles_proyectos.csv",
+    "RUTA_JSON_PROYECTOS": "data/proyectos.json",
+
+    # Catálogo cerrado de `ubicacion` (plan.md §5.2). Sirve para validar
+    # el dato de entrada y detectar proyectos con una ubicación no
+    # reconocida (se cargan igual, pero sin poder resolver municipio).
+    "UBICACIONES_DISPONIBLES": [
+        "Bogotá", "Chía", "Ciudadela Maiporé", "Ciudadela calle 80",
+        "Girardot", "Ricaute", "Tocancipá", "Ubate",
+    ],
+
+    # `ubicacion` del proyecto -> municipio real, para poder reutilizar
+    # los topes VIS/VIP y la cobertura de subsidio (que comparan contra
+    # nombre de municipio). Algunas ubicaciones son desarrollos dentro de
+    # un municipio, no el municipio en sí (ej. "Ciudadela Maiporé").
+    "UBICACION_A_MUNICIPIO": {
+        "bogotá": "bogota",
+        "chía": "chia",
+        "ciudadela maiporé": "soacha",
+        "ciudadela calle 80": "bogota",
+        "girardot": "girardot",
+        "ricaute": "ricaurte",
+        "tocancipá": "tocancipa",
+        "ubate": "ubate",
+    },
+
+    # Proyectos excluidos del matching por muestra histórica muy chica
+    # (decisión #16, plan.md §5.3) o por ser un agregado y no un proyecto
+    # real (decisión #17, la fila "Total"). Comparación case-insensitive.
+    "PROYECTOS_EXCLUIDOS_MATCHING": ["abeto", "vibonce", "total"],
+
+    # Cuando un proyecto tiene varias tipologías asequibles para el lead,
+    # ¿cuál se recomienda? "mas_cara_asequible" = la mejor opción real que
+    # el lead sí puede pagar (sugerido en propuesta.md). Alternativa:
+    # "todas_asequibles" (devuelve una entrada por tipología asequible).
+    "ESTRATEGIA_SELECCION_TIPOLOGIA": "mas_cara_asequible",
 
     # ==================================================================
-    # Fase 2 — ETL de compradores
+    # Pesos de afinidad histórica (matching_historico) por dimensión de
+    # `buyerPersona`. PENDIENTES DE VALIDAR CON NEGOCIO (plan.md §5.3 /
+    # §10) — valores iniciales razonables, 100% ajustables aquí sin tocar
+    # scoring.py. No es necesario que sumen 1: se normalizan por la suma
+    # de los pesos de las dimensiones que sí se puedan calcular para un
+    # lead+proyecto dado (si falta el dato del lead, o el lead no cae en
+    # ningún bucket de esa dimensión para ese proyecto, la dimensión se
+    # excluye del promedio en vez de puntuar 0 — no es un error, ver
+    # plan.md §5.3).
+    # ------------------------------------------------------------------
+    # Fase 1 (equivalente al modelo anterior, migrado a buckets):
+    #   salario, edad, seg_empresa
+    # Fase 2 (nuevas, sin costo adicional de captura):
+    #   afiliacion, familia (heurístico), pac, estrato, ubicacion
     # ==================================================================
+    "BUYER_PERSONA_WEIGHTS": {
+        "salario": 30,
+        "edad": 15,
+        "seg_empresa": 10,
+        "afiliacion": 15,
+        "familia": 5,     # heurístico a partir de personas_a_cargo/cabeza_de_hogar, validar con negocio
+        "pac": 10,
+        "estrato": 5,     # requiere `estrato` en el lead (extra field); si no viene, se excluye
+        "ubicacion": 10,  # usa `departamento` del buyerPersona vs. zona_preferida del lead
+    },
+
+    # Mapeo heurístico tipo_empresa del lead (Micro/Medianas/Top, catálogo
+    # viejo) -> categoría de `seg_empresas` del buyerPersona (taxonomía de
+    # Colsubsidio). AJUSTAR cuando negocio confirme la equivalencia real.
+    "MAPEO_TIPO_EMPRESA_A_SEG_EMPRESA": {
+        "micro": "Micro Transaccional",
+        "medianas": "Medianas",
+        "top": "Emp Top",
+    },
+
+    # Texto de bucket de personas a cargo (buyerPersona.pac) por conteo
+    # numérico. Buckets de 6+ no siempre existen en todos los proyectos;
+    # si no existe para un proyecto puntual, esa dimensión no suma ahí.
+    "PAC_NUMERO_A_TEXTO": {
+        0: "Cero", 1: "Uno", 2: "Dos", 3: "Tres",
+        4: "Cuatro", 5: "Cinco", 6: "Seis", 7: "Siete", 8: "Ocho",
+    },
+
+    # ==================================================================
+    # Fase 2 — ETL de compradores (OBSOLETO, ver plan.md §5.1 / Fase 2 del
+    # checklist). Se deja sin borrar por ahora; limpieza es un pendiente
+    # separado del checklist (Fase 3), no forma parte de este cambio.
+    # ==================================================================
+    "RUTA_CSV_PROYECTOS_PERFIL": "data/perfiles_proyectos.csv",
     "RUTA_CSV_COMPRADORES_CRUDO": "data/compradores_crudo.csv",
-    "FACTOR_CORRECCION_VALOR_VIVIENDA": 1000,  # ⚠️ validar con datos reales
+    "FACTOR_CORRECCION_VALOR_VIVIENDA": 1000,
     "ETL_EXCLUIR_DESISTIDOS": True,
     "MUNICIPIOS_SUR": ["soacha", "ricaurte", "girardot", "fusagasuga"],
     "MUNICIPIOS_NORTE": ["chia", "cota", "cajica", "zipaquira"],

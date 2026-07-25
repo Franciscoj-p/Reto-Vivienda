@@ -1,18 +1,34 @@
 """
 Orquestador del motor de perfilamiento.
 
-Flujo: lead -> reglas -> score -> matching -> respuesta para Salesforce.
+Flujo: lead -> reglas -> score -> matching -> respuesta -> (best effort) CRM.
+
+NOTA DE ESTA SESIÓN: la respuesta de `procesar_lead` sigue siendo el
+`PerfilamientoResponse` completo (pensado para Salesforce/el asesor). El
+rediseño para que `/perfilar` devuelva algo distinto al usuario final
+(matches si es ALTA, motivos si es BAJA) queda pendiente para la próxima
+sesión — ver plan.md. Lo que sí se conecta aquí es el envío del lead
+perfilado completo al CRM externo (RF-11).
 """
 
 from __future__ import annotations
 
 import json
 
+from app.integrations.crm_client import enviar_lead_perfilado
 from app.reglas import validar_reglas
 from app.scoring import calcular_score, match_proyectos
 
 
-def procesar_lead(lead: dict) -> dict:
+def procesar_lead(lead: dict, enviar_a_crm: bool = True) -> dict:
+    """Procesa un lead y devuelve el `PerfilamientoResponse` completo.
+
+    `enviar_a_crm=True` por defecto: el lead perfilado completo se manda
+    al sistema externo (RF-11) de forma best-effort — si falla, no rompe
+    la respuesta de `/perfilar` (ver app/integrations/crm_client.py). Se
+    puede desactivar por llamada (ej. en tests) con `enviar_a_crm=False`,
+    además del flag global `CONFIG["CRM_INTEGRACION_HABILITADA"]`.
+    """
     validacion = validar_reglas(lead)
     score = calcular_score(lead, validacion)
     proyectos = match_proyectos(lead, validacion)
@@ -21,7 +37,7 @@ def procesar_lead(lead: dict) -> dict:
     if lead.get("afiliado") and score["prioridad"] == "ALTA":
         prioridad_label += " (90/10)"
 
-    return {
+    resultado = {
         "lead_info": {
             "nombre": lead.get("nombre"),
             "afiliado": lead.get("afiliado", False),
@@ -46,6 +62,17 @@ def procesar_lead(lead: dict) -> dict:
         "ai_summary": _generar_resumen(lead, validacion, score, proyectos),
         "lead_original": lead,
     }
+
+    if enviar_a_crm:
+        envio = enviar_lead_perfilado(resultado)
+        # Informativo/auditable, no cambia el contrato que ya consume el
+        # front hoy (RNF-02 explicabilidad: que quede rastro de si el CRM
+        # recibió el lead o no).
+        print(f"\n================ [CRM STATUS] ================\nEnviado: {envio.enviado}\nDetalle: {envio.detalle}\nStatus Code: {envio.status_code}\n==============================================\n")
+        
+        resultado["crm_envio"] = envio.to_dict()
+
+    return resultado
 
 
 def _generar_resumen(lead: dict, validacion: dict, score: dict, proyectos: list[dict]) -> str:

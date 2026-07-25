@@ -1,14 +1,15 @@
 from __future__ import annotations
 
+import re
+import unicodedata
+
 from app.catalogo import CATALOGO_PROYECTOS
 from app.config import CONFIG
 from app.reglas import _valor_vivienda_dentro_de_tope
 
 
 # ======================================================================
-# Helpers de acceso a estructura anidada del lead (mismo criterio que
-# reglas.py: el lead llega como dict, `finanzas` y `condiciones_especiales`
-# ya vienen como sub-dicts).
+# Helpers de acceso a estructura anidada del lead
 # ======================================================================
 
 def _finanzas(lead: dict) -> dict:
@@ -20,45 +21,226 @@ def _condiciones_especiales(lead: dict) -> dict:
 
 
 # ======================================================================
-# Similitud histórica — SIN REDISEÑAR (pendiente Fase 5.3 del plan: pasar
-# a afinidad por perfiles porcentuales por proyecto, requiere el CSV de
-# perfiles que genera el ETL de Fase 2. Se mantiene la fórmula de
-# distancia-a-promedio actual mientras tanto).
+# Helpers de texto/número para comparar el lead contra los buckets de
+# `buyerPersona` (plan.md §5.3). Genéricos y reutilizables entre
+# dimensiones — si negocio cambia la redacción de un bucket en
+# proyectos.json, no hay que tocar código, solo estas expresiones.
 # ======================================================================
 
-def _similitud_proyecto(lead: dict, proyecto: dict) -> float:
-    ingresos_lead = lead.get("ingresos_mensuales", 0)
-    ingresos_proy = proyecto["ingreso_promedio_comprador"]
-    dif_ingresos = abs(ingresos_lead - ingresos_proy) / max(ingresos_proy, 1)
-    score_ingresos = max(0.0, 1 - dif_ingresos)
-
-    edad_lead = lead.get("edad", proyecto["edad_promedio_comprador"])
-    dif_edad = abs(edad_lead - proyecto["edad_promedio_comprador"]) / 20
-    score_edad = max(0.0, 1 - dif_edad)
-
-    score_empresa = (
-        1.0
-        if lead.get("tipo_empresa") == proyecto["tipo_empresa_predominante"]
-        else 0.3
+def _normalizar_texto(texto: str) -> str:
+    """minúsculas + sin tildes, para comparar 'Básico' == 'basico'."""
+    texto = (texto or "").strip().lower()
+    return "".join(
+        c for c in unicodedata.normalize("NFD", texto) if unicodedata.category(c) != "Mn"
     )
 
-    return round(0.5 * score_ingresos + 0.3 * score_edad + 0.2 * score_empresa, 3)
+
+_PATRON_ENTRE = re.compile(r"entre\s+(\d+(?:\.\d+)?)\s+y\s+(\d+(?:\.\d+)?)")
+_PATRON_A = re.compile(r"(\d+(?:\.\d+)?)\s+a\s+(\d+(?:\.\d+)?)")
+_PATRON_HASTA = re.compile(r"hasta\s+(\d+(?:\.\d+)?)")
+_PATRON_MAS_DE = re.compile(r"mas\s+de\s+(\d+(?:\.\d+)?)")
 
 
-def _similitud_promedio_catalogo(lead: dict) -> float:
-    if not CATALOGO_PROYECTOS:
-        return 0.0
-    similitudes = [_similitud_proyecto(lead, p) for p in CATALOGO_PROYECTOS]
-    return max(similitudes)
+def _parsear_rango_numerico(texto_bucket: str) -> tuple[float, float] | None:
+    """Convierte el texto de un bucket a un rango numérico [min, max].
+
+    Soporta los formatos vistos en `proyectos.json` (varían por proyecto,
+    no es un catálogo cerrado — plan.md §5.3):
+    "Entre 4 y 6 smlv", "20 a 35 años", "Hasta 2 smlv", "Mas de 2 smlv".
+    Si el texto no matchea ningún formato conocido, devuelve None (esa
+    dimensión no se puede evaluar para ese bucket puntual).
+    """
+    texto = _normalizar_texto(texto_bucket)
+    m = _PATRON_ENTRE.search(texto)
+    if m:
+        return float(m.group(1)), float(m.group(2))
+    m = _PATRON_A.search(texto)
+    if m:
+        return float(m.group(1)), float(m.group(2))
+    m = _PATRON_HASTA.search(texto)
+    if m:
+        return 0.0, float(m.group(1))
+    m = _PATRON_MAS_DE.search(texto)
+    if m:
+        return float(m.group(1)), float("inf")
+    return None
+
+
+def _afinidad_por_rango(buckets: list[dict], valor_lead: float | None) -> float | None:
+    """Ubica `valor_lead` en el bucket cuyo texto describe un rango
+    numérico y devuelve su porcentaje histórico (0-1). None si no hay
+    dato del lead o no cae en ningún bucket de este proyecto puntual
+    (no es un error — señal de baja afinidad real, plan.md §5.3)."""
+    if valor_lead is None:
+        return None
+    for bucket in buckets or []:
+        rango = _parsear_rango_numerico(bucket.get("valor", ""))
+        if rango is None:
+            continue
+        piso, techo = rango
+        if piso <= valor_lead <= techo:
+            return (bucket.get("porcentaje", 0) or 0) / 100
+    return None
+
+
+def _afinidad_por_valor_exacto(buckets: list[dict], valor_lead: str | None) -> float | None:
+    """Compara texto normalizado (sin tildes/mayúsculas) contra `bucket.valor`."""
+    if not valor_lead:
+        return None
+    valor_norm = _normalizar_texto(valor_lead)
+    for bucket in buckets or []:
+        if _normalizar_texto(bucket.get("valor", "")) == valor_norm:
+            return (bucket.get("porcentaje", 0) or 0) / 100
+    return None
 
 
 # ======================================================================
-# Subsidio Concurrente por SISBEN (informativo para scoring — la
-# elegibilidad legal a compra/subsidio principal vive en reglas.py)
-# ------------------------------------------------------------------
-# PENDIENTE DE NEGOCIO: el lead no trae todavía el campo de zona
-# urbana/rural, así que se usa CONFIG["SISBEN_ZONA_DEFAULT"] como
-# fallback. Ajustar en cuanto exista el campo real en el lead.
+# Dimensiones de afinidad histórica (matching_historico) — plan.md §5.3.
+# Cada función recibe (lead, validacion, buyer_persona) y devuelve un
+# float 0-1, o None si esa dimensión no se puede calcular (dato faltante
+# en el lead, o el valor del lead no cae en ningún bucket de ESTE
+# proyecto). Los pesos viven en CONFIG["BUYER_PERSONA_WEIGHTS"] — agregar
+# una dimensión nueva = escribir la función aquí + agregarla a
+# `_DIMENSIONES_MATCHING_HISTORICO` + su peso en config.py.
+# ======================================================================
+
+def _dimension_salario(lead: dict, validacion: dict, buyer_persona: dict) -> float | None:
+    ingresos = lead.get("ingresos_mensuales")
+    if not ingresos:
+        return None
+    ingresos_smmlv = ingresos / CONFIG["SMMLV_2026"]
+    return _afinidad_por_rango(buyer_persona.get("salario", []), ingresos_smmlv)
+
+
+def _dimension_edad(lead: dict, validacion: dict, buyer_persona: dict) -> float | None:
+    return _afinidad_por_rango(buyer_persona.get("edad", []), lead.get("edad"))
+
+
+def _dimension_afiliacion(lead: dict, validacion: dict, buyer_persona: dict) -> float | None:
+    valor = "Afiliado" if lead.get("afiliado") else "No afiliado"
+    return _afinidad_por_valor_exacto(buyer_persona.get("afiliacion", []), valor)
+
+
+def _dimension_seg_empresa(lead: dict, validacion: dict, buyer_persona: dict) -> float | None:
+    """Heurístico: `tipo_empresa` del lead (Micro/Medianas/Top) se mapea a
+    la taxonomía real de `seg_empresas` vía CONFIG — AJUSTAR cuando
+    negocio confirme la equivalencia exacta (ver config.py)."""
+    tipo_empresa = _normalizar_texto(lead.get("tipo_empresa") or "")
+    if not tipo_empresa:
+        return None
+    valor_mapeado = CONFIG["MAPEO_TIPO_EMPRESA_A_SEG_EMPRESA"].get(tipo_empresa)
+    if not valor_mapeado:
+        return None
+    return _afinidad_por_valor_exacto(buyer_persona.get("seg_empresas", []), valor_mapeado)
+
+
+def _dimension_pac(lead: dict, validacion: dict, buyer_persona: dict) -> float | None:
+    personas_a_cargo = lead.get("personas_a_cargo")
+    if personas_a_cargo is None:
+        return None
+    texto = CONFIG["PAC_NUMERO_A_TEXTO"].get(personas_a_cargo)
+    if not texto:
+        return None
+    return _afinidad_por_valor_exacto(buyer_persona.get("pac", []), texto)
+
+
+def _dimension_estrato(lead: dict, validacion: dict, buyer_persona: dict) -> float | None:
+    """`estrato` no está en el schema formal del lead todavía (extra
+    field vía `model_config = extra='allow'`). Si no viene, la dimensión
+    simplemente no suma — no bloquea nada."""
+    estrato = lead.get("estrato")
+    if estrato is None:
+        return None
+    try:
+        texto = CONFIG["PAC_NUMERO_A_TEXTO"].get(int(estrato))
+    except (TypeError, ValueError):
+        texto = str(estrato)
+    if not texto:
+        return None
+    return _afinidad_por_valor_exacto(buyer_persona.get("estrato", []), texto)
+
+
+def _dimension_familia(lead: dict, validacion: dict, buyer_persona: dict) -> float | None:
+    """Heurístico (Fase 2, sin campo directo en el lead — VALIDAR CON
+    NEGOCIO, ver plan.md §10): aproxima la composición familiar a partir
+    de `personas_a_cargo` y `cabeza_de_hogar`. Peso bajo por defecto en
+    config.py justamente porque es una aproximación, no un dato duro."""
+    personas_a_cargo = lead.get("personas_a_cargo")
+    if personas_a_cargo is None:
+        return None
+    cabeza_de_hogar = _condiciones_especiales(lead).get("cabeza_de_hogar", False)
+    if personas_a_cargo <= 0:
+        valor = "Sin Grupo"
+    elif cabeza_de_hogar:
+        valor = "Monoparental"
+    else:
+        valor = "Nuclear Integrada"
+    return _afinidad_por_valor_exacto(buyer_persona.get("familia", []), valor)
+
+
+def _dimension_ubicacion(lead: dict, validacion: dict, buyer_persona: dict) -> float | None:
+    """Usa `departamento` de buyerPersona (distribución real de
+    compradores por municipio/zona) en vez de un bono fijo por coincidir
+    zona — reemplaza el bono_zona plano del diseño anterior (plan.md §5.3)."""
+    zona = _normalizar_texto(lead.get("zona_preferida") or "")
+    if not zona:
+        return None
+    mejor: float | None = None
+    for bucket in buyer_persona.get("departamento", []):
+        valor_norm = _normalizar_texto(bucket.get("valor", ""))
+        if valor_norm and (valor_norm in zona or zona in valor_norm):
+            porcentaje = (bucket.get("porcentaje", 0) or 0) / 100
+            if mejor is None or porcentaje > mejor:
+                mejor = porcentaje
+    return mejor
+
+
+_DIMENSIONES_MATCHING_HISTORICO = {
+    "salario": _dimension_salario,
+    "edad": _dimension_edad,
+    "afiliacion": _dimension_afiliacion,
+    "seg_empresa": _dimension_seg_empresa,
+    "pac": _dimension_pac,
+    "estrato": _dimension_estrato,
+    "familia": _dimension_familia,
+    "ubicacion": _dimension_ubicacion,
+}
+
+
+def _similitud_historica(lead: dict, validacion: dict, proyecto: dict) -> float:
+    """Afinidad 0-1 del lead con el perfil histórico de compradores de UN
+    proyecto. Promedio ponderado de las dimensiones que sí se pudieron
+    calcular (dato disponible en el lead Y el valor cae en algún bucket de
+    ESTE proyecto); las demás se excluyen del promedio en vez de sumar 0."""
+    buyer_persona = proyecto.get("buyerPersona") or {}
+    pesos = CONFIG["BUYER_PERSONA_WEIGHTS"]
+
+    suma_ponderada = 0.0
+    suma_pesos = 0.0
+    for dimension, funcion in _DIMENSIONES_MATCHING_HISTORICO.items():
+        peso = pesos.get(dimension, 0)
+        if peso <= 0:
+            continue
+        afinidad = funcion(lead, validacion, buyer_persona)
+        if afinidad is None:
+            continue
+        suma_ponderada += peso * afinidad
+        suma_pesos += peso
+
+    if suma_pesos == 0:
+        return 0.0
+    return round(suma_ponderada / suma_pesos, 3)
+
+
+def _similitud_historica_maxima(lead: dict, validacion: dict) -> float:
+    if not CATALOGO_PROYECTOS:
+        return 0.0
+    similitudes = [_similitud_historica(lead, validacion, p) for p in CATALOGO_PROYECTOS]
+    return max(similitudes) if similitudes else 0.0
+
+
+# ======================================================================
+# Subsidio Concurrente por SISBEN (informativo para scoring)
 # ======================================================================
 
 def _grupo_sisben_indice(grupo: str | None) -> int | None:
@@ -92,8 +274,6 @@ def calcular_score(lead: dict, validacion: dict) -> dict:
     factores: dict[str, int] = {}
     w = CONFIG["SCORING_WEIGHTS"]
 
-    # Afiliado: regla 90/10 en ambos sentidos — suma si es afiliado,
-    # RESTA activamente si no lo es (antes solo dejaba de sumar).
     factores["afiliado"] = (
         w["afiliado"] if lead.get("afiliado", False) else w["no_afiliado_penalizacion"]
     )
@@ -104,10 +284,9 @@ def calcular_score(lead: dict, validacion: dict) -> dict:
         else 0
     )
 
-    similitud_historica = _similitud_promedio_catalogo(lead)
+    similitud_historica = _similitud_historica_maxima(lead, validacion)
     factores["matching_historico"] = round(w["matching_historico"] * similitud_historica)
 
-    # Cesantías y ahorros separados: cesantías inmovilizadas puntúan más.
     finanzas = _finanzas(lead)
     factores["cesantias"] = w["cesantias"] if finanzas.get("cesantias", 0) > 0 else 0
     factores["ahorros"] = w["ahorros"] if finanzas.get("ahorros", 0) > 0 else 0
@@ -141,9 +320,6 @@ def calcular_score(lead: dict, validacion: dict) -> dict:
     else:
         prioridad = "BAJA"
 
-    # Override RN-04: crédito preaprobado + subsidio aplicable + cierre
-    # financiero cubre el valor total -> prioridad ALTA aunque el score
-    # numérico no llegue a 70. El score_total expuesto NO se altera.
     cubre_valor_total = (
         validacion["cierre_financiero"]["ahorro_disponible"]
         >= validacion["cierre_financiero"]["precio_referencia_vivienda"]
@@ -166,7 +342,8 @@ def calcular_score(lead: dict, validacion: dict) -> dict:
 
 
 # ======================================================================
-# Matching de proyectos
+# Matching de proyectos — trabaja por TIPOLOGÍA (plan.md §5.4), no por
+# precio único de proyecto.
 # ======================================================================
 
 def match_proyectos(lead: dict, validacion: dict, top_n: int = 3) -> list[dict]:
@@ -175,61 +352,89 @@ def match_proyectos(lead: dict, validacion: dict, top_n: int = 3) -> list[dict]:
     finanzas = _finanzas(lead)
     ahorro_base = finanzas.get("cesantias", 0) + finanzas.get("ahorros", 0)
     zona_preferida = (lead.get("zona_preferida") or "").strip().lower()
+    estrategia = CONFIG["ESTRATEGIA_SELECCION_TIPOLOGIA"]
 
     candidatos = []
     for proyecto in CATALOGO_PROYECTOS:
-        # Filtro VIS/No VIS conectado (plan 5.4): proyectos fuera del tope
-        # VIS/VIP de su municipio se EXCLUYEN del matching por completo,
-        # no se recomiendan (decisión confirmada).
-        proyecto_dentro_tope = _valor_vivienda_dentro_de_tope(
-            proyecto["precio"], proyecto["municipio"]
-        )
-        if not proyecto_dentro_tope:
+        tipo_proyecto = proyecto.get("tipo_proyecto")
+        municipio = proyecto.get("municipio")
+
+        tipologias_validas = []
+        for tipologia in proyecto.get("tipologias", []):
+            precio = tipologia.get("precio")
+            if precio is None:
+                continue
+
+            # Filtro VIS/No VIS/VIP: exclusión total (decisión #18,
+            # plan.md §5.4). Una tipología fuera del tope de SU tipo de
+            # proyecto no se recomienda, sin importar qué tan asequible
+            # sea financieramente.
+            if not _valor_vivienda_dentro_de_tope(precio, municipio, tipo_proyecto):
+                continue
+
+            monto_credito_estimado = cuota_maxima * 120
+            monto_total_disponible = ahorro_base + subsidio_general + monto_credito_estimado
+            if precio > monto_total_disponible:
+                continue  # no asequible con crédito + ahorro + subsidio
+
+            cuota_inicial_requerida = round(
+                precio * CONFIG["PORCENTAJE_CUOTA_INICIAL_REQUERIDO"]
+            )
+            ahorro_disponible_proyecto = ahorro_base + subsidio_general
+            cierre_viable_proyecto = ahorro_disponible_proyecto >= cuota_inicial_requerida
+
+            tipologias_validas.append(
+                {
+                    "nombre": tipologia.get("nombre"),
+                    "precio": precio,
+                    "cierre_financiero": {
+                        "cuota_inicial_requerida": cuota_inicial_requerida,
+                        "ahorro_disponible": ahorro_disponible_proyecto,
+                        "cierre_viable": cierre_viable_proyecto,
+                        "subsidio_aplicable": subsidio_general,
+                    },
+                }
+            )
+
+        if not tipologias_validas:
             continue
 
-        subsidio_aplicable = subsidio_general
-        monto_credito_estimado = cuota_maxima * 120
-        monto_total_disponible = ahorro_base + subsidio_aplicable + monto_credito_estimado
-        asequible = proyecto["precio"] <= monto_total_disponible
-        if not asequible:
-            continue
+        # Decisión pendiente en plan.md §5.4, resuelta con el default
+        # sugerido en propuesta.md: se recomienda la tipología más cara
+        # que el lead sí puede pagar (mejor opción real). Ajustable en
+        # CONFIG["ESTRATEGIA_SELECCION_TIPOLOGIA"] -> "todas_asequibles".
+        if estrategia == "todas_asequibles":
+            seleccionadas = tipologias_validas
+        else:
+            seleccionadas = [max(tipologias_validas, key=lambda t: t["precio"])]
 
-        # Cierre financiero por proyecto (plan 5.4): ya no se compara
-        # contra el precio promedio del portafolio VIS, sino contra el
-        # precio real de este candidato.
-        cuota_inicial_requerida = round(
-            proyecto["precio"] * CONFIG["PORCENTAJE_CUOTA_INICIAL_REQUERIDO"]
+        similitud = _similitud_historica(lead, validacion, proyecto)
+        bono_zona = (
+            0.1 if zona_preferida and municipio and zona_preferida in municipio else 0.0
         )
-        ahorro_disponible_proyecto = ahorro_base + subsidio_aplicable
-        cierre_viable_proyecto = ahorro_disponible_proyecto >= cuota_inicial_requerida
-
-        similitud = _similitud_proyecto(lead, proyecto)
-        bono_zona = 0.1 if zona_preferida and zona_preferida in proyecto["municipio"].lower() else 0.0
         match_score = round(min(1.0, similitud + bono_zona), 3)
 
-        motivo = (
-            f"Similitud de ingresos/perfil con compradores de {proyecto['proyecto']} "
-            f"({round(similitud * 100)}% de match)"
-        )
-        if bono_zona:
-            motivo += f"; coincide con la zona de interés ({lead.get('zona_preferida')})"
+        for tipologia_sel in seleccionadas:
+            motivo = (
+                f"Afinidad con el perfil histórico de compradores de "
+                f"{proyecto.get('nombre')} ({round(similitud * 100)}% de match)"
+            )
+            if bono_zona:
+                motivo += f"; coincide con la zona de interés ({lead.get('zona_preferida')})"
 
-        candidatos.append(
-            {
-                "proyecto": proyecto["proyecto"],
-                "municipio": proyecto["municipio"],
-                "tipo": proyecto["tipo"],
-                "precio": proyecto["precio"],
-                "match_score": match_score,
-                "motivo": motivo,
-                "cierre_financiero": {
-                    "cuota_inicial_requerida": cuota_inicial_requerida,
-                    "ahorro_disponible": ahorro_disponible_proyecto,
-                    "cierre_viable": cierre_viable_proyecto,
-                    "subsidio_aplicable": subsidio_aplicable,
-                },
-            }
-        )
+            candidatos.append(
+                {
+                    "proyecto": proyecto.get("nombre"),
+                    "ubicacion": proyecto.get("ubicacion"),
+                    "municipio": municipio,
+                    "tipo_proyecto": tipo_proyecto,
+                    "tipologia": tipologia_sel["nombre"],
+                    "precio": tipologia_sel["precio"],
+                    "match_score": match_score,
+                    "motivo": motivo,
+                    "cierre_financiero": tipologia_sel["cierre_financiero"],
+                }
+            )
 
     candidatos.sort(key=lambda c: c["match_score"], reverse=True)
     return candidatos[:top_n]

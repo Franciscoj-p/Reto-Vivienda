@@ -5,6 +5,11 @@
 > decisiones ya tomadas (y por qué), el diseño de datos/arquitectura acordado, y
 > el checklist de fases. Marca cada casilla `[x]` cuando la fase quede completa
 > y agrega la fecha/commit si aplica.
+>
+> **Documento complementario:** `REGLAS_DE_NEGOCIO.md` — explica cada regla ya
+> implementada (dónde vive en el código, cómo decide, por qué), pensado para
+> explicar el sistema en la demo. Este `plan.md` es la bitácora de decisiones y
+> checklist; `REGLAS_DE_NEGOCIO.md` es la referencia funcional.
 
 ---
 
@@ -19,6 +24,7 @@ proyectos del catálogo VIS/VIP.
 - `Requerimientos` (RF-01 a RF-12, RN-01 a RN-04, RNF-01 a RNF-04)
 - `API.md` (contrato de API, arquitectura de módulos: `api/`, `motor.py`,
   `reglas.py`, `scoring.py`, `catalogo.py`, `config.py`)
+- `REGLAS_DE_NEGOCIO.md` (nuevo — referencia funcional de cada regla)
 
 **Restricciones de negocio que gobiernan todo el diseño:**
 - RN-01 / RNF: Regla del 40% — ninguna recomendación puede exceder el 40% de
@@ -35,7 +41,7 @@ proyectos del catálogo VIS/VIP.
 
 ---
 
-## 2. Modelo de datos del Lead (JSON de entrada — versión vigente)
+## 2. Modelo de datos del Lead (JSON de entrada — versión vigente, implementada)
 
 ```json
 {
@@ -69,15 +75,20 @@ proyectos del catálogo VIS/VIP.
 }
 ```
 
-Nota: `subsidio_previo_fue_arrendamiento` es opcional (default `false`) y no
-viene en la plantilla original del usuario — se agregó para conservar la regla
-legal de excepción de arrendamiento (ver decisión en tabla de la sección 3).
+Implementado en `app/api/schemas.py` (`LeadInput` con submodelos
+`CondicionesEspeciales` y `Finanzas`). Rompe compatibilidad con el schema plano
+anterior a propósito — cualquier request que mande `cabeza_de_hogar` o
+`cesantias` en el nivel raíz ya no lo reconoce ahí.
+
+**Pendiente real, sin bloquear nada:** no existe todavía un campo de zona
+urbana/rural en el lead (afecta el cálculo de Subsidio Concurrente por SISBEN,
+ver sección 3.5). Mientras tanto se usa un default de "urbana".
 
 ---
 
 ## 3. Reglas de negocio — estado y decisiones
 
-### 3.1 Reglas duras de rechazo (`puede_comprar = false`)
+### 3.1 Reglas duras de rechazo (`puede_comprar = false`) — IMPLEMENTADO
 
 | # | Condición | Estado |
 |---|---|---|
@@ -88,7 +99,7 @@ legal de excepción de arrendamiento (ver decisión en tabla de la sección 3).
 
 **Importante:** el techo de 4 SMMLV **NO** está en esta tabla — ver 3.2.
 
-### 3.2 Elegibilidad al subsidio (NO bloquea la compra, solo el monto)
+### 3.2 Elegibilidad al subsidio (NO bloquea la compra, solo el monto) — IMPLEMENTADO
 
 `aplica_subsidio` es `true` solo si se cumplen TODAS:
 1. `ingresos_en_smmlv <= TOPE_INGRESOS_SMMLV` (4 SMMLV / $7.003.620 en 2026)
@@ -100,132 +111,257 @@ legal de excepción de arrendamiento (ver decisión en tabla de la sección 3).
 Si `aplica_subsidio == false`, se expone `subsidio_estimado = 0` y el motivo
 específico en `condiciones_subsidio` (para RNF-02, explicabilidad).
 
-**Campo de salida nuevo a exponer:** `descalifica_subsidio_por_techo_ingresos`
-(booleano, separado de `puede_comprar`) para que el equipo comercial distinga
-"no puede comprar" de "puede comprar pero sin ayuda de la caja".
+**Implementado:** `descalifica_subsidio_por_techo_ingresos` (booleano, separado
+de `puede_comprar`) ya se expone en la respuesta.
 
-### 3.3 Monto del subsidio (SMMLV 2026 = $1.750.905)
+**Bug real detectado y aún sin corregir:** el chequeo de tope de vivienda
+(`_valor_vivienda_dentro_de_tope`) siempre compara contra el tope VIS, nunca
+contra el tope VIP (90 SMMLV), porque hasta esta sesión no había un campo
+confiable de tipo de proyecto (VIS/VIP). Con `tipo_proyecto` ya disponible en
+`proyectos.json` (sección 5), falta conectar el tope correcto según el tipo.
+
+### 3.3 Monto del subsidio (SMMLV 2026 = $1.750.905) — IMPLEMENTADO
 
 | Rango ingresos (SMMLV) | Subsidio |
 |---|---|
-| 0 ≤ ingresos ≤ 2 | 30 SMMLV ($52.527.150) |
-| 2 < ingresos ≤ 4 | 20 SMMLV ($35.018.100) |
-| > 4 | $0 |
+| 0 ≤ ingresos < 2 SMMLV | 30 SMMLV ($52.527.150) |
+| 2 ≤ ingresos < 4 SMMLV | 20 SMMLV ($35.018.100) |
+| ≥ 4 SMMLV | $0 |
 
-**Pendiente de corrección de código:** el borde debe ser `<=` 2 SMMLV para el
-primer rango (hoy en el código anterior quedó como `<`, hay que corregirlo).
+Corregido: `MATRIZ_SUBSIDIOS` se recorre en orden por `max_smmlv` (piso
+implícito = techo del rango anterior), ya no depende de un campo `min_smmlv`
+que se había quitado del formato del dato real.
 
-### 3.4 Regla del 40%
+### 3.4 Regla del 40% — IMPLEMENTADO
 
 `cuota_maxima_mensual = round(ingresos_mensuales * 0.40)` — sin cambios.
 
-### 3.5 Subsidios complementarios (informativos, no bloquean)
+### 3.5 Subsidios complementarios (informativos, no bloquean) — IMPLEMENTADO
 
-- **Mi Casa Ya concurrente**: si `ingresos_en_smmlv < 2`, informar que puede
+- **Mi Casa Ya concurrente**: si `ingresos_en_smmlv < 2`, informa que puede
   sumar hasta 20 SMMLV adicionales.
 - **Subsidio de arrendamiento**: si `cierre_financiero.cierre_viable == false`,
-  sugerir 0.6 SMMLV/mes por 24 meses como ruta alterna de ahorro.
-- **Subsidio Concurrente por SISBEN**: pendiente de definir tabla de grupos
-  SISBEN que califican (A1–D21) — **SISBEN y Segmentación de Caja se manejan
-  como criterios independientes** (decisión tomada), no uno reemplaza al otro.
+  sugiere 0.6 SMMLV/mes por 24 meses como ruta alterna de ahorro.
+- **Subsidio Concurrente por SISBEN** — tabla oficial recibida y ya
+  implementada:
+
+  | Zona | Grupos SISBEN | Subsidio |
+  |---|---|---|
+  | Urbana | A1 – C7 | 30 SMMLV |
+  | Urbana | C8 – D11 | 20 SMMLV |
+  | Rural | A1 – C14 | 30 SMMLV |
+  | Rural | C15 – D20 | 20 SMMLV |
+
+  Comparación por índice de posición en una lista ordenada de grupos
+  (`SISBEN_ORDEN_GRUPOS`, A1→D21), no por comparación de texto — comparar
+  `"C14" < "C7"` como string da un resultado incorrecto (evaluación
+  lexicográfica, no numérica).
+
+  **Pendiente real:** el lead no trae campo de zona urbana/rural, así que se
+  usa `SISBEN_ZONA_DEFAULT = "urbana"` como fallback — subvalora a leads
+  rurales que calificarían en el tramo más alto (C15-D20 vs. C8-D11 urbano).
+
+  Grupo fuera de A1-D21 o vacío → no califica, sin bloquear ninguna otra
+  regla. **SISBEN y Segmentación de Caja se manejan como criterios
+  independientes** (decisión tomada), no uno reemplaza al otro.
 
 ---
 
-## 4. Sistema de score — decisiones cerradas
+## 4. Sistema de score — decisiones cerradas, IMPLEMENTADO
 
 **El score es SIEMPRE numérico (0–100)**. `prioridad` (ALTA/MEDIA/BAJA) es
 solo una etiqueta derivada para UI — ningún cálculo interno (matching,
 ordenamiento, overrides) se hace sobre la palabra, siempre sobre el número.
 
-| Factor | Estado | Peso | Notas |
-|---|---|---|---|
-| `afiliado == true` suma | Vigente | ajustable en config | Regla 90/10 |
-| `afiliado == false` **resta** puntos | **Nuevo** | ajustable en config | Antes solo no sumaba; ahora es penalización activa (decisión confirmada — regla 90/10 debe verse en ambos sentidos) |
-| Condiciones especiales (cabeza hogar / discapacidad / 65+) | Vigente | ajustable | Hoy es un solo factor todo-o-nada |
-| `finanzas.cesantias` | **Cambio** | ajustable, mayor que ahorros | Se separa de `ahorros` — cesantías inmovilizadas puntúan más que ahorro voluntario |
-| `finanzas.ahorros` | **Cambio** | ajustable, menor que cesantías | Ver arriba |
-| `grupo_sisben` | **Nuevo** | ajustable | Habilita Subsidio Concurrente — falta tabla de grupos calificantes |
-| `finanzas.credito_preaprobado` | **Nuevo** | ajustable | Existía en RN-04 pero nunca se implementó en scoring |
-| `origen == "organico"` suma | Vigente | ajustable | — |
+| Factor | Peso | Notas |
+|---|---|---|
+| `afiliado == true` suma | 25 | Regla 90/10 |
+| `afiliado == false` **resta** | -10 | Penalización activa, no solo ausencia de bono — regla 90/10 en ambos sentidos |
+| `condicion_especial` (cabeza hogar / discapacidad / 65+) | 10 | Los tres viven en `condiciones_especiales`, son datos explícitos del lead (ya no se calcula `mayor_65_anos` de `edad`) |
+| `finanzas.cesantias` | 8 | Separado de ahorros — cesantías inmovilizadas puntúan más que ahorro voluntario |
+| `finanzas.ahorros` | 4 | — |
+| `grupo_sisben` | 8 | Binario: si el grupo del lead califica al Subsidio Concurrente (sección 3.5) |
+| `finanzas.credito_preaprobado` | 10 | Existía en RN-04 pero nunca se había implementado en scoring |
+| `matching_historico` | hasta 20 | **En rediseño** — ver sección 5.3 |
+| `cierre_financiero_viable` | 10 | — |
+| `origen_organico` | 5 | — |
 
-**Override de prioridad (RN-04):** si `credito_preaprobado == true` AND
-`aplica_subsidio == true` AND `cierre_financiero.cierre_viable == true` (cubre
-el valor total) → `prioridad = "ALTA"` **aunque el score_total no llegue a 70**.
-El score numérico se sigue exponiendo tal cual, sin alterarse; el override
-solo afecta la etiqueta.
+**Override de prioridad (RN-04), implementado:** si `credito_preaprobado == true`
+AND `aplica_subsidio == true` AND `cierre_financiero.ahorro_disponible` cubre el
+**valor total** de la vivienda (no solo la cuota inicial) AND `puede_comprar == true`
+→ `prioridad = "ALTA"` **aunque el score_total no llegue a 70**. El score
+numérico se sigue exponiendo tal cual, sin alterarse; el override solo afecta
+la etiqueta. Se expone `override_rn04_aplicado` (booleano) para auditar cuándo
+se activó.
 
-**Segmentación de Caja — pasa a ser calculada, no un dato de entrada crudo:**
+**Segmentación de Caja — implementada, con tie-breaker confirmado con negocio:**
 
 | Segmento | Regla |
 |---|---|
-| Básico | ingresos ≤ 1.44 SMMLV + personas a cargo registradas |
-| Medio | 1.44–20 SMMLV + grupo familiar |
-| Alto | > 20 SMMLV |
-| Joven | edad < 39 años, sin personas a cargo |
+| Joven | `edad < 39` **y** sin personas a cargo registradas — tiene prioridad sobre los demás |
+| Básico | (si no es Joven) ingresos ≤ 1.44 SMMLV |
+| Medio | (si no es Joven) 1.44–20 SMMLV |
+| Alto | (si no es Joven) > 20 SMMLV |
 
-Se deriva de `ingresos_mensuales`, `personas_a_cargo`, `edad`. Los cortes van
-en `config.py`.
+El desempate real (confirmado con negocio) es la presencia de personas a
+cargo: decide entre Joven y el resto, no es un solape de rangos de ingreso.
 
----
-
-## 5. Matching — histórico y catálogo
-
-### 5.1 Fuentes de datos nuevas (reemplazan/complementan al catálogo actual)
-
-**A. Base de compradores (~4.142 filas, CSV/Excel, transaccional):**
-- Proyecto, etapa, código de proyecto
-- Fecha de opción / fecha de desistimiento (vacía = compra vigente)
-- Entidad financiera, medio de conocimiento del proyecto
-- Valor promedio de vivienda — **bug de formato conocido**: hay que quitar
-  ceros sobrantes (ej. `523.620` → ≈ $523M). Corregir en la capa de ingesta.
-- Afiliado sí/no, segmento, categoría, rango salarial, personas a cargo
-- Empresa, pirámide, ranking de empresa
-- Variable "foco" — **fuera de alcance por ahora**, no hay info suficiente
-
-**B. Perfil de compradores por proyecto (CSV agregado, % por variable):**
-- % afiliados vs. no afiliados
-- Distribución por género, rango salarial, rango de edad
-- Segmentación de Caja (Básico/Medio/Alto/Joven — ver definiciones sección 4)
-- Segmentación familiar DANE (monoparental, nuclear ampliada, etc.)
-- Personas a cargo, estrato (dato incompleto, puede no sumar 100%)
-- Pirámide de empresa (Top/Micro/Medianas/**Estándar** — falta agregar esta
-  categoría, hoy el catálogo solo reconoce 3)
-- Ubicación (departamento/localidad/municipio)
-- Entidad financiera
-- **Versiones agrupadas**: municipios sur (Soacha, Ricaurte, etc.) y
-  municipios norte, con la misma estructura condensada
-
-### 5.2 Decisión de arquitectura de datos — CERRADA
-
-La base de 4.142 compradores **nunca se toca en el camino de una petición en
-vivo** (viola RNF-03 de latencia). Se procesa **offline**, en un job ETL que:
-1. Limpia el formato de valores (quitar ceros sobrantes)
-2. Genera/actualiza los CSV de perfil por proyecto (sección 5.1-B)
-3. El API en producción solo lee esos perfiles ya agregados
-
-### 5.3 Rediseño de la fórmula de matching histórico
-
-Cambia de "distancia a un promedio" (diseño actual) a "afinidad por
-pertenencia a segmento": para cada proyecto, ¿en qué % de compradores
-históricos cae el segmento del lead? (segmentación de caja, rango salarial,
-rango de edad, tipo de empresa, ubicación). Reemplaza la similitud continua
-actual basada solo en `ingreso_promedio_comprador` / `edad_promedio_comprador`.
-
-### 5.4 Matching con catálogo (disponibilidad)
-
-- `zona_preferida` filtra contra proyectos disponibles (incluye agrupados
-  sur/norte)
-- `valor_vivienda_deseada` valida VIS (≤135–150 SMMLV) vs. No VIS (>150 SMMLV,
-  fuera del alcance de subsidio) — la función ya existe (`_valor_vivienda_dentro_de_tope`
-  en el `reglas.py` actual) pero falta **conectarla** al filtro de
-  `match_proyectos`
-- El cierre financiero (30% de cuota inicial) debe calcularse **por proyecto
-  candidato**, no contra un precio promedio del portafolio VIS completo (así
-  funciona hoy, hay que cambiarlo)
+**Supuesto sin confirmar del todo, documentado en el código:** la tabla
+original menciona "grupo familiar" como requisito adicional de Básico/Medio,
+pero se interpretó que las personas a cargo son *solo* el desempate frente a
+Joven, no un requisito duro aparte. Afecta a leads de 39+ años sin personas a
+cargo — caen en Básico/Medio/Alto por ingreso igual.
 
 ---
 
-## 6. Endpoint de consulta de afiliados — CERRADA
+## 5. Matching — histórico y catálogo (REDISEÑO EN CURSO, Fase 5.3)
+
+> Cambio de arquitectura grande respecto a la versión anterior de este plan:
+> el catálogo deja de construirse con un ETL propio sobre una base cruda de
+> compradores, porque **Colsubsidio ya entrega el perfil de comprador
+> pre-calculado** en `proyectos.json`. La sección 5 anterior (ETL offline +
+> CSV de perfiles agregados) queda **obsoleta y se reemplaza completa** por
+> lo que sigue.
+
+### 5.1 Fuente única del catálogo: `proyectos.json`
+
+Cada proyecto trae:
+
+```json
+{
+  "id": 12,
+  "nombre": "Versalles",
+  "ubicacion": "Ciudadela Maiporé",
+  "tipo_proyecto": "VIS | No VIS | VIP",
+  "tipologias": [
+    { "nombre": "Tipo D", "precio": 150000000 },
+    { "nombre": "Tipo E", "precio": 180000000 }
+  ],
+  "buyerPersona": {
+    "afiliacion": [ { "valor": "Afiliado", "porcentaje": 71 }, ... ],
+    "genero": [ ... ],
+    "salario": [ ... ],
+    "edad": [ ... ],
+    "segmento": [ ... ],
+    "familia": [ ... ],
+    "pac": [ ... ],
+    "estrato": [ ... ],
+    "top_empresas": [ ... ],
+    "seg_empresas": [ ... ],
+    "departamento": [ ... ],
+    "localidades": [ ... ],
+    "entidadesFinancieras": [ ... ]
+  }
+}
+```
+
+- `buyerPersona` reemplaza por completo el ETL: son las mismas distribuciones
+  porcentuales que `generar_perfiles.py` intentaba calcular a partir de la
+  base cruda de compradores, pero ya vienen agregadas desde Colsubsidio.
+- **`app/etl/generar_perfiles.py`, `compradores_crudo.csv`,
+  `perfiles_proyectos.csv` y `CompradoresCSVRepository` quedan obsoletos** —
+  se eliminan del proyecto, no se actualizan.
+- `tipologias` (nombre + precio) reemplaza el precio único que tenía el
+  catálogo CSV — un proyecto puede tener varias unidades de precio distinto,
+  y el filtro de asequibilidad debe evaluarse por tipología, no por proyecto.
+- `ingreso_promedio_comprador` y `edad_promedio_comprador` del catálogo viejo
+  quedan retirados: el bucket del lead se compara directo contra
+  `buyerPersona`, mantener los promedios sería una segunda fuente de verdad
+  que se puede desincronizar.
+
+### 5.2 Catálogo cerrado de ubicaciones — CERRADO
+
+`ubicacion` por proyecto (fusión de municipio/departamento) usa un catálogo
+cerrado de 8 valores reales:
+
+```
+Bogotá, Chía, Ciudadela Maiporé, Ciudadela calle 80,
+Girardot, Ricaute, Tocancipá, Ubate
+```
+
+`"Ciudadela Maiporé"` y `"Ciudadela calle 80"` **no son municipios** — son
+desarrollos dentro de un municipio. Para que el tope VIS/VIP y la cobertura de
+subsidio sigan funcionando (comparan contra nombre de municipio), se agregó un
+mapeo `UBICACION_A_MUNICIPIO` en `config.py`:
+
+| Ubicación | Municipio real |
+|---|---|
+| Bogotá | bogota |
+| Chía | chia |
+| Ciudadela Maiporé | soacha |
+| Ciudadela calle 80 | bogota |
+| Girardot | girardot |
+| Ricaute | ricaurte |
+| Tocancipá | tocancipa |
+| Ubate | ubate |
+
+**Corrección de listas heredadas del catálogo viejo (inventado):**
+Tocancipá, Ricaurte y Ubaté no estaban en `ZONAS_COBERTURA_SUBSIDIO` ni en
+`MUNICIPIOS_PRINCIPALES` — era una inconsistencia del catálogo anterior
+(basado en datos de prueba, no reales), no una decisión de negocio. Se
+agregaron los tres a `ZONAS_COBERTURA_SUBSIDIO` (son Cundinamarca, igual que
+zipaquirá/facatativá/etc. que ya estaban). Para `MUNICIPIOS_PRINCIPALES` (tope
+VIS 150 vs. 135 SMMLV) se dejaron como "otros" (135 SMMLV) — no son municipios
+metropolitanos conurbados con Bogotá D.C. como sí lo son Soacha/Chía/Cota.
+
+`MUNICIPIOS_SUR` / `MUNICIPIOS_NORTE` se eliminan de `config.py` — solo
+existían para la agrupación del ETL obsoleto (sección 5.1).
+
+### 5.3 Rediseño de la fórmula de matching histórico — EN DISEÑO
+
+Cambia de "distancia a un promedio" (diseño anterior) a **"afinidad por
+bucket poblacional"**: para cada dimensión de `buyerPersona`, se ubica al
+lead en la categoría correspondiente y se lee directamente qué porcentaje de
+compradores históricos comparte esa categoría — sin restas ni normalizaciones
+arbitrarias.
+
+**Detalle técnico real encontrado al revisar datos de ejemplo:** los buckets
+de `salario` **no son un catálogo cerrado** — varían por proyecto. Algunos
+usan buckets binarios (`"Hasta 2 smlv"` / `"Mas de 2 smlv"`), otros usan
+rangos (`"Entre 4 y 6 smlv"`, `"Entre 6 y 8 smlv"`, etc., visto en el proyecto
+Araucaria). La solución: parsear el texto del bucket a un rango numérico en
+tiempo real (no una lista fija de categorías) y ubicar ahí el ingreso del
+lead en SMMLV. Si el lead no cae en ningún bucket de un proyecto puntual, esa
+dimensión no suma para ese proyecto — no es un error, es una señal de baja
+afinidad real.
+
+**Dimensiones planeadas** (`propuesta.md`):
+- Fase 1 (equivalente al modelo actual, migrado a buckets): salario, edad, segmento de empresa
+- Fase 2 (nuevas, sin costo adicional de captura): afiliación, composición familiar, estrato/PAC, ubicación (con `localidades` real del proyecto en vez de bono fijo de zona)
+
+**Pesos por dimensión: pendientes de definir con negocio** — no es una
+decisión técnica.
+
+**Principio de diseño confirmado:** la afinidad histórica (`matching_historico`)
+es **solo señal de score/orden, nunca filtro de exclusión**. El único filtro
+de exclusión por perfil es la asequibilidad financiera (sección 5.4) — son
+ejes independientes. Ver `REGLAS_DE_NEGOCIO.md` sección 7 para el
+razonamiento completo.
+
+**Exclusiones de catálogo, cerradas:**
+- **Abeto y Vibonce**: fuera del matching por muestra histórica muy chica
+  (1-2 compradores → sus porcentajes son ruido estadístico, no señal real).
+- **Fila "Total"**: fuera del matching — es el agregado consolidado de todo
+  el histórico, no un proyecto real comprable.
+
+### 5.4 Matching con catálogo (disponibilidad) — parcialmente implementado, pendiente migrar a tipologías
+
+- `zona_preferida` filtra contra proyectos disponibles.
+- **Filtro VIS/No VIS: decisión cerrada — exclusión total.** Una tipología
+  fuera del tope VIS/VIP de su municipio **no se recomienda en absoluto** (no
+  es solo informativo). Ya implementado sobre el catálogo CSV viejo; falta
+  migrar a tipologías por proyecto.
+- El cierre financiero (30% de cuota inicial) se calcula **por tipología
+  candidata**, no contra un precio promedio del portafolio — ya implementado
+  sobre el catálogo CSV viejo; falta migrar a tipologías por proyecto.
+- **Pendiente de definir con la migración a tipologías:** cuando un proyecto
+  tiene varias tipologías asequibles, ¿se recomienda la más cara que el lead
+  sí puede pagar (mejor opción real), o todas las asequibles? (`propuesta.md`
+  sugiere la primera).
+
+---
+
+## 6. Endpoint de consulta de afiliados — CERRADA, IMPLEMENTADO
 
 Necesidad detectada: el front necesita, **antes** de armar la conversación del
 chat, saber si un `id_usuario` está afiliado y con qué datos ya cuenta
@@ -251,6 +387,10 @@ o
 `AfiliadosRepository.obtener_afiliado(id_usuario)`. Si devuelve `None` →
 `afiliado: false`; si devuelve datos → `afiliado: true` + los datos.
 
+Mock ampliado de `data/afiliados.csv` entregado (más columnas que la versión
+original: fecha de nacimiento, estrato, grupo SISBEN, subsidio previo, etc. —
+con el mapeo de columnas actualizado en `config.py`).
+
 **Decisión de responsabilidad — Opción A (elegida):** el front consulta este
 endpoint, arma la conversación, y es quien ensambla el JSON completo del lead
 (incluyendo los campos de afiliación) para mandarlo a `POST /perfilar`. El
@@ -275,9 +415,9 @@ costo de latencia de red, que pondría en riesgo RNF-03.
 ```
 Lógica de negocio (motor.py, reglas.py, scoring.py)
         ↓ solo conoce interfaces
-Interfaces de repositorio (AfiliadosRepository, ProyectosRepository, CompradoresRepository)
+Interfaces de repositorio (AfiliadosRepository, ProyectosRepository)
         ↓ implementadas hoy por
-Adaptadores CSV (simulación) ←── ETL offline (limpia y agrega la base de 4.142 compradores)
+Adaptador CSV de afiliados (simulación) | Adaptador JSON de proyectos
 ```
 
 - **Afiliados**: diseñado ya pensando en que la fuente real será una **bodega
@@ -287,10 +427,12 @@ Adaptadores CSV (simulación) ←── ETL offline (limpia y agrega la base de 
   interno), para que cambiar de fuente sea editar un diccionario, no
   reescribir código. Cadena de conexión desde variable de entorno, nunca
   hardcodeada.
-- **Proyectos** y **Compradores**: se quedan en CSV por ahora (simulación /
-  ETL), no hay sistema real todavía del otro lado.
+- **Proyectos**: pasa de CSV a JSON (`proyectos.json`, sección 5) — es la
+  fuente que entrega Colsubsidio directamente, ya no hay ETL propio de por
+  medio. `CompradoresRepository` y el adaptador CSV de proyectos quedan
+  obsoletos.
 - **Selección de adaptador**: variable de entorno (`DATA_SOURCE=csv|bodega`),
-  resuelta en un único punto de arranque (ej. `app/dependencies.py`), nunca
+  resuelta en un único punto de arranque (`app/dependencies.py`), nunca
   esparcida por el código.
 
 ---
@@ -305,11 +447,20 @@ Adaptadores CSV (simulación) ←── ETL offline (limpia y agrega la base de 
 | 4 | Penalización por no ser afiliado | Resta activa de puntos (no solo ausencia de bono) — regla 90/10 |
 | 5 | Pesos de scoring | Todos en `config.py`, ajustables |
 | 6 | Formato del score | Numérico (0–100) como fuente de verdad; `prioridad` es solo etiqueta derivada |
-| 7 | Base de compradores (4.142 filas) | Nunca se procesa en vivo — solo alimenta un ETL offline |
+| 7 | Base de compradores (4.142 filas) | **Obsoleto** — reemplazado por `buyerPersona` pre-calculado en `proyectos.json`, ya no hay ETL propio |
 | 8 | Arquitectura de acceso a datos | Repositorio + adaptador en el mismo proceso (no microservicio) |
 | 9 | Fuente real de afiliados | Bodega de datos empresarial (SQL) — se diseña con mapeo de columnas configurable |
 | 10 | Variable "foco" | Fuera de alcance, sin información suficiente |
 | 11 | Responsable de ensamblar el lead afiliado en `/perfilar` | Opción A: el front lo arma tras consultar `GET /afiliados/{id_usuario}`; el backend confía en el payload (sin re-validación server-side, fuera de alcance para el MVP) |
+| 12 | Tabla oficial de Subsidio Concurrente SISBEN | Recibida e implementada (sección 3.5); zona urbana/rural del lead sigue pendiente |
+| 13 | Tie-breaker de Segmentación de Caja (Joven vs. resto) | Personas a cargo registradas, no un solape de rangos de ingreso |
+| 14 | Precio único por proyecto vs. tipologías | Se reemplaza por lista de tipologías (nombre + precio) por proyecto — un proyecto puede tener varias unidades de precio distinto |
+| 15 | Afinidad histórica como filtro vs. señal | Es solo señal de score/orden — nunca excluye una opción financieramente viable |
+| 16 | Proyectos con muestra histórica chica (Abeto, Vibonce) | Excluidos del catálogo — es una hackathon, en producción real la empresa decide |
+| 17 | Fila "Total" en `proyectos.json` | Excluida del matching — es un agregado, no un proyecto real |
+| 18 | Filtro VIS/No VIS en matching | Exclusión total (no solo informativo) — una tipología fuera de tope no se recomienda |
+| 19 | Ubicaciones no-municipio (Ciudadela Maiporé, Ciudadela calle 80) | Mapeo explícito a municipio real vía `UBICACION_A_MUNICIPIO`, no se comparan como texto |
+| 20 | Tocancipá/Ricaurte/Ubaté ausentes de listas de cobertura | Era un error del catálogo viejo (inventado) — corregido, se agregaron |
 
 ---
 
@@ -318,116 +469,115 @@ Adaptadores CSV (simulación) ←── ETL offline (limpia y agrega la base de 
 > Marcar `[x]` al completar. Agregar fecha y, si aplica, referencia de commit
 > o de archivo entregado.
 
-### Fase 0 — Planeación (esta fase)
+### Fase 0 — Planeación
 - [x] Revisar reglas de negocio faltantes vs. `Requerimientos` original
 - [x] Definir modelo de datos del lead (JSON anidado)
-- [x] Cerrar las 10 decisiones de la tabla (sección 7)
+- [x] Cerrar las decisiones iniciales de la tabla (sección 8)
 - [x] Documentar arquitectura de acceso a datos
 - [x] Crear este `plan.md`
 
 ### Fase 1 — Capa de datos (repositorios + adaptadores)
 - [x] Definir interfaces (`Protocol`) para `AfiliadosRepository`,
-      `ProyectosRepository`, `CompradoresRepository`
+      `ProyectosRepository`, `CompradoresRepository` (esta última hoy
+      obsoleta, ver sección 5)
 - [x] Implementar adaptador CSV de afiliados con mapeo de columnas
-      configurable (simula bodega de datos)
-- [x] Implementar adaptador CSV de proyectos (perfil por proyecto —
-      lectura lista; falta el CSV con datos reales, se genera en Fase 2)
-- [x] Punto único de selección de adaptador (`DATA_SOURCE_AFILIADOS` env
-      var, en `app/dependencies.py`)
+      configurable (simula bodega de datos) — ampliado con más columnas
+      (SISBEN, estrato, subsidio previo)
 - [x] Endpoint `GET /afiliados/{id_usuario}` (capa delgada sobre
       `AfiliadosRepository`, ver sección 6) — Opción A, sin re-validación en
       `/perfilar`
+- [ ] Adaptador de proyectos: migrar de CSV a JSON (`proyectos.json`) — ver
+      Fase 5.3/5.4 abajo
 
-> Entregado: `app/repositories/{interfaces,afiliados_csv,proyectos_csv}.py`,
-> `app/dependencies.py`, `app/api/routes_afiliados.py`. Probado con
-> `TestClient` de FastAPI (200 en afiliado existente y no existente) y con
-> CSV de ejemplo (`data/afiliados.csv`). Pendiente: `data/perfiles_proyectos.csv`
-> real, se llena en Fase 2 (ETL) — hoy el repositorio ya soporta leerlo, solo
-> falta el archivo.
-
-### Fase 2 — ETL offline de la base de compradores
-- [x] Script de limpieza (corregir formato de valor de vivienda, quitar
-      ceros sobrantes) — `app/etl/limpieza.py`
-- [x] Generación de CSV de perfil por proyecto desde la base cruda —
-      `app/etl/generar_perfiles.py`, agrupa también sur/norte
-- [ ] Validación de que los agregados generados coincidan con los CSV de
-      perfil ya entregados (si existen de referencia) — **pendiente**:
-      necesitamos el CSV real de compradores para correr el ETL de verdad y
-      confirmar el factor de corrección del valor de vivienda
-
-> Entregado: `app/repositories/compradores_csv.py`, `app/etl/limpieza.py`,
-> `app/etl/generar_perfiles.py`, `app/identificadores.py` (slug de proyecto
-> compartido entre ETL y consulta en vivo). Probado end-to-end con CSV de
-> ejemplo: exclusión de desistidos, agregación por proyecto y por grupo
-> sur/norte, lectura posterior desde `ProyectosCSVRepository` — todo OK.
-> ⚠️ La fórmula de `corregir_valor_vivienda()` es una suposición razonable
-> sin datos reales todavía; validar en cuanto llegue el CSV real de
-> compradores y ajustar `FACTOR_CORRECCION_VALOR_VIVIENDA` si hace falta.
+### Fase 2 — ETL offline de la base de compradores — OBSOLETO, NO SE COMPLETA
+- [x] ~~Script de limpieza~~ — ya no aplica
+- [x] ~~Generación de CSV de perfil por proyecto~~ — ya no aplica,
+      `buyerPersona` viene pre-calculado en `proyectos.json`
+- Se elimina `app/etl/generar_perfiles.py`, `data/compradores_crudo.csv`,
+  `data/perfiles_proyectos.csv`, `CompradoresCSVRepository`. Fase cerrada
+  como obsoleta, no como completada.
 
 ### Fase 3 — `config.py`
 - [x] Agregar todos los parámetros nuevos (topes VIS/VIP, cobertura de
       zonas, Mi Casa Ya, arrendamiento, segmentación de caja, pesos de score
       separados cesantías/ahorros, penalización no-afiliado, mapeo de
       columnas de afiliados)
-- [x] Corregir borde de 2 SMMLV en `MATRIZ_SUBSIDIOS` (ahora es
-      `max_smmlv` recorrido en orden, en vez de rangos `[min, max)`)
+- [x] Corregir borde de 2 SMMLV en `MATRIZ_SUBSIDIOS`
+- [x] Tabla SISBEN oficial (`SISBEN_ORDEN_GRUPOS`, `SISBEN_SUBSIDIO_MATRIZ`)
+- [x] Catálogo cerrado de ubicaciones + mapeo a municipio real
+      (`UBICACIONES_DISPONIBLES`, `UBICACION_A_MUNICIPIO`)
+- [x] Corrección de `ZONAS_COBERTURA_SUBSIDIO` (Tocancipá/Ricaurte/Ubaté)
+- [ ] Eliminar claves obsoletas del ETL (`MUNICIPIOS_SUR`, `MUNICIPIOS_NORTE`,
+      `RUTA_CSV_COMPRADORES_CRUDO`, `RUTA_CSV_PROYECTOS_PERFIL`,
+      `FACTOR_CORRECCION_VALOR_VIVIENDA`, `ETL_EXCLUIR_DESISTIDOS`,
+      `DIMENSIONES_PERFIL_COMPRADORES`)
+- [ ] Pesos por dimensión de `buyerPersona` (Fase 5.3) — pendientes de
+      negocio
 
-> Entregado: `app/config.py` consolidado (reemplaza el archivo completo).
-> ⚠️ Cambio de formato en `MATRIZ_SUBSIDIOS` (se quitó `min_smmlv`) — el
-> `reglas.py` de la Fase 0 todavía espera el formato viejo y se romperá
-> hasta que se actualice en la Fase 5. No mezclar este `config.py` con ese
-> `reglas.py` en producción; van de la mano en el mismo commit.
-> Pendiente real: `GRUPOS_SISBEN_CALIFICAN_SUBSIDIO` queda vacío a
-> propósito hasta tener la tabla oficial de negocio (bloquea parte de la
-> Fase 6, ya registrado en la sección 10).
-
-### Fase 4 — `api/schemas.py`
-- [ ] Migrar `LeadInput` a la estructura anidada nueva
+### Fase 4 — `api/schemas.py` — COMPLETA
+- [x] Migrar `LeadInput` a la estructura anidada nueva
       (`condiciones_especiales`, `finanzas`)
-- [ ] Agregar `id_usuario`, `grupo_sisben`, `subsidio_previo`,
+- [x] Agregar `id_usuario`, `grupo_sisben`, `subsidio_previo`,
       `subsidio_previo_fue_arrendamiento`, `tipo_cotizante`,
       `valor_vivienda_deseada`
 
-### Fase 5 — `reglas.py`
-- [ ] Adaptar lectura de campos a la estructura anidada
-- [ ] Agregar regla de `subsidio_previo`
-- [ ] Separar techo de 4 SMMLV como descalificador de subsidio (no de compra)
-- [ ] Calcular Segmentación de Caja
-- [ ] Conectar validación VIS/No VIS al flujo principal
+### Fase 5 — `reglas.py` — COMPLETA (sobre el catálogo CSV viejo; falta migrar a tipologías, ver Fase 5.3/5.4 en sección 5)
+- [x] Adaptar lectura de campos a la estructura anidada
+- [x] Agregar regla de `subsidio_previo`
+- [x] Separar techo de 4 SMMLV como descalificador de subsidio (no de compra)
+- [x] Calcular Segmentación de Caja
+- [x] Conectar validación VIS/No VIS al flujo principal
 
-### Fase 6 — `scoring.py`
-- [ ] Separar factor cesantías / ahorros
-- [ ] Agregar factor SISBEN (pendiente definir tabla de grupos calificantes)
-- [ ] Agregar factor `credito_preaprobado`
-- [ ] Agregar penalización activa por no afiliado
-- [ ] Implementar override de prioridad ALTA por RN-04
-- [ ] Rediseñar `matching_historico` con perfiles porcentuales (sección 5.3)
-- [ ] Conectar filtro VIS/No VIS y cierre financiero por proyecto a
-      `match_proyectos`
+### Fase 6 — `scoring.py` — PARCIAL
+- [x] Separar factor cesantías / ahorros
+- [x] Agregar factor SISBEN
+- [x] Agregar factor `credito_preaprobado`
+- [x] Agregar penalización activa por no afiliado
+- [x] Implementar override de prioridad ALTA por RN-04
+- [x] Conectar filtro VIS/No VIS y cierre financiero por proyecto a
+      `match_proyectos` (sobre catálogo CSV viejo)
+- [ ] Rediseñar `matching_historico` con perfiles porcentuales de
+      `buyerPersona` (sección 5.3) — **en diseño, no implementado en código
+      todavía**
+- [ ] Migrar `match_proyectos` de precio único a tipologías por proyecto
 
-### Fase 7 — `motor.py`
-- [ ] Exponer campos nuevos en `PerfilamientoResponse` (condiciones de
-      subsidio, subsidio concurrente, subsidio de arrendamiento,
-      descalificación por techo de ingresos)
+### Fase 7 — `motor.py` — COMPLETA
+- [x] Exponer campos nuevos en la respuesta (condiciones de subsidio,
+      subsidio concurrente, subsidio de arrendamiento, descalificación por
+      techo de ingresos, segmentación de caja, `override_rn04_aplicado`)
+- [x] Corregido bug real: `validacion.get("subsidio_concurrente")` apuntaba a
+      una clave que no existe (la real es `subsidio_concurrente_mi_casa_ya`)
 
-### Fase 8 — Documentación
-- [ ] Actualizar `API.md` con el contrato completo nuevo, incluyendo
-      `GET /afiliados/{id_usuario}`
-- [ ] Actualizar este `plan.md` (marcar fases completas)
+### Fase 8 — Documentación — EN CURSO
+- [x] `REGLAS_DE_NEGOCIO.md` — documento nuevo con cada regla, dónde vive,
+      cómo decide, por qué
+- [x] Actualizar este `plan.md`
+- [ ] Actualizar `API.md` con el contrato completo — en curso, mismo commit
+      que este `plan.md`
+- [ ] Actualizar `API.md` otra vez cuando cierre la Fase 5.3/5.4 (matching
+      con `buyerPersona` y tipologías) — quedará una segunda pasada
 
 ---
 
 ## 10. Pendientes / información faltante
 
-- Tabla de grupos SISBEN (A1–D21) que califican para Subsidio Concurrente —
-  bloquea parte de la Fase 6.
+- **`proyectos.json` completo real** — solo se han visto 3 proyectos de
+  ejemplo (Versalles, Payandé, Araucaria) de los ~20 que existen. Bloquea
+  terminar Fase 5.3/5.4.
+- **Precios de tipologías reales** — los vistos hasta ahora son placeholders
+  ("están por estar"), pendientes de precio real.
+- **`tipo_proyecto` (VIS/No VIS/VIP) vacío** en los 3 ejemplos vistos —
+  pendiente de llenar con dato real. Bloquea terminar el filtro VIS/No VIS
+  sobre el catálogo nuevo.
+- **Pesos por dimensión de `buyerPersona`** (afiliación, salario, edad,
+  segmento, familia, PAC, estrato, empresa, entidad financiera, ubicación) —
+  decisión de negocio, no técnica.
+- **Zona urbana/rural del lead** — no existe el campo todavía, bloquea que el
+  Subsidio Concurrente SISBEN use el tramo correcto para leads rurales.
+- **Tope VIP (90 SMMLV)** — la función de tope de vivienda no lo usa todavía,
+  siempre compara contra el tope VIS.
 - Estructura exacta de columnas de la bodega de datos real de afiliados (hoy
   se simula con nombres razonables; ajustar el mapeo cuando se conozca el
   esquema real) — bloquea parte de la Fase 1.
 - Variable "foco" de la base de compradores — fuera de alcance por ahora, no
   bloquea ninguna fase.
-- CSV real de compradores (~4.142 filas) para correr el ETL de verdad y
-  confirmar/ajustar la fórmula de `corregir_valor_vivienda()` en
-  `app/etl/limpieza.py` (hoy funciona con datos de ejemplo, la fórmula es
-  una suposición razonable pendiente de validar) — bloquea el cierre de la
-  Fase 2.
