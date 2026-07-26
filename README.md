@@ -43,6 +43,16 @@ La plataforma combina una experiencia de atención cercana y personalizada en m�
 
 ---
 
+## 🎨 Repositorios de las Interfaces Visuales y Demos
+
+El Motor Inteligente de Decisión de la Plataforma VIVI se encuentra 100% desacoplado de la experiencia de usuario. Los repositorios de código de las aplicaciones frontends e interfaces asociadas son:
+
+- 📊 **VIVI CRM & Gestión Comercial:** [Repositorio GitHub](https://github.com/Franciscoj-p/SimCrm) | [Demo en vivo](https://crm.arnarcraft.uk)
+- 📱 **VIVI Interfaz Conversacional (WhatsApp Bot):** [Repositorio GitHub](https://github.com/Franciscoj-p/SimWha) | [Demo en vivo](https://whatsapp.arnarcraft.uk)
+- 🏠 **VIVI Roadmap Inteligente (Formulario Dinámico):** [Repositorio GitHub](https://github.com/Franciscoj-p/SimRoadmap) | [Demo en vivo](https://roadmap.arnarcraft.uk)
+
+---
+
 ## ⚙️ Capacidades del Motor de Decisión (Este Repositorio)
 
 Este repositorio contiene la **lógica central de negocio, matemática financiera y motor de reglas configurables** que alimenta a todo el ecosistema VIVI:
