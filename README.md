@@ -40,8 +40,8 @@ El sistema procesa leads de vivienda en tiempo real y construye un diagnóstico 
 
 El motor de perfilamiento se encuentra desacoplado y puede integrarse con diferentes interfaces visuales. Los repositorios de simulación visual asociados son:
 
-- 💬 **Interfaz Simulación Chat Web:** [Repositorio Frontend Chat](https://github.com/usuario/reto-vivienda-chat-frontend) *(Ajustar enlace)*
-- 📱 **Interfaz Simulación WhatsApp / Bot:** [Repositorio WhatsApp Adapter](https://github.com/usuario/reto-vivienda-whatsapp-bot) *(Ajustar enlace)*
+- 💬 **Interfaz Simulación CRM:** [Repositorio CRM Sim](https://github.com/Franciscoj-p/SimCrm)
+- 📱 **Interfaz Simulación WhatsApp / Bot:** [Repositorio WhatsApp Sim](https://github.com/Franciscoj-p/SimWha) 
 
 ---
 
@@ -116,4 +116,4 @@ curl -X POST http://localhost:8000/perfilar \
 ## ⚠️ Disclaimer / Exención de Responsabilidad
 
 > **Nota:** Este proyecto fue desarrollado para el **Reto Vivienda**. Los datos de prueba, matrices de subsidio, tasas de interés, plazos y parámetros de scoring fueron construidos a partir de **información pública recopilada de portales de Colsubsidio y normatividad colombiana vigente para el año 2026**.  
-> Todos los parámetros y reglas son **100% configurables** en el archivo `app/config.py` para adaptarse a cualquier actualización futura de la caja o regulación gubernamental sin requerir modificaciones en el código fuente.
+> Todos los parámetros y reglas son **100% configurables** en el archivo `app/config.py` para adaptarse a cualquier actualización futura de la caja o regulación sin requerir modificaciones en el código fuente.
