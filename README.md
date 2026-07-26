@@ -58,6 +58,7 @@ El motor de perfilamiento se encuentra desacoplado y puede integrarse con difere
 
 - 💬 **Interfaz Simulación CRM:** [Repositorio CRM Sim](https://github.com/Franciscoj-p/SimCrm)
 - 📱 **Interfaz Simulación WhatsApp / Bot:** [Repositorio WhatsApp Sim](https://github.com/Franciscoj-p/SimWha) 
+- 👾 **Interfaz Simulación Roadmap Interactivo** [Repositorio Roadmap](https://github.com/maker1dytecnologia-star/vivienda)
 
 ---
 
