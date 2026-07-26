@@ -68,6 +68,31 @@ Suma de ponderaciones configurables (`SCORING_WEIGHTS`):
 
 ---
 
+## 5. Cierre Financiero Detallado por Proyecto (`calcular_cierre_financiero_detallado`)
+
+Para cada tipología de proyecto, el cierre financiero se divide en dos fases matemáticas independientes:
+
+### Etapa 1: Cuota Inicial (30% antes de la entrega)
+- **Aportes totales:** `cesantias + ahorros + subsidio_caja + (subsidio_mi_casa_ya if disponible else 0)`.
+- **`cuota_inicial_30_percent`:** `round(precio_tipologia * 0.30)`.
+- **`saldo_faltante`:** `max(0, cuota_inicial_30_percent - total_aportes)`.
+- Si `saldo_faltante > 0`, se difiere entre `plazo_entrega_meses` (ej. 24 meses):
+  $$\text{cuota\_mensual\_inicial\_estimada} = \text{round}\left(\frac{\text{saldo\_faltante}}{\text{plazo\_entrega\_meses}}\right)$$
+- `cumple_cuota_inicial`: `true` si la cuota inicial está 100% cubierta o si `cuota_mensual_inicial_estimada <= cuota_maxima_permitida` (40% del salario).
+
+### Etapa 2: Crédito Hipotecario (70% después de la entrega)
+- **`monto_a_financiar`:** `round(precio_tipologia * 0.70)`.
+- Amortización mediante cuota fija fija mensual (PMT) a 20 años (240 meses) al 12% E.A. (`TASA_INTERES_CREDITO_EA`):
+  $$\text{cuota\_mensual\_credito\_estimada} = \text{PMT}(\text{monto\_a\_financiar}, \text{plazo}=20, \text{tasa}=12\% \text{ EA})$$
+- `cumple_limite_cuota`: `true` si `cuota_mensual_credito_estimada <= cuota_maxima_permitida` (40% del salario).
+
+**Viabilidad total del proyecto (`cierre_viable`):**
+$$\text{cierre\_viable} = \text{cumple\_cuota\_inicial} \quad \mathbf{AND} \quad \text{cumple\_limite\_cuota}$$
+
+Toda esta desglose matemático se entrega estructurada en la respuesta del proyecto para que el asesor comercial en Salesforce/CRM vea exactamente los números sobre los cuales se calculó la viabilidad.
+
+---
+
 ## 6. Recomendación de Proyectos e Interés Directo (`app/scoring.py`)
 
 - **Filtro VIS/VIP y Asequibilidad:** Exclusión estricta por tipología.

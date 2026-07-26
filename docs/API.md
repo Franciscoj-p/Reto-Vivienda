@@ -268,25 +268,47 @@ Procesa el lead completo y retorna la evaluación financiera, scoring y proyecto
     "viable": true,
     "motivo": "Proyecto de interés viable y priorizado como primera recomendación."
   },
-  "matching_projects": [
-    {
-      "proyecto": "Versalles",
-      "ubicacion": "Ciudadela Maiporé",
-      "municipio": "soacha",
-      "tipo_proyecto": "VIS",
-      "tipologia": "Tipo E",
-      "precio": 180000000,
-      "brochure_url": "https://colsubsidio.com/brochures/versalles.pdf",
-      "match_score": 0.648,
-      "motivo": "Afinidad con el perfil histórico de compradores de Versalles (65% de match); (Proyecto de interés directo del lead - Priorizado)",
-      "cierre_financiero": {
-        "cuota_inicial_requerida": 54000000,
-        "ahorro_disponible": 60527150,
-        "cierre_viable": true,
-        "subsidio_aplicable": 52527150
+    "matching_projects": [
+      {
+        "proyecto": "Versalles",
+        "ubicacion": "Ciudadela Maiporé",
+        "municipio": "soacha",
+        "tipo_proyecto": "VIS",
+        "tipologia": "Tipo D",
+        "precio": 150000000,
+        "brochure_url": "https://colsubsidio.com/brochures/versalles.pdf",
+        "match_score": 0.648,
+        "motivo": "Afinidad con el perfil histórico de compradores de Versalles (65% de match)",
+        "cierre_financiero": {
+          "precio_vivienda": 150000000,
+          "cuota_inicial_30_percent": 45000000,
+          "aportes_cuota_inicial": {
+            "cesantias": 3000000,
+            "ahorros": 5000000,
+            "subsidio_caja": 52527150,
+            "subsidio_mi_casa_ya": 35018100,
+            "total_aportes": 95545250
+          },
+          "estado_cuota_inicial": {
+            "cubierta": true,
+            "saldo_faltante": 0,
+            "plazo_entrega_meses": 24,
+            "cuota_mensual_inicial_estimada": 0,
+            "cumple_cuota_inicial": true
+          },
+          "credito_hipotecario_70_percent": {
+            "monto_a_financiar": 105000000,
+            "plazo_anos": 20,
+            "tasa_interes_ea": 0.12,
+            "cuota_mensual_credito_estimada": 1111555,
+            "cuota_maxima_permitida_40_percent": 1160000,
+            "cumple_limite_cuota": true
+          },
+          "cierre_viable": true,
+          "detalle_cierre": "Cierre financiero viable y validado."
+        }
       }
-    }
-  ],
+    ],
   "ai_summary": "Lead ALTA interesado en Bogotá. Mejor match: Versalles. Subsidio estimado: $52,527,150.",
   "lead_original": { "...": "Copia íntegra del JSON enviado" }
 }

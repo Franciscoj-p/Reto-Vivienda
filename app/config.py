@@ -38,7 +38,11 @@ CONFIG = {
     "SMMLV_2026": 1_750_905,
     "TOPE_INGRESOS_SMMLV": 4,  # límite superior para calificar a subsidio de vivienda nueva
     "LIMITE_CUOTA_INGRESO": 0.40,  # Regla del 40% (Ley de Vivienda)
-    "PORCENTAJE_CUOTA_INICIAL_REQUERIDO": 0.30,
+    "PORCENTAJE_CUOTA_INICIAL_REQUERIDO": 0.30,  # 30% Cuota Inicial obligatoria
+    "PORCENTAJE_FINANCIACION_CREDITO": 0.70,     # 70% Financiación Crédito Hipotecario
+    "PLAZO_ENTREGA_DEFAULT_MESES": 24,           # Plazo por defecto para pago diferido de cuota inicial
+    "PLAZO_CREDITO_HIPOTECARIO_ANOS": 20,         # Plazo estándar de crédito hipotecario (20 años)
+    "TASA_INTERES_CREDITO_EA": 0.12,              # Tasa de interés efectiva anual (12% E.A.)
 
     # ==================================================================
     # Matriz de subsidio por rango de ingresos (en SMMLV)

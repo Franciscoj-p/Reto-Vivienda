@@ -3,3 +3,4 @@ ID_USUARIO,NOMBRE_COMPLETO,FEC_NACIMIENTO,GENERO,ESTADO_CIVIL,IND_AFILIADO,FECHA
 79845123,Carlos Andres Pena,1988-11-02,M,Casado,1,2018-02-15,C,89,dependiente,4200000,860234567,Alpina Productos Alimenticios,grandes,1,1,3,Bogota,C5,1,2016-08-01,1,carlos.pena@example.com,3109876543,37,urbana
 52741889,Luisa Fernanda Gomez,1996-07-19,F,Union libre,1,2023-09-10,A,10,independiente,1600000,,,,0,0,2,Soacha,B3,0,,0,luisa.gomez@example.com,3157654321,29,urbana
 1030567234,Jorge Ivan Ruiz,1975-01-30,M,Casado,1,2010-04-20,C,187,pensionado,3800000,,,,3,2,3,Chia,C9,0,,0,jorge.ruiz@example.com,3123456789,51,urbana
+1014258963,Carolina Soto Vargas,1992-08-14,F,Soltera,1,2021-01-15,A,36,dependiente,1400000,900999888,Comercializadora del Sur,micro,1,0,2,Soacha,B4,1,2019-05-10,0,carolina.soto@example.com,3169876543,33,urbana

@@ -72,18 +72,13 @@ def enviar_lead_perfilado(resultado_perfilamiento: dict) -> EnvioCRMResultado:
         logger.warning("CRM_INTEGRACION_HABILITADA=true pero falta CRM_ENDPOINT_URL.")
         return EnvioCRMResultado(enviado=False, detalle="Falta configurar CRM_ENDPOINT_URL.")
 
-    try:
-        import requests  # import perezoso: no es una dependencia dura si el CRM sigue apagado
-    except ImportError:
-        logger.error("El paquete 'requests' no está instalado; no se puede enviar al CRM.")
-        return EnvioCRMResultado(enviado=False, detalle="Falta instalar 'requests'.")
-
     payload = _construir_payload(resultado_perfilamiento)
-    headers = {"Content-Type": "application/json"}
-    if CONFIG["CRM_API_KEY"]:
-        headers["Authorization"] = f"Bearer {CONFIG['CRM_API_KEY']}"
 
     try:
+        import requests
+        headers = {"Content-Type": "application/json"}
+        if CONFIG["CRM_API_KEY"]:
+            headers["Authorization"] = f"Bearer {CONFIG['CRM_API_KEY']}"
         respuesta = requests.post(
             endpoint,
             json=payload,
@@ -91,7 +86,7 @@ def enviar_lead_perfilado(resultado_perfilamiento: dict) -> EnvioCRMResultado:
             timeout=CONFIG["CRM_TIMEOUT_SEGUNDOS"],
         )
         if 200 <= respuesta.status_code < 300:
-            print(f"✅ ¡WEBHOOK ENVIADO CON ÉXITO! Status: {respuesta.status_code}") # <-- Agrega esto
+            print(f"✅ ¡WEBHOOK ENVIADO CON ÉXITO! Status: {respuesta.status_code}")
             return EnvioCRMResultado(
                 enviado=True, detalle="OK", status_code=respuesta.status_code
             )
@@ -105,6 +100,29 @@ def enviar_lead_perfilado(resultado_perfilamiento: dict) -> EnvioCRMResultado:
             detalle=f"CRM respondió status {respuesta.status_code}",
             status_code=respuesta.status_code,
         )
+    except ImportError:
+        import json
+        import urllib.request
+        import urllib.error
+
+        payload_bytes = json.dumps(payload, ensure_ascii=False).encode("utf-8")
+        headers = {"Content-Type": "application/json"}
+        if CONFIG["CRM_API_KEY"]:
+            headers["Authorization"] = f"Bearer {CONFIG['CRM_API_KEY']}"
+
+        req = urllib.request.Request(endpoint, data=payload_bytes, headers=headers, method="POST")
+        try:
+            with urllib.request.urlopen(req, timeout=CONFIG["CRM_TIMEOUT_SEGUNDOS"]) as response:
+                status_code = response.getcode()
+                if 200 <= status_code < 300:
+                    print(f"[OK] WEBHOOK ENVIADO CON EXITO! Status: {status_code}")
+                    return EnvioCRMResultado(enviado=True, detalle="OK", status_code=status_code)
+                return EnvioCRMResultado(enviado=False, detalle=f"CRM respondió status {status_code}", status_code=status_code)
+        except urllib.error.HTTPError as err:
+            return EnvioCRMResultado(enviado=False, detalle=f"CRM respondió status {err.code}", status_code=err.code)
+        except Exception as exc:
+            logger.error("Error enviando lead al CRM: %s", exc)
+            return EnvioCRMResultado(enviado=False, detalle=f"Error de conexión: {exc}")
     except Exception as exc:  # noqa: BLE001 — best effort, nunca debe tumbar /perfilar
         logger.error("Error enviando lead al CRM: %s", exc)
         return EnvioCRMResultado(enviado=False, detalle=f"Error de conexión: {exc}")

@@ -346,11 +346,100 @@ def calcular_score(lead: dict, validacion: dict) -> dict:
 # precio único de proyecto.
 # ======================================================================
 
-def match_proyectos(lead: dict, validacion: dict, top_n: int = 3) -> list[dict]:
-    cuota_maxima = validacion["cuota_maxima_mensual"]
-    subsidio_general = validacion["subsidio_estimado"]
+def _calcular_cuota_mensual_credito(monto_credito: float, plazo_anos: int = 20, tasa_ea: float = 0.12) -> int:
+    """Calcula la cuota mensual amortizada de un crédito hipotecario (70%) mediante sistema francés (PMT)."""
+    if monto_credito <= 0:
+        return 0
+    tasa_mensual = ((1.0 + tasa_ea) ** (1.0 / 12.0)) - 1.0
+    num_cuotas = plazo_anos * 12
+    if tasa_mensual <= 0:
+        return round(monto_credito / num_cuotas)
+    factor = (1.0 + tasa_mensual) ** num_cuotas
+    cuota = monto_credito * (tasa_mensual * factor) / (factor - 1.0)
+    return round(cuota)
+
+
+def calcular_cierre_financiero_detallado(precio_vivienda: float, lead: dict, validacion: dict, plazo_entrega_meses: int = 24) -> dict:
+    """Cálculo financiero paso a paso por tipología/proyecto:
+
+    1. Cuota inicial (30%): Aportes (cesantías + ahorros + subsidio caja + subsidio Mi Casa Ya).
+       - Si falta saldo para el 30%, se difiere a `plazo_entrega_meses` generando cuota_mensual_inicial.
+    2. Crédito hipotecario (70%): Amortización a cuota fija mensual.
+       - La cuota del crédito no debe exceder el 40% del salario (cuota_maxima_mensual).
+    """
+    cuota_maxima_permitida = validacion["cuota_maxima_mensual"]
+    subsidio_caja = validacion.get("subsidio_estimado", 0) or 0
+    mcya_obj = validacion.get("subsidio_concurrente_mi_casa_ya") or {}
+    subsidio_mcya = mcya_obj.get("monto_adicional_estimado", 0) if mcya_obj.get("disponible") else 0
+    
     finanzas = _finanzas(lead)
-    ahorro_base = finanzas.get("cesantias", 0) + finanzas.get("ahorros", 0)
+    cesantias = finanzas.get("cesantias", 0) or 0
+    ahorros = finanzas.get("ahorros", 0) or 0
+    
+    total_aportes = cesantias + ahorros + subsidio_caja + subsidio_mcya
+    cuota_inicial_30 = round(precio_vivienda * CONFIG["PORCENTAJE_CUOTA_INICIAL_REQUERIDO"])
+    
+    # Etapa A: Cuota Inicial (30% antes de entrega)
+    saldo_faltante_inicial = max(0, cuota_inicial_30 - total_aportes)
+    cuota_mensual_inicial_estimada = (
+        round(saldo_faltante_inicial / max(1, plazo_entrega_meses)) if saldo_faltante_inicial > 0 else 0
+    )
+    cumple_cuota_inicial = (saldo_faltante_inicial == 0) or (cuota_mensual_inicial_estimada <= cuota_maxima_permitida)
+    
+    # Etapa B: Crédito Hipotecario (hasta el 70% después de entrega)
+    # Si los aportes totales superan el 30% inicial, el excedente reduce directamente el monto a financiar.
+    monto_credito_max_70 = round(precio_vivienda * CONFIG["PORCENTAJE_FINANCIACION_CREDITO"])
+    monto_credito_real = max(0, min(monto_credito_max_70, round(precio_vivienda - total_aportes)))
+    plazo_anos = CONFIG["PLAZO_CREDITO_HIPOTECARIO_ANOS"]
+    tasa_ea = CONFIG["TASA_INTERES_CREDITO_EA"]
+    cuota_mensual_credito_estimada = _calcular_cuota_mensual_credito(monto_credito_real, plazo_anos, tasa_ea)
+    
+    cumple_cuota_credito = cuota_mensual_credito_estimada <= cuota_maxima_permitida
+    cierre_viable = cumple_cuota_inicial and cumple_cuota_credito
+    
+    motivos_detalle = []
+    if not cumple_cuota_credito:
+        motivos_detalle.append(
+            f"La cuota mensual del crédito hipotecario (${cuota_mensual_credito_estimada:,.0f}) excede el límite del 40% del salario (${cuota_maxima_permitida:,.0f})"
+        )
+    if not cumple_cuota_inicial:
+        motivos_detalle.append(
+            f"La cuota mensual para completar la inicial (${cuota_mensual_inicial_estimada:,.0f}/mes a {plazo_entrega_meses} meses) excede el límite del 40% del salario (${cuota_maxima_permitida:,.0f})"
+        )
+
+    detalle_cierre = "Cierre financiero viable y validado." if cierre_viable else "; ".join(motivos_detalle)
+
+    return {
+        "precio_vivienda": precio_vivienda,
+        "cuota_inicial_30_percent": cuota_inicial_30,
+        "aportes_cuota_inicial": {
+            "cesantias": cesantias,
+            "ahorros": ahorros,
+            "subsidio_caja": subsidio_caja,
+            "subsidio_mi_casa_ya": subsidio_mcya,
+            "total_aportes": total_aportes,
+        },
+        "estado_cuota_inicial": {
+            "cubierta": saldo_faltante_inicial == 0,
+            "saldo_faltante": saldo_faltante_inicial,
+            "plazo_entrega_meses": plazo_entrega_meses,
+            "cuota_mensual_inicial_estimada": cuota_mensual_inicial_estimada,
+            "cumple_cuota_inicial": cumple_cuota_inicial,
+        },
+        "credito_hipotecario_70_percent": {
+            "monto_a_financiar": monto_credito_real,
+            "plazo_anos": plazo_anos,
+            "tasa_interes_ea": tasa_ea,
+            "cuota_mensual_credito_estimada": cuota_mensual_credito_estimada,
+            "cuota_maxima_permitida_40_percent": cuota_maxima_permitida,
+            "cumple_limite_cuota": cumple_cuota_credito,
+        },
+        "cierre_viable": cierre_viable,
+        "detalle_cierre": detalle_cierre,
+    }
+
+
+def match_proyectos(lead: dict, validacion: dict, top_n: int = 3) -> list[dict]:
     zona_preferida = (lead.get("zona_preferida") or "").strip().lower()
     estrategia = CONFIG["ESTRATEGIA_SELECCION_TIPOLOGIA"]
 
@@ -358,6 +447,7 @@ def match_proyectos(lead: dict, validacion: dict, top_n: int = 3) -> list[dict]:
     for proyecto in CATALOGO_PROYECTOS:
         tipo_proyecto = proyecto.get("tipo_proyecto")
         municipio = proyecto.get("municipio")
+        plazo_entrega = proyecto.get("plazo_entrega_meses", CONFIG["PLAZO_ENTREGA_DEFAULT_MESES"])
 
         tipologias_validas = []
         for tipologia in proyecto.get("tipologias", []):
@@ -365,44 +455,26 @@ def match_proyectos(lead: dict, validacion: dict, top_n: int = 3) -> list[dict]:
             if precio is None:
                 continue
 
-            # Filtro VIS/No VIS/VIP: exclusión total (decisión #18,
-            # plan.md §5.4). Una tipología fuera del tope de SU tipo de
-            # proyecto no se recomienda, sin importar qué tan asequible
-            # sea financieramente.
             if not _valor_vivienda_dentro_de_tope(precio, municipio, tipo_proyecto):
                 continue
 
-            monto_credito_estimado = cuota_maxima * 120
-            monto_total_disponible = ahorro_base + subsidio_general + monto_credito_estimado
-            if precio > monto_total_disponible:
-                continue  # no asequible con crédito + ahorro + subsidio
-
-            cuota_inicial_requerida = round(
-                precio * CONFIG["PORCENTAJE_CUOTA_INICIAL_REQUERIDO"]
+            cierre_detallado = calcular_cierre_financiero_detallado(
+                precio, lead, validacion, plazo_entrega
             )
-            ahorro_disponible_proyecto = ahorro_base + subsidio_general
-            cierre_viable_proyecto = ahorro_disponible_proyecto >= cuota_inicial_requerida
+            if not cierre_detallado["cierre_viable"]:
+                continue
 
             tipologias_validas.append(
                 {
                     "nombre": tipologia.get("nombre"),
                     "precio": precio,
-                    "cierre_financiero": {
-                        "cuota_inicial_requerida": cuota_inicial_requerida,
-                        "ahorro_disponible": ahorro_disponible_proyecto,
-                        "cierre_viable": cierre_viable_proyecto,
-                        "subsidio_aplicable": subsidio_general,
-                    },
+                    "cierre_financiero": cierre_detallado,
                 }
             )
 
         if not tipologias_validas:
             continue
 
-        # Decisión pendiente en plan.md §5.4, resuelta con el default
-        # sugerido en propuesta.md: se recomienda la tipología más cara
-        # que el lead sí puede pagar (mejor opción real). Ajustable en
-        # CONFIG["ESTRATEGIA_SELECCION_TIPOLOGIA"] -> "todas_asequibles".
         if estrategia == "todas_asequibles":
             seleccionadas = tipologias_validas
         else:
@@ -439,7 +511,6 @@ def match_proyectos(lead: dict, validacion: dict, top_n: int = 3) -> list[dict]:
 
     candidatos.sort(key=lambda c: c["match_score"], reverse=True)
 
-    # Si existe proyecto_interes y es viable, priorizarlo como primera recomendación
     proyecto_interes_nombre = (lead.get("proyecto_interes") or "").strip().lower()
     if proyecto_interes_nombre:
         idx_interes = next(
@@ -455,12 +526,7 @@ def match_proyectos(lead: dict, validacion: dict, top_n: int = 3) -> list[dict]:
 
 
 def evaluar_proyecto_interes(lead: dict, validacion: dict) -> dict | None:
-    """Evalúa explícitamente el proyecto de interés declarado por el lead.
-
-    Si no se especifica `proyecto_interes`, devuelve None.
-    Si se especifica y NO es viable, devuelve `viable: false` con el motivo.
-    Si se especifica y SÍ es viable, devuelve `viable: true`.
-    """
+    """Evalúa explícitamente el proyecto de interés declarado por el lead."""
     proyecto_nombre = lead.get("proyecto_interes")
     if not proyecto_nombre or not str(proyecto_nombre).strip():
         return None
@@ -490,12 +556,7 @@ def evaluar_proyecto_interes(lead: dict, validacion: dict) -> dict | None:
 
     tipo_proyecto = proyecto_encontrado.get("tipo_proyecto")
     municipio = proyecto_encontrado.get("municipio")
-    cuota_maxima = validacion["cuota_maxima_mensual"]
-    subsidio_general = validacion["subsidio_estimado"]
-    finanzas = _finanzas(lead)
-    ahorro_base = finanzas.get("cesantias", 0) + finanzas.get("ahorros", 0)
-    monto_credito_estimado = cuota_maxima * 120
-    monto_total_disponible = ahorro_base + subsidio_general + monto_credito_estimado
+    plazo_entrega = proyecto_encontrado.get("plazo_entrega_meses", CONFIG["PLAZO_ENTREGA_DEFAULT_MESES"])
 
     tipologias = proyecto_encontrado.get("tipologias", [])
     if not tipologias:
@@ -521,15 +582,20 @@ def evaluar_proyecto_interes(lead: dict, validacion: dict) -> dict | None:
             "motivo": f"El precio del proyecto '{proyecto_nombre}' excede los topes legales de vivienda {tipo_proyecto or 'VIS'} ({municipio or 'zona'}).",
         }
 
-    if precio_minimo > monto_total_disponible:
+    cierre_detallado = calcular_cierre_financiero_detallado(
+        precio_minimo, lead, validacion, plazo_entrega
+    )
+    if not cierre_detallado["cierre_viable"]:
         return {
             "proyecto": proyecto_nombre,
             "viable": False,
-            "motivo": f"El precio mínimo del proyecto (${precio_minimo:,.0f}) excede la capacidad financiera total disponible (${monto_total_disponible:,.0f}).",
+            "motivo": cierre_detallado["detalle_cierre"],
+            "cierre_financiero": cierre_detallado,
         }
 
     return {
         "proyecto": proyecto_nombre,
         "viable": True,
         "motivo": "Proyecto de interés viable y priorizado como primera recomendación.",
+        "cierre_financiero": cierre_detallado,
     }
