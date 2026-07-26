@@ -49,7 +49,7 @@ El Motor Inteligente de Decisión de la Plataforma VIVI se encuentra 100% desaco
 
 - 📊 **VIVI CRM & Gestión Comercial:** [Repositorio GitHub](https://github.com/Franciscoj-p/SimCrm) | [Demo en vivo](https://crm.arnarcraft.uk)
 - 📱 **VIVI Interfaz Conversacional (WhatsApp Bot):** [Repositorio GitHub](https://github.com/Franciscoj-p/SimWha) | [Demo en vivo](https://whatsapp.arnarcraft.uk)
-- 🏠 **VIVI Roadmap Inteligente (Formulario Dinámico):** [Repositorio GitHub](https://github.com/Franciscoj-p/SimRoadmap) | [Demo en vivo](https://roadmap.arnarcraft.uk)
+- 🏠 **VIVI Roadmap Inteligente (Formulario Dinámico):** [Repositorio GitHub](https://github.com/maker1dytecnologia-star/vivienda) | [Demo en vivo](https://roadmap.arnarcraft.uk)
 
 ---
 
