@@ -1,0 +1,4094 @@
+[
+    {
+        "id": 1,
+        "nombre": "Bosques de Arrayan",
+        "ubicacion": "Tocancipá",
+        "tipo_proyecto": "VIS",
+        "brochure_url": "https://heyzine.com/flip-book/7f3c85cf46.html",
+        "tipologias": [
+            {
+                "nombre": "Tipo D",
+                "precio": 160000000
+            },
+            {
+                "nombre": "Tipo E",
+                "precio": 185000000
+            },
+            {
+                "nombre": "Tipo F",
+                "precio": 215000000
+            }
+        ],
+        "buyerPersona": {
+            "afiliacion": [
+                {
+                    "valor": "Afiliado",
+                    "porcentaje": 63
+                },
+                {
+                    "valor": "No afiliado",
+                    "porcentaje": 37
+                }
+            ],
+            "genero": [
+                {
+                    "valor": "Hombre",
+                    "porcentaje": 47
+                },
+                {
+                    "valor": "Mujer",
+                    "porcentaje": 53
+                }
+            ],
+            "salario": [
+                {
+                    "valor": "Hasta 2 SMMLV",
+                    "porcentaje": 66
+                },
+                {
+                    "valor": "Más de 2 SMMLV",
+                    "porcentaje": 34
+                }
+            ],
+            "edad": [
+                {
+                    "valor": "20-35",
+                    "porcentaje": 50
+                },
+                {
+                    "valor": "36-45",
+                    "porcentaje": 29
+                }
+            ],
+            "segmento": [
+                {
+                    "valor": "Básico",
+                    "porcentaje": 26
+                },
+                {
+                    "valor": "Medio",
+                    "porcentaje": 45
+                },
+                {
+                    "valor": "Joven",
+                    "porcentaje": 29
+                }
+            ],
+            "familia": [
+                {
+                    "valor": "Sin grupo",
+                    "porcentaje": 44
+                },
+                {
+                    "valor": "Monoparental",
+                    "porcentaje": 35
+                },
+                {
+                    "valor": "Monoparental ampliada",
+                    "porcentaje": 6
+                },
+                {
+                    "valor": "Nuclear integrada",
+                    "porcentaje": 12
+                },
+                {
+                    "valor": "Pareja conyugal",
+                    "porcentaje": 4
+                }
+            ],
+            "pac": [
+                {
+                    "valor": "0",
+                    "porcentaje": 44
+                },
+                {
+                    "valor": "1",
+                    "porcentaje": 27
+                },
+                {
+                    "valor": "2",
+                    "porcentaje": 18
+                },
+                {
+                    "valor": "3",
+                    "porcentaje": 9
+                },
+                {
+                    "valor": "4",
+                    "porcentaje": 2
+                }
+            ],
+            "estrato": [
+                {
+                    "valor": "1",
+                    "porcentaje": 2
+                },
+                {
+                    "valor": "2",
+                    "porcentaje": 13
+                },
+                {
+                    "valor": "3",
+                    "porcentaje": 18
+                },
+                {
+                    "valor": "4",
+                    "porcentaje": 2
+                }
+            ],
+            "top_empresas": [
+                {
+                    "valor": "TEXTILES DE TOCANCIPA S.A.",
+                    "porcentaje": 11
+                },
+                {
+                    "valor": "COLSUBSIDIO",
+                    "porcentaje": 10
+                },
+                {
+                    "valor": "ALPINA",
+                    "porcentaje": 7
+                },
+                {
+                    "valor": "TELEPERFORMANCE",
+                    "porcentaje": 6
+                },
+                {
+                    "valor": "CLUB GUAYMARAL",
+                    "porcentaje": 5
+                }
+            ],
+            "seg_empresas": [
+                {
+                    "valor": "emp top",
+                    "porcentaje": 25
+                },
+                {
+                    "valor": "medianas",
+                    "porcentaje": 21
+                },
+                {
+                    "valor": "grandes",
+                    "porcentaje": 20
+                },
+                {
+                    "valor": "estandar",
+                    "porcentaje": 6
+                },
+                {
+                    "valor": "micro",
+                    "porcentaje": 29
+                }
+            ],
+            "departamento": [
+                {
+                    "valor": "Bogotá",
+                    "porcentaje": 45
+                },
+                {
+                    "valor": "Chía",
+                    "porcentaje": 5
+                },
+                {
+                    "valor": "Tocancipá",
+                    "porcentaje": 5
+                },
+                {
+                    "valor": "Gachancipa",
+                    "porcentaje": 2
+                }
+            ],
+            "localidades": [
+                {
+                    "valor": "Usaquén",
+                    "porcentaje": 6
+                },
+                {
+                    "valor": "Suba",
+                    "porcentaje": 8
+                },
+                {
+                    "valor": "Engativá",
+                    "porcentaje": 5
+                },
+                {
+                    "valor": "Sin informacion",
+                    "porcentaje": 58
+                }
+            ],
+            "entidadesFinancieras": [
+                {
+                    "valor": "Colsubsidio",
+                    "porcentaje": 61
+                },
+                {
+                    "valor": "Davivienda",
+                    "porcentaje": 10
+                },
+                {
+                    "valor": "FNA",
+                    "porcentaje": 10
+                },
+                {
+                    "valor": "Otras",
+                    "porcentaje": 19
+                }
+            ]
+        }
+    },
+    {
+        "id": 2,
+        "nombre": "Bosques de Turpial",
+        "ubicacion": "Tocancipá",
+        "tipo_proyecto": "VIS",
+        "brochure_url": "https://heyzine.com/flip-book/5eec0a2afc.html",
+        "tipologias": [
+            {
+                "nombre": "Tipo D",
+                "precio": 152000000
+            },
+            {
+                "nombre": "Tipo E",
+                "precio": 178000000
+            },
+            {
+                "nombre": "Tipo F",
+                "precio": 205000000
+            }
+        ],
+        "buyerPersona": {
+            "afiliacion": [
+                {
+                    "valor": "Afiliado",
+                    "porcentaje": 64
+                },
+                {
+                    "valor": "No afiliado",
+                    "porcentaje": 36
+                }
+            ],
+            "genero": [
+                {
+                    "valor": "Hombre",
+                    "porcentaje": 45
+                },
+                {
+                    "valor": "Mujer",
+                    "porcentaje": 55
+                }
+            ],
+            "salario": [
+                {
+                    "valor": "Hasta 2 SMMLV",
+                    "porcentaje": 82
+                },
+                {
+                    "valor": "Más de 2 SMMLV",
+                    "porcentaje": 18
+                }
+            ],
+            "edad": [
+                {
+                    "valor": "20-35",
+                    "porcentaje": 70
+                },
+                {
+                    "valor": "36-45",
+                    "porcentaje": 13
+                }
+            ],
+            "segmento": [
+                {
+                    "valor": "Básico",
+                    "porcentaje": 29
+                },
+                {
+                    "valor": "Medio",
+                    "porcentaje": 30
+                },
+                {
+                    "valor": "Joven",
+                    "porcentaje": 41
+                }
+            ],
+            "familia": [
+                {
+                    "valor": "Sin grupo",
+                    "porcentaje": 54
+                },
+                {
+                    "valor": "Monoparental",
+                    "porcentaje": 33
+                },
+                {
+                    "valor": "Monoparental ampliada",
+                    "porcentaje": 5
+                },
+                {
+                    "valor": "Nuclear integrada",
+                    "porcentaje": 7
+                },
+                {
+                    "valor": "Pareja conyugal",
+                    "porcentaje": 0
+                }
+            ],
+            "pac": [
+                {
+                    "valor": "0",
+                    "porcentaje": 54
+                },
+                {
+                    "valor": "1",
+                    "porcentaje": 32
+                },
+                {
+                    "valor": "2",
+                    "porcentaje": 11
+                },
+                {
+                    "valor": "3",
+                    "porcentaje": 1
+                },
+                {
+                    "valor": "4",
+                    "porcentaje": 1
+                }
+            ],
+            "estrato": [
+                {
+                    "valor": "1",
+                    "porcentaje": 4
+                },
+                {
+                    "valor": "2",
+                    "porcentaje": 13
+                },
+                {
+                    "valor": "3",
+                    "porcentaje": 13
+                },
+                {
+                    "valor": "4",
+                    "porcentaje": 4
+                }
+            ],
+            "top_empresas": [
+                {
+                    "valor": "SONORA MX SAS",
+                    "porcentaje": 11
+                },
+                {
+                    "valor": "COLSUBSIDIO",
+                    "porcentaje": 10
+                },
+                {
+                    "valor": "COLSANITAS",
+                    "porcentaje": 7
+                },
+                {
+                    "valor": "CONSORCIO EXPRESS SAS",
+                    "porcentaje": 6
+                },
+                {
+                    "valor": "CEMEX COLOMBIA SA",
+                    "porcentaje": 5
+                }
+            ],
+            "seg_empresas": [
+                {
+                    "valor": "emp top",
+                    "porcentaje": 17
+                },
+                {
+                    "valor": "medianas",
+                    "porcentaje": 21
+                },
+                {
+                    "valor": "grandes",
+                    "porcentaje": 18
+                },
+                {
+                    "valor": "estandar",
+                    "porcentaje": 3
+                },
+                {
+                    "valor": "micro",
+                    "porcentaje": 39
+                }
+            ],
+            "departamento": [
+                {
+                    "valor": "Bogotá",
+                    "porcentaje": 45
+                },
+                {
+                    "valor": "Chía",
+                    "porcentaje": 1
+                },
+                {
+                    "valor": "Cota",
+                    "porcentaje": 1
+                },
+                {
+                    "valor": "Choconta",
+                    "porcentaje": 1
+                }
+            ],
+            "localidades": [
+                {
+                    "valor": "Usaquén",
+                    "porcentaje": 7
+                },
+                {
+                    "valor": "Suba",
+                    "porcentaje": 12
+                },
+                {
+                    "valor": "Engativá",
+                    "porcentaje": 5
+                },
+                {
+                    "valor": "Sin informacion",
+                    "porcentaje": 61
+                }
+            ],
+            "entidadesFinancieras": [
+                {
+                    "valor": "Colsubsidio",
+                    "porcentaje": 82
+                },
+                {
+                    "valor": "Davivienda",
+                    "porcentaje": 8
+                },
+                {
+                    "valor": "La Hipotecaria",
+                    "porcentaje": 4
+                },
+                {
+                    "valor": "Otras",
+                    "porcentaje": 7
+                }
+            ]
+        }
+    },
+    {
+        "id": 3,
+        "nombre": "La Macarena",
+        "ubicacion": "Ciudadela Maiporé",
+        "tipo_proyecto": "VIS",
+        "brochure_url": "https://heyzine.com/flip-book/b168b2f5ba.html",
+        "tipologias": [
+            {
+                "nombre": "Tipo D",
+                "precio": 158000000
+            },
+            {
+                "nombre": "Tipo E",
+                "precio": 188000000
+            },
+            {
+                "nombre": "Tipo F",
+                "precio": 220000000
+            }
+        ],
+        "buyerPersona": {
+            "afiliacion": [
+                {
+                    "valor": "Afiliado",
+                    "porcentaje": 56
+                },
+                {
+                    "valor": "No afiliado",
+                    "porcentaje": 44
+                }
+            ],
+            "genero": [
+                {
+                    "valor": "Hombre",
+                    "porcentaje": 49
+                },
+                {
+                    "valor": "Mujer",
+                    "porcentaje": 51
+                }
+            ],
+            "salario": [
+                {
+                    "valor": "Mas de 2 smlv",
+                    "porcentaje": 9
+                },
+                {
+                    "valor": "Hasta 2 smlv",
+                    "porcentaje": 91
+                }
+            ],
+            "edad": [
+                {
+                    "valor": "36 a 45 años",
+                    "porcentaje": 26
+                },
+                {
+                    "valor": "20 a 35 años",
+                    "porcentaje": 54
+                }
+            ],
+            "segmento": [
+                {
+                    "valor": "Medio",
+                    "porcentaje": 29
+                },
+                {
+                    "valor": "Joven",
+                    "porcentaje": 27
+                },
+                {
+                    "valor": "Básico",
+                    "porcentaje": 44
+                },
+                {
+                    "valor": "Alto",
+                    "porcentaje": 0
+                }
+            ],
+            "familia": [
+                {
+                    "valor": "Sin Grupo",
+                    "porcentaje": 50
+                },
+                {
+                    "valor": "Monoparental",
+                    "porcentaje": 38
+                },
+                {
+                    "valor": "Monoparental Ampliada",
+                    "porcentaje": 7
+                },
+                {
+                    "valor": "Nuclear Integrada",
+                    "porcentaje": 3
+                },
+                {
+                    "valor": "Pareja Conyugal",
+                    "porcentaje": 2
+                }
+            ],
+            "pac": [
+                {
+                    "valor": "Cero",
+                    "porcentaje": 50
+                },
+                {
+                    "valor": "Uno",
+                    "porcentaje": 30
+                },
+                {
+                    "valor": "Dos",
+                    "porcentaje": 12
+                },
+                {
+                    "valor": "Tres",
+                    "porcentaje": 7
+                },
+                {
+                    "valor": "Cuatro",
+                    "porcentaje": 1
+                }
+            ],
+            "estrato": [
+                {
+                    "valor": "Uno",
+                    "porcentaje": 3
+                },
+                {
+                    "valor": "Dos",
+                    "porcentaje": 16
+                },
+                {
+                    "valor": "Tres",
+                    "porcentaje": 10
+                },
+                {
+                    "valor": "Cuatro",
+                    "porcentaje": 2
+                }
+            ],
+            "top_empresas": [
+                {
+                    "valor": "COLSUBSIDIO",
+                    "cantidad": 10
+                },
+                {
+                    "valor": "TELEPERFORMANCE",
+                    "cantidad": 9
+                },
+                {
+                    "valor": "CONSORCIO EXPRESS S A S",
+                    "cantidad": 7
+                },
+                {
+                    "valor": "SECURITAS COLOMBIA S A",
+                    "cantidad": 5
+                },
+                {
+                    "valor": "JERONIMO MARTINS COLOMBI",
+                    "cantidad": 4
+                },
+                {
+                    "valor": "MARIO ALBERTO HUERTAS",
+                    "cantidad": 3
+                },
+                {
+                    "valor": "ALFAGRES S.A.",
+                    "cantidad": 3
+                },
+                {
+                    "valor": "BANCO DE BOGOTA",
+                    "cantidad": 3
+                },
+                {
+                    "valor": "COLOMBIANA DE COMERCIO",
+                    "cantidad": 3
+                },
+                {
+                    "valor": "BANCO DE OCCIDENTE S A",
+                    "cantidad": 3
+                },
+                {
+                    "valor": "VISE LTDA",
+                    "cantidad": 3
+                }
+            ],
+            "seg_empresas": [
+                {
+                    "valor": "Emp Top",
+                    "porcentaje": 16
+                },
+                {
+                    "valor": "Grandes",
+                    "porcentaje": 24
+                },
+                {
+                    "valor": "Micro Transaccional",
+                    "porcentaje": 25
+                },
+                {
+                    "valor": "Estándar",
+                    "porcentaje": 5
+                },
+                {
+                    "valor": "Medianas",
+                    "porcentaje": 28
+                },
+                {
+                    "valor": "Otros",
+                    "porcentaje": 12
+                }
+            ],
+            "departamento": [
+                {
+                    "valor": "Soacha",
+                    "porcentaje": 13
+                },
+                {
+                    "valor": "Bogotá",
+                    "porcentaje": 42
+                },
+                {
+                    "valor": "Funza",
+                    "porcentaje": 1
+                },
+                {
+                    "valor": "Fusagasugá",
+                    "porcentaje": 1
+                }
+            ],
+            "localidades": [
+                {
+                    "valor": "Suba",
+                    "porcentaje": 3
+                },
+                {
+                    "valor": "Kennedy",
+                    "porcentaje": 3
+                },
+                {
+                    "valor": "Bosa",
+                    "porcentaje": 3
+                },
+                {
+                    "valor": "Sin informacion",
+                    "porcentaje": 64
+                }
+            ],
+            "entidadesFinancieras": [
+                {
+                    "valor": "Davivienda",
+                    "porcentaje": 16
+                },
+                {
+                    "valor": "Colsubsidio",
+                    "porcentaje": 63
+                },
+                {
+                    "valor": "FNA",
+                    "porcentaje": 9
+                }
+            ]
+        }
+    },
+    {
+        "id": 4,
+        "nombre": "Monguí",
+        "ubicacion": "Ciudadela Maiporé",
+        "tipo_proyecto": "VIS",
+        "brochure_url": "https://heyzine.com/flip-book/866af8f6a6.html",
+        "tipologias": [
+            {
+                "nombre": "Tipo D",
+                "precio": 162000000
+            },
+            {
+                "nombre": "Tipo E",
+                "precio": 195000000
+            },
+            {
+                "nombre": "Tipo F",
+                "precio": 230000000
+            }
+        ],
+        "buyerPersona": {
+            "afiliacion": [
+                {
+                    "valor": "Afiliado",
+                    "porcentaje": 66
+                },
+                {
+                    "valor": "No afiliado",
+                    "porcentaje": 34
+                }
+            ],
+            "genero": [
+                {
+                    "valor": "Hombre",
+                    "porcentaje": 53
+                },
+                {
+                    "valor": "Mujer",
+                    "porcentaje": 47
+                }
+            ],
+            "salario": [
+                {
+                    "valor": "Mas de 2 smlv",
+                    "porcentaje": 13
+                },
+                {
+                    "valor": "Hasta 2 smlv",
+                    "porcentaje": 87
+                }
+            ],
+            "edad": [
+                {
+                    "valor": "36 a 45 años",
+                    "porcentaje": 26
+                },
+                {
+                    "valor": "20 a 35 años",
+                    "porcentaje": 56
+                }
+            ],
+            "segmento": [
+                {
+                    "valor": "Medio",
+                    "porcentaje": 39
+                },
+                {
+                    "valor": "Joven",
+                    "porcentaje": 22
+                },
+                {
+                    "valor": "Básico",
+                    "porcentaje": 39
+                },
+                {
+                    "valor": "Alto",
+                    "porcentaje": 0
+                }
+            ],
+            "familia": [
+                {
+                    "valor": "Sin Grupo",
+                    "porcentaje": 40
+                },
+                {
+                    "valor": "Monoparental",
+                    "porcentaje": 46
+                },
+                {
+                    "valor": "Monoparental Ampliada",
+                    "porcentaje": 2
+                },
+                {
+                    "valor": "Nuclear Integrada",
+                    "porcentaje": 7
+                },
+                {
+                    "valor": "Pareja Conyugal",
+                    "porcentaje": 3
+                }
+            ],
+            "pac": [
+                {
+                    "valor": "Cero",
+                    "porcentaje": 40
+                },
+                {
+                    "valor": "Uno",
+                    "porcentaje": 28
+                },
+                {
+                    "valor": "Dos",
+                    "porcentaje": 22
+                },
+                {
+                    "valor": "Tres",
+                    "porcentaje": 7
+                },
+                {
+                    "valor": "Cuatro",
+                    "porcentaje": 2
+                }
+            ],
+            "estrato": [
+                {
+                    "valor": "Uno",
+                    "porcentaje": 5
+                },
+                {
+                    "valor": "Dos",
+                    "porcentaje": 14
+                },
+                {
+                    "valor": "Tres",
+                    "porcentaje": 11
+                },
+                {
+                    "valor": "Cuatro",
+                    "porcentaje": 2
+                }
+            ],
+            "top_empresas": [
+                {
+                    "valor": "COLSUBSIDIO",
+                    "cantidad": 20
+                },
+                {
+                    "valor": "TELEPERFORMANCE",
+                    "cantidad": 16
+                },
+                {
+                    "valor": "TRANSPORTE INTEGRADO DE B",
+                    "cantidad": 8
+                },
+                {
+                    "valor": "SECURITAS COLOMBIA S A",
+                    "cantidad": 6
+                },
+                {
+                    "valor": "CONSORCIO EXPRESS S A S",
+                    "cantidad": 6
+                },
+                {
+                    "valor": "PERMODA LTDA",
+                    "cantidad": 5
+                },
+                {
+                    "valor": "ALFAGRES S.A.",
+                    "cantidad": 4
+                },
+                {
+                    "valor": "RECAUDO BOGOTA SAS",
+                    "cantidad": 3
+                },
+                {
+                    "valor": "ATENTO COLOMBIA S A",
+                    "cantidad": 3
+                },
+                {
+                    "valor": "MUEVE FONTIBON SAS",
+                    "cantidad": 3
+                },
+                {
+                    "valor": "C DE TRANSP DE FUSAGASUGA",
+                    "cantidad": 3
+                }
+            ],
+            "seg_empresas": [
+                {
+                    "valor": "Emp Top",
+                    "porcentaje": 15
+                },
+                {
+                    "valor": "Grandes",
+                    "porcentaje": 20
+                },
+                {
+                    "valor": "Micro Transaccional",
+                    "porcentaje": 32
+                },
+                {
+                    "valor": "Estándar",
+                    "porcentaje": 4
+                },
+                {
+                    "valor": "Medianas",
+                    "porcentaje": 29
+                },
+                {
+                    "valor": "Otros",
+                    "porcentaje": 15
+                }
+            ],
+            "departamento": [
+                {
+                    "valor": "Soacha",
+                    "porcentaje": 7
+                },
+                {
+                    "valor": "Bogotá",
+                    "porcentaje": 45
+                },
+                {
+                    "valor": "Sibaté",
+                    "porcentaje": 1
+                },
+                {
+                    "valor": "Fusagasugá",
+                    "porcentaje": 1
+                }
+            ],
+            "localidades": [
+                {
+                    "valor": "Engativá",
+                    "porcentaje": 5
+                },
+                {
+                    "valor": "Kennedy",
+                    "porcentaje": 4
+                },
+                {
+                    "valor": "C. Bolivar",
+                    "porcentaje": 3
+                },
+                {
+                    "valor": "Sin informacion",
+                    "porcentaje": 65
+                }
+            ],
+            "entidadesFinancieras": [
+                {
+                    "valor": "Davivienda",
+                    "porcentaje": 25
+                },
+                {
+                    "valor": "Colsubsidio",
+                    "porcentaje": 47
+                },
+                {
+                    "valor": "FNA",
+                    "porcentaje": 13
+                }
+            ]
+        }
+    },
+    {
+        "id": 5,
+        "nombre": "Pamplona",
+        "ubicacion": "Ciudadela Maiporé",
+        "tipo_proyecto": "VIP",
+        "brochure_url": "https://heyzine.com/flip-book/c159d5d733.html",
+        "tipologias": [
+            {
+                "nombre": "Tipo A",
+                "precio": 125000000
+            },
+            {
+                "nombre": "Tipo B",
+                "precio": 148000000
+            }
+        ],
+        "buyerPersona": {
+            "afiliacion": [
+                {
+                    "valor": "Afiliado",
+                    "porcentaje": 65
+                },
+                {
+                    "valor": "No afiliado",
+                    "porcentaje": 35
+                }
+            ],
+            "genero": [
+                {
+                    "valor": "Hombre",
+                    "porcentaje": 52
+                },
+                {
+                    "valor": "Mujer",
+                    "porcentaje": 48
+                }
+            ],
+            "salario": [
+                {
+                    "valor": "Mas de 2 smlv",
+                    "porcentaje": 13
+                },
+                {
+                    "valor": "Hasta 2 smlv",
+                    "porcentaje": 87
+                }
+            ],
+            "edad": [
+                {
+                    "valor": "36 a 45 años",
+                    "porcentaje": 30
+                },
+                {
+                    "valor": "20 a 35 años",
+                    "porcentaje": 46
+                }
+            ],
+            "segmento": [
+                {
+                    "valor": "Medio",
+                    "porcentaje": 40
+                },
+                {
+                    "valor": "Joven",
+                    "porcentaje": 18
+                },
+                {
+                    "valor": "Básico",
+                    "porcentaje": 42
+                },
+                {
+                    "valor": "Alto",
+                    "porcentaje": 0
+                }
+            ],
+            "familia": [
+                {
+                    "valor": "Sin Grupo",
+                    "porcentaje": 35
+                },
+                {
+                    "valor": "Monoparental",
+                    "porcentaje": 45
+                },
+                {
+                    "valor": "Monoparental Ampliada",
+                    "porcentaje": 2
+                },
+                {
+                    "valor": "Nuclear Integrada",
+                    "porcentaje": 17
+                },
+                {
+                    "valor": "Pareja Conyugal",
+                    "porcentaje": 2
+                }
+            ],
+            "pac": [
+                {
+                    "valor": "Cero",
+                    "porcentaje": 35
+                },
+                {
+                    "valor": "Uno",
+                    "porcentaje": 27
+                },
+                {
+                    "valor": "Dos",
+                    "porcentaje": 23
+                },
+                {
+                    "valor": "Tres",
+                    "porcentaje": 13
+                },
+                {
+                    "valor": "Cuatro",
+                    "porcentaje": 1
+                }
+            ],
+            "estrato": [
+                {
+                    "valor": "Uno",
+                    "porcentaje": 5
+                },
+                {
+                    "valor": "Dos",
+                    "porcentaje": 13
+                },
+                {
+                    "valor": "Tres",
+                    "porcentaje": 7
+                },
+                {
+                    "valor": "Cuatro",
+                    "porcentaje": 0
+                }
+            ],
+            "top_empresas": [
+                {
+                    "valor": "COLSUBSIDIO",
+                    "cantidad": 7
+                },
+                {
+                    "valor": "T INTEGRADO DE BOGOTA SAS",
+                    "cantidad": 4
+                },
+                {
+                    "valor": "CONSORCIO EXPRESS S A S",
+                    "cantidad": 3
+                },
+                {
+                    "valor": "P A S H SAS",
+                    "cantidad": 2
+                },
+                {
+                    "valor": "CLINICA COLSANITAS S.A.",
+                    "cantidad": 2
+                },
+                {
+                    "valor": "E SOMOS FONTIBON SAS",
+                    "cantidad": 2
+                },
+                {
+                    "valor": "KATHERINE ALSINA LIZARAZO",
+                    "cantidad": 1
+                },
+                {
+                    "valor": "U ANTONIO NARINO",
+                    "cantidad": 1
+                },
+                {
+                    "valor": "PRODUCTIVIDAD EMPRESARIA",
+                    "cantidad": 1
+                },
+                {
+                    "valor": "AUTOFINANCIERA COLOMBIA",
+                    "cantidad": 1
+                },
+                {
+                    "valor": "INVERSIONES EL CARNAL SAS",
+                    "cantidad": 1
+                }
+            ],
+            "seg_empresas": [
+                {
+                    "valor": "Emp Top",
+                    "porcentaje": 7
+                },
+                {
+                    "valor": "Grandes",
+                    "porcentaje": 17
+                },
+                {
+                    "valor": "Micro Transaccional",
+                    "porcentaje": 41
+                },
+                {
+                    "valor": "Estándar",
+                    "porcentaje": 5
+                },
+                {
+                    "valor": "Medianas",
+                    "porcentaje": 27
+                },
+                {
+                    "valor": "Otros",
+                    "porcentaje": 31
+                }
+            ],
+            "departamento": [
+                {
+                    "valor": "Comuna",
+                    "porcentaje": 4
+                },
+                {
+                    "valor": "Soacha",
+                    "porcentaje": 13
+                },
+                {
+                    "valor": "Bogotá",
+                    "porcentaje": 37
+                },
+                {
+                    "valor": "Sibaté",
+                    "porcentaje": 1
+                },
+                {
+                    "valor": "Mosquera",
+                    "porcentaje": 1
+                }
+            ],
+            "localidades": [
+                {
+                    "valor": "Bosa",
+                    "porcentaje": 5
+                },
+                {
+                    "valor": "C. Bolivar",
+                    "porcentaje": 3
+                },
+                {
+                    "valor": "Sin informacion",
+                    "porcentaje": 70
+                }
+            ],
+            "entidadesFinancieras": [
+                {
+                    "valor": "Davivienda",
+                    "porcentaje": 36
+                },
+                {
+                    "valor": "Colsubsidio",
+                    "porcentaje": 22
+                },
+                {
+                    "valor": "Colpatria",
+                    "porcentaje": 11
+                }
+            ]
+        }
+    },
+    {
+        "id": 6,
+        "nombre": "Reserva de Guayacán",
+        "ubicacion": "Girardot",
+        "tipo_proyecto": "VIS",
+        "brochure_url": "https://heyzine.com/flip-book/aa430852c2.html",
+        "tipologias": [
+            {
+                "nombre": "Tipo C",
+                "precio": 155000000
+            },
+            {
+                "nombre": "Tipo D",
+                "precio": 182000000
+            },
+            {
+                "nombre": "Tipo E",
+                "precio": 210000000
+            }
+        ],
+        "buyerPersona": {
+            "afiliacion": [
+                {
+                    "valor": "Afiliado",
+                    "porcentaje": 69
+                },
+                {
+                    "valor": "No afiliado",
+                    "porcentaje": 31
+                }
+            ],
+            "genero": [
+                {
+                    "valor": "Hombre",
+                    "porcentaje": 50
+                },
+                {
+                    "valor": "Mujer",
+                    "porcentaje": 50
+                }
+            ],
+            "salario": [
+                {
+                    "valor": "Mas de 2 smlv",
+                    "porcentaje": 32
+                },
+                {
+                    "valor": "Hasta 2 smlv",
+                    "porcentaje": 68
+                }
+            ],
+            "edad": [
+                {
+                    "valor": "36 a 45 años",
+                    "porcentaje": 30
+                },
+                {
+                    "valor": "20 a 35 años",
+                    "porcentaje": 56
+                }
+            ],
+            "segmento": [
+                {
+                    "valor": "Medio",
+                    "porcentaje": 44
+                },
+                {
+                    "valor": "Joven",
+                    "porcentaje": 22
+                },
+                {
+                    "valor": "Básico",
+                    "porcentaje": 34
+                },
+                {
+                    "valor": "Alto",
+                    "porcentaje": 0
+                }
+            ],
+            "familia": [
+                {
+                    "valor": "Sin Grupo",
+                    "porcentaje": 46
+                },
+                {
+                    "valor": "Monoparental",
+                    "porcentaje": 26
+                },
+                {
+                    "valor": "Monoparental Ampliada",
+                    "porcentaje": 16
+                },
+                {
+                    "valor": "Nuclear Integrada",
+                    "porcentaje": 10
+                }
+            ],
+            "pac": [
+                {
+                    "valor": "Cero",
+                    "porcentaje": 46
+                },
+                {
+                    "valor": "Uno",
+                    "porcentaje": 0
+                },
+                {
+                    "valor": "Dos",
+                    "porcentaje": 14
+                },
+                {
+                    "valor": "Tres",
+                    "porcentaje": 4
+                },
+                {
+                    "valor": "Cinco",
+                    "porcentaje": 64
+                }
+            ],
+            "estrato": [
+                {
+                    "valor": "Uno",
+                    "porcentaje": 36
+                },
+                {
+                    "valor": "Dos",
+                    "porcentaje": 14
+                },
+                {
+                    "valor": "Tres",
+                    "porcentaje": 20
+                }
+            ],
+            "top_empresas": [
+                {
+                    "valor": "COLSUBSIDIO",
+                    "cantidad": 3
+                },
+                {
+                    "valor": "TELEPERFORMANCE",
+                    "cantidad": 2
+                },
+                {
+                    "valor": "MUNICIPIO DE GIRARDOT",
+                    "cantidad": 1
+                },
+                {
+                    "valor": "GRANYPROC S.A.S",
+                    "cantidad": 1
+                },
+                {
+                    "valor": "SERCONSTRUCTORES S.A.S.",
+                    "cantidad": 1
+                },
+                {
+                    "valor": "ALCIAUTOS LTDA",
+                    "cantidad": 1
+                },
+                {
+                    "valor": "JERONIMO MARTINS COLOMBI",
+                    "cantidad": 1
+                },
+                {
+                    "valor": "ANARKITECH SOLUCIONES",
+                    "cantidad": 1
+                },
+                {
+                    "valor": "RAMA JUDICIAL CONS SUP J",
+                    "cantidad": 1
+                },
+                {
+                    "valor": "ANGELA CONSUELO CUELLAR",
+                    "cantidad": 1
+                },
+                {
+                    "valor": "ADECCO SERVICIOS COLOMBI",
+                    "cantidad": 1
+                }
+            ],
+            "seg_empresas": [
+                {
+                    "valor": "Emp Top",
+                    "porcentaje": 6
+                },
+                {
+                    "valor": "Grandes",
+                    "porcentaje": 24
+                },
+                {
+                    "valor": "Micro Transaccional",
+                    "porcentaje": 46
+                },
+                {
+                    "valor": "Estándar",
+                    "porcentaje": 4
+                },
+                {
+                    "valor": "Medianas",
+                    "porcentaje": 20
+                },
+                {
+                    "valor": "Otros",
+                    "porcentaje": 20
+                }
+            ],
+            "departamento": [
+                {
+                    "valor": "Girardot",
+                    "porcentaje": 10
+                },
+                {
+                    "valor": "Bogotá",
+                    "porcentaje": 40
+                },
+                {
+                    "valor": "Ubaté",
+                    "porcentaje": 2
+                },
+                {
+                    "valor": "Mosquera",
+                    "porcentaje": 2
+                }
+            ],
+            "localidades": [
+                {
+                    "valor": "Kennedy",
+                    "porcentaje": 6
+                },
+                {
+                    "valor": "Engativá",
+                    "porcentaje": 16
+                },
+                {
+                    "valor": "Bosa",
+                    "porcentaje": 2
+                },
+                {
+                    "valor": "Sin informacion",
+                    "porcentaje": 58
+                }
+            ],
+            "entidadesFinancieras": [
+                {
+                    "valor": "B de Bogota",
+                    "porcentaje": 24
+                },
+                {
+                    "valor": "BBVA",
+                    "porcentaje": 50
+                },
+                {
+                    "valor": "Colsubsidio",
+                    "porcentaje": 6
+                }
+            ]
+        }
+    },
+    {
+        "id": 7,
+        "nombre": "Reserva de Saman",
+        "ubicacion": "Ricaute",
+        "tipo_proyecto": "VIS",
+        "brochure_url": "https://heyzine.com/flip-book/1daa8c80c5.html",
+        "tipologias": [
+            {
+                "nombre": "Tipo C",
+                "precio": 149000000
+            },
+            {
+                "nombre": "Tipo D",
+                "precio": 175000000
+            },
+            {
+                "nombre": "Tipo E",
+                "precio": 208000000
+            }
+        ],
+        "buyerPersona": {
+            "afiliacion": [
+                {
+                    "valor": "Afiliado",
+                    "porcentaje": 77
+                },
+                {
+                    "valor": "No afiliado",
+                    "porcentaje": 23
+                }
+            ],
+            "genero": [
+                {
+                    "valor": "Hombre",
+                    "porcentaje": 59
+                },
+                {
+                    "valor": "Mujer",
+                    "porcentaje": 41
+                }
+            ],
+            "salario": [
+                {
+                    "valor": "Mas de 2 smlv",
+                    "porcentaje": 36
+                },
+                {
+                    "valor": "Hasta 2 smlv",
+                    "porcentaje": 64
+                }
+            ],
+            "edad": [
+                {
+                    "valor": "36 a 45 años",
+                    "porcentaje": 31
+                },
+                {
+                    "valor": "20 a 35 años",
+                    "porcentaje": 41
+                }
+            ],
+            "segmento": [
+                {
+                    "valor": "Medio",
+                    "porcentaje": 42
+                },
+                {
+                    "valor": "Joven",
+                    "porcentaje": 20
+                },
+                {
+                    "valor": "Básico",
+                    "porcentaje": 37
+                },
+                {
+                    "valor": "Alto",
+                    "porcentaje": 0
+                }
+            ],
+            "familia": [
+                {
+                    "valor": "Sin Grupo",
+                    "porcentaje": 37
+                },
+                {
+                    "valor": "Monoparental",
+                    "porcentaje": 41
+                },
+                {
+                    "valor": "Monoparental Ampliada",
+                    "porcentaje": 2
+                },
+                {
+                    "valor": "Nuclear Integrada",
+                    "porcentaje": 15
+                }
+            ],
+            "pac": [
+                {
+                    "valor": "Cero",
+                    "porcentaje": 37
+                },
+                {
+                    "valor": "Uno",
+                    "porcentaje": 25
+                },
+                {
+                    "valor": "Dos",
+                    "porcentaje": 20
+                },
+                {
+                    "valor": "Tres",
+                    "porcentaje": 12
+                },
+                {
+                    "valor": "Cuatro",
+                    "porcentaje": 5
+                },
+                {
+                    "valor": "Seis",
+                    "porcentaje": 2
+                }
+            ],
+            "estrato": [
+                {
+                    "valor": "Dos",
+                    "porcentaje": 20
+                },
+                {
+                    "valor": "Tres",
+                    "porcentaje": 12
+                },
+                {
+                    "valor": "Cuatro",
+                    "porcentaje": 2
+                }
+            ],
+            "top_empresas": [
+                {
+                    "valor": "COLSUBSIDIO",
+                    "cantidad": 6
+                },
+                {
+                    "valor": "GRUPO EMPRESARIAL EN LINE",
+                    "cantidad": 3
+                },
+                {
+                    "valor": "G DE CUNDINAMARCA",
+                    "cantidad": 2
+                },
+                {
+                    "valor": "DIREC DE IMP Y ADUAN NAL",
+                    "cantidad": 2
+                },
+                {
+                    "valor": "MAS TALENTO SAS",
+                    "cantidad": 1
+                },
+                {
+                    "valor": "INVERSIONES ANTRI S A",
+                    "cantidad": 1
+                },
+                {
+                    "valor": "SEGURIDAD LAGUS LTDA",
+                    "cantidad": 1
+                },
+                {
+                    "valor": "BANCO DAVIVIENDA S A",
+                    "cantidad": 1
+                },
+                {
+                    "valor": "L DE COSMETICOS SLENDY",
+                    "cantidad": 1
+                },
+                {
+                    "valor": "ACCENTURE LTDA",
+                    "cantidad": 1
+                },
+                {
+                    "valor": "MERCADOLIBRE COLOMBIA",
+                    "cantidad": 1
+                }
+            ],
+            "seg_empresas": [
+                {
+                    "valor": "Emp Top",
+                    "porcentaje": 12
+                },
+                {
+                    "valor": "Grandes",
+                    "porcentaje": 22
+                },
+                {
+                    "valor": "Micro Transaccional",
+                    "porcentaje": 39
+                },
+                {
+                    "valor": "Estándar",
+                    "porcentaje": 5
+                },
+                {
+                    "valor": "Medianas",
+                    "porcentaje": 22
+                },
+                {
+                    "valor": "Otros",
+                    "porcentaje": 25
+                }
+            ],
+            "departamento": [
+                {
+                    "valor": "Soacha",
+                    "porcentaje": 5
+                },
+                {
+                    "valor": "Bogotá",
+                    "porcentaje": 59
+                },
+                {
+                    "valor": "Agua",
+                    "porcentaje": 2
+                },
+                {
+                    "valor": "Nocaima",
+                    "porcentaje": 2
+                }
+            ],
+            "localidades": [
+                {
+                    "valor": "Suba",
+                    "porcentaje": 5
+                },
+                {
+                    "valor": "Kennedy",
+                    "porcentaje": 8
+                },
+                {
+                    "valor": "Engativa",
+                    "porcentaje": 5
+                },
+                {
+                    "valor": "Sin informacion",
+                    "porcentaje": 54
+                }
+            ],
+            "entidadesFinancieras": [
+                {
+                    "valor": "Banco de Bogota",
+                    "porcentaje": 20
+                },
+                {
+                    "valor": "BBVA",
+                    "porcentaje": 29
+                },
+                {
+                    "valor": "Colsubsidio",
+                    "porcentaje": 25
+                }
+            ]
+        }
+    },
+    {
+        "id": 8,
+        "nombre": "INARI",
+        "ubicacion": "Chía",
+        "tipo_proyecto": "VIS",
+        "brochure_url": "https://heyzine.com/flip-book/8b6615372f.html",
+        "tipologias": [
+            {
+                "nombre": "Tipo C",
+                "precio": 185000000
+            },
+            {
+                "nombre": "Tipo D",
+                "precio": 225000000
+            },
+            {
+                "nombre": "Tipo E",
+                "precio": 255000000
+            }
+        ],
+        "buyerPersona": {
+            "afiliacion": [
+                {
+                    "valor": "Afiliado",
+                    "porcentaje": 64
+                },
+                {
+                    "valor": "No afiliado",
+                    "porcentaje": 36
+                }
+            ],
+            "genero": [
+                {
+                    "valor": "Hombre",
+                    "porcentaje": 37
+                },
+                {
+                    "valor": "Mujer",
+                    "porcentaje": 63
+                }
+            ],
+            "salario": [
+                {
+                    "valor": "Mas de 2 smlv",
+                    "porcentaje": 28
+                },
+                {
+                    "valor": "Hasta 2 smlv",
+                    "porcentaje": 72
+                }
+            ],
+            "edad": [
+                {
+                    "valor": "36 a 45 años",
+                    "porcentaje": 26
+                },
+                {
+                    "valor": "20 a 35 años",
+                    "porcentaje": 56
+                }
+            ],
+            "segmento": [
+                {
+                    "valor": "Medio",
+                    "porcentaje": 28
+                },
+                {
+                    "valor": "Joven",
+                    "porcentaje": 34
+                },
+                {
+                    "valor": "Básico",
+                    "porcentaje": 38
+                },
+                {
+                    "valor": "Alto",
+                    "porcentaje": 0
+                }
+            ],
+            "familia": [
+                {
+                    "valor": "Sin Grupo",
+                    "porcentaje": 57
+                },
+                {
+                    "valor": "Monoparental",
+                    "porcentaje": 29
+                },
+                {
+                    "valor": "Nuclear Integrada",
+                    "porcentaje": 6
+                },
+                {
+                    "valor": "Monoparental Ampliada",
+                    "porcentaje": 4
+                },
+                {
+                    "valor": "Pareja Conyugal",
+                    "porcentaje": 6
+                }
+            ],
+            "pac": [
+                {
+                    "valor": "Cero",
+                    "porcentaje": 57
+                },
+                {
+                    "valor": "Uno",
+                    "porcentaje": 28
+                },
+                {
+                    "valor": "Dos",
+                    "porcentaje": 11
+                },
+                {
+                    "valor": "Tres",
+                    "porcentaje": 4
+                },
+                {
+                    "valor": "Cuatro",
+                    "porcentaje": 3
+                },
+                {
+                    "valor": "Cinco",
+                    "porcentaje": 1
+                }
+            ],
+            "estrato": [
+                {
+                    "valor": "Uno",
+                    "porcentaje": 1
+                },
+                {
+                    "valor": "Dos",
+                    "porcentaje": 19
+                },
+                {
+                    "valor": "Tres",
+                    "porcentaje": 9
+                }
+            ],
+            "top_empresas": [
+                {
+                    "valor": "COLSUBSIDIO",
+                    "cantidad": 7
+                },
+                {
+                    "valor": "G DE CUNDINAMARCA",
+                    "cantidad": 4
+                },
+                {
+                    "valor": "MONGIBELLO S.A.S.",
+                    "cantidad": 3
+                },
+                {
+                    "valor": "FLORES IPANEMA S.A.S",
+                    "cantidad": 2
+                },
+                {
+                    "valor": "IMAGE QUALITY OUTSOURCIN",
+                    "cantidad": 2
+                },
+                {
+                    "valor": "FORTOX S A",
+                    "cantidad": 2
+                },
+                {
+                    "valor": "CONSORCIO EXPRESS S A S",
+                    "cantidad": 2
+                },
+                {
+                    "valor": "AVSA S A",
+                    "cantidad": 2
+                },
+                {
+                    "valor": "KPMG S.A.S.",
+                    "cantidad": 2
+                },
+                {
+                    "valor": "PALMA DE ACEITE CENIPALMA",
+                    "cantidad": 2
+                },
+                {
+                    "valor": "U ANTONIO NARINO",
+                    "cantidad": 2
+                }
+            ],
+            "seg_empresas": [
+                {
+                    "valor": "Emp Top",
+                    "porcentaje": 17
+                },
+                {
+                    "valor": "Grandes",
+                    "porcentaje": 17
+                },
+                {
+                    "valor": "Micro Transaccional",
+                    "porcentaje": 38
+                },
+                {
+                    "valor": "Estándar",
+                    "porcentaje": 2
+                },
+                {
+                    "valor": "Medianas",
+                    "porcentaje": 25
+                },
+                {
+                    "valor": "Otros",
+                    "porcentaje": 15
+                }
+            ],
+            "departamento": [
+                {
+                    "valor": "Chia",
+                    "porcentaje": 9
+                },
+                {
+                    "valor": "Chía",
+                    "porcentaje": 14
+                },
+                {
+                    "valor": "Bogotá",
+                    "porcentaje": 29
+                },
+                {
+                    "valor": "Ubate",
+                    "porcentaje": 14
+                },
+                {
+                    "valor": "Zipaquira",
+                    "porcentaje": 1
+                }
+            ],
+            "localidades": [
+                {
+                    "valor": "Suba",
+                    "porcentaje": 7
+                },
+                {
+                    "valor": "Engativa",
+                    "porcentaje": 6
+                },
+                {
+                    "valor": "Sin informacion",
+                    "porcentaje": 61
+                }
+            ],
+            "entidadesFinancieras": [
+                {
+                    "valor": "Davivienda",
+                    "porcentaje": 11
+                },
+                {
+                    "valor": "Hipoteca",
+                    "porcentaje": 33
+                },
+                {
+                    "valor": "Colsubsidio",
+                    "porcentaje": 41
+                }
+            ]
+        }
+    },
+    {
+        "id": 9,
+        "nombre": "La arboleda",
+        "ubicacion": "Bogotá",
+        "tipo_proyecto": "VIS",
+        "brochure_url": "https://umbra3d.studio/recorridos/promotora-convivienda/la-arboleda-apto-tipo-a/",
+        "tipologias": [
+            {
+                "nombre": "Tipo C",
+                "precio": 170000000
+            },
+            {
+                "nombre": "Tipo D",
+                "precio": 210000000
+            },
+            {
+                "nombre": "Tipo E",
+                "precio": 248000000
+            }
+        ],
+        "buyerPersona": {
+            "afiliacion": [
+                {
+                    "valor": "Afiliado",
+                    "porcentaje": 64
+                },
+                {
+                    "valor": "No afiliado",
+                    "porcentaje": 36
+                }
+            ],
+            "genero": [
+                {
+                    "valor": "Hombre",
+                    "porcentaje": 47
+                },
+                {
+                    "valor": "Mujer",
+                    "porcentaje": 53
+                }
+            ],
+            "salario": [
+                {
+                    "valor": "Mas de 2 smlv",
+                    "porcentaje": 10
+                },
+                {
+                    "valor": "Hasta 2 smlv",
+                    "porcentaje": 90
+                }
+            ],
+            "edad": [
+                {
+                    "valor": "36 a 45 años",
+                    "porcentaje": 33
+                },
+                {
+                    "valor": "20 a 35 años",
+                    "porcentaje": 53
+                }
+            ],
+            "segmento": [
+                {
+                    "valor": "Medio",
+                    "porcentaje": 37
+                },
+                {
+                    "valor": "Joven",
+                    "porcentaje": 16
+                },
+                {
+                    "valor": "Básico",
+                    "porcentaje": 47
+                },
+                {
+                    "valor": "Alto",
+                    "porcentaje": 0
+                }
+            ],
+            "familia": [
+                {
+                    "valor": "Sin Grupo",
+                    "porcentaje": 30
+                },
+                {
+                    "valor": "Monoparental",
+                    "porcentaje": 54
+                },
+                {
+                    "valor": "Nuclear Integrada",
+                    "porcentaje": 8
+                },
+                {
+                    "valor": "Monoparental Ampliada",
+                    "porcentaje": 5
+                },
+                {
+                    "valor": "Pareja Conyugal",
+                    "porcentaje": 3
+                }
+            ],
+            "pac": [
+                {
+                    "valor": "Cero",
+                    "porcentaje": 30
+                },
+                {
+                    "valor": "Uno",
+                    "porcentaje": 34
+                },
+                {
+                    "valor": "Dos",
+                    "porcentaje": 24
+                },
+                {
+                    "valor": "Tres",
+                    "porcentaje": 9
+                },
+                {
+                    "valor": "Cuatro",
+                    "porcentaje": 3
+                }
+            ],
+            "estrato": [
+                {
+                    "valor": "Uno",
+                    "porcentaje": 7
+                },
+                {
+                    "valor": "Dos",
+                    "porcentaje": 20
+                },
+                {
+                    "valor": "Tres",
+                    "porcentaje": 4
+                },
+                {
+                    "valor": "Cuatro",
+                    "porcentaje": 3
+                }
+            ],
+            "top_empresas": [
+                {
+                    "valor": "CONSORCIO EXPRESS S A S",
+                    "cantidad": 15
+                },
+                {
+                    "valor": "COLSUBSIDIO",
+                    "cantidad": 11
+                },
+                {
+                    "valor": "MEDICALL TALENTO HUMANO",
+                    "cantidad": 6
+                },
+                {
+                    "valor": "ADECCO SERVICIOS COLOMBI",
+                    "cantidad": 5
+                },
+                {
+                    "valor": "MANUFACTURAS ELIOT S A S",
+                    "cantidad": 3
+                },
+                {
+                    "valor": "PROMOAMBIENTAL DISTRITO",
+                    "cantidad": 3
+                },
+                {
+                    "valor": "SECURITAS COLOMBIA S A",
+                    "cantidad": 3
+                },
+                {
+                    "valor": "SERVI POSTALES NACIONALES",
+                    "cantidad": 3
+                },
+                {
+                    "valor": "JERONIMO MARTINS COLOM",
+                    "cantidad": 3
+                },
+                {
+                    "valor": "TELEPERFORMANCE",
+                    "cantidad": 3
+                },
+                {
+                    "valor": "ADECCO COLOMBIA S A",
+                    "cantidad": 2
+                }
+            ],
+            "seg_empresas": [
+                {
+                    "valor": "Emp Top",
+                    "porcentaje": 14
+                },
+                {
+                    "valor": "Grandes",
+                    "porcentaje": 25
+                },
+                {
+                    "valor": "Otros",
+                    "porcentaje": 1
+                },
+                {
+                    "valor": "Micro Transaccional",
+                    "porcentaje": 28
+                },
+                {
+                    "valor": "Estándar",
+                    "porcentaje": 6
+                },
+                {
+                    "valor": "Medianas",
+                    "porcentaje": 27
+                },
+                {
+                    "valor": "Otros",
+                    "porcentaje": 20
+                }
+            ],
+            "departamento": [
+                {
+                    "valor": "Bogotá",
+                    "porcentaje": 55
+                }
+            ],
+            "localidades": [
+                {
+                    "valor": "Chapinero",
+                    "porcentaje": 5
+                },
+                {
+                    "valor": "San cristobal",
+                    "porcentaje": 14
+                },
+                {
+                    "valor": "Usme",
+                    "porcentaje": 5
+                },
+                {
+                    "valor": "Sin informacion",
+                    "porcentaje": 62
+                }
+            ],
+            "entidadesFinancieras": [
+                {
+                    "valor": "Davivienda",
+                    "porcentaje": 21
+                },
+                {
+                    "valor": "Colsubsidio",
+                    "porcentaje": 45
+                },
+                {
+                    "valor": "FNA",
+                    "porcentaje": 14
+                }
+            ]
+        }
+    },
+    {
+        "id": 10,
+        "nombre": "Los Nogales",
+        "ubicacion": "Ciudadela calle 80",
+        "tipo_proyecto": "NO VIS",
+        "brochure_url": "https://heyzine.com/flip-book/9dd9bf814e.html",
+        "tipologias": [
+            {
+                "nombre": "Tipo Estándar",
+                "precio": 290000000
+            },
+            {
+                "nombre": "Tipo Superior",
+                "precio": 360000000
+            },
+            {
+                "nombre": "Tipo Penthouse",
+                "precio": 440000000
+            }
+        ],
+        "buyerPersona": {
+            "afiliacion": [
+                {
+                    "valor": "Afiliado",
+                    "porcentaje": 40
+                },
+                {
+                    "valor": "No afiliado",
+                    "porcentaje": 60
+                }
+            ],
+            "genero": [
+                {
+                    "valor": "Hombre",
+                    "porcentaje": 45
+                },
+                {
+                    "valor": "Mujer",
+                    "porcentaje": 55
+                }
+            ],
+            "salario": [
+                {
+                    "valor": "Menos de 4 smlv",
+                    "porcentaje": 33
+                },
+                {
+                    "valor": "Mas 4 smlv",
+                    "porcentaje": 67
+                }
+            ],
+            "edad": [
+                {
+                    "valor": "36 a 45 años",
+                    "porcentaje": 40
+                },
+                {
+                    "valor": "20 a 35 años",
+                    "porcentaje": 15
+                }
+            ],
+            "segmento": [
+                {
+                    "valor": "Medio",
+                    "porcentaje": 80
+                },
+                {
+                    "valor": "Joven",
+                    "porcentaje": 11
+                },
+                {
+                    "valor": "Básico",
+                    "porcentaje": 7
+                },
+                {
+                    "valor": "Alto",
+                    "porcentaje": 2
+                }
+            ],
+            "familia": [
+                {
+                    "valor": "Sin Grupo",
+                    "porcentaje": 35
+                },
+                {
+                    "valor": "Monoparental",
+                    "porcentaje": 20
+                },
+                {
+                    "valor": "Pareja Conyugal",
+                    "porcentaje": 22
+                },
+                {
+                    "valor": "Nuclear Integrada",
+                    "porcentaje": 24
+                }
+            ],
+            "pac": [
+                {
+                    "valor": "Cero",
+                    "porcentaje": 35
+                },
+                {
+                    "valor": "Uno",
+                    "porcentaje": 33
+                },
+                {
+                    "valor": "Dos",
+                    "porcentaje": 16
+                },
+                {
+                    "valor": "Tres",
+                    "porcentaje": 15
+                },
+                {
+                    "valor": "Cuatro",
+                    "porcentaje": 2
+                },
+                {
+                    "valor": "Seis",
+                    "porcentaje": 4
+                }
+            ],
+            "estrato": [
+                {
+                    "valor": "Tres",
+                    "porcentaje": 36
+                },
+                {
+                    "valor": "Cuatro",
+                    "porcentaje": 4
+                }
+            ],
+            "top_empresas": [
+                {
+                    "valor": "COLSUBSIDIO",
+                    "cantidad": 4
+                },
+                {
+                    "valor": "MERCADOLIBRE",
+                    "cantidad": 3
+                },
+                {
+                    "valor": "CIMMA CONSTRUCTORA SAS",
+                    "cantidad": 2
+                },
+                {
+                    "valor": "IMPUESTOS Y ADUANAS",
+                    "cantidad": 2
+                },
+                {
+                    "valor": "SIEMENS ENERGY",
+                    "cantidad": 1
+                },
+                {
+                    "valor": "NEC DE COLOMBIA S A",
+                    "cantidad": 1
+                },
+                {
+                    "valor": "MARISOL ROJAS ROMERO",
+                    "cantidad": 1
+                },
+                {
+                    "valor": "ADECCO",
+                    "cantidad": 1
+                },
+                {
+                    "valor": "PROCREACION MEDICAM",
+                    "cantidad": 1
+                },
+                {
+                    "valor": "CENTRAL DE DISOLVENTES",
+                    "cantidad": 1
+                },
+                {
+                    "valor": "BRIZGA CORPORATION SAS",
+                    "cantidad": 1
+                }
+            ],
+            "seg_empresas": [
+                {
+                    "valor": "Emp Top",
+                    "porcentaje": 7
+                },
+                {
+                    "valor": "Grandes",
+                    "porcentaje": 33
+                },
+                {
+                    "valor": "Micro Transaccional",
+                    "porcentaje": 35
+                },
+                {
+                    "valor": "Medianas",
+                    "porcentaje": 16
+                },
+                {
+                    "valor": "Otros",
+                    "porcentaje": 38
+                }
+            ],
+            "departamento": [
+                {
+                    "valor": "Bogotá",
+                    "porcentaje": 76
+                }
+            ],
+            "localidades": [
+                {
+                    "valor": "Usaquen",
+                    "porcentaje": 4
+                },
+                {
+                    "valor": "Engativá",
+                    "porcentaje": 55
+                },
+                {
+                    "valor": "Pensionados Independientes",
+                    "porcentaje": 9
+                },
+                {
+                    "valor": "Chapinero",
+                    "porcentaje": 2
+                },
+                {
+                    "valor": "Sin informacion",
+                    "porcentaje": 55
+                }
+            ],
+            "entidadesFinancieras": [
+                {
+                    "valor": "Davivienda",
+                    "porcentaje": 40
+                },
+                {
+                    "valor": "Colsubsidio",
+                    "porcentaje": 4
+                },
+                {
+                    "valor": "Bancolombia",
+                    "porcentaje": 18
+                }
+            ]
+        }
+    },
+    {
+        "id": 11,
+        "nombre": "Karakali",
+        "ubicacion": "Bogotá",
+        "tipo_proyecto": "VIS",
+        "brochure_url": "https://umbra3d.studio/masterplans/colsubsidio/karakali/",
+        "tipologias": [
+            {
+                "nombre": "Tipo C",
+                "precio": 168000000
+            },
+            {
+                "nombre": "Tipo D",
+                "precio": 205000000
+            },
+            {
+                "nombre": "Tipo E",
+                "precio": 242000000
+            }
+        ],
+        "buyerPersona": {
+            "afiliacion": [
+                {
+                    "valor": "Afiliado",
+                    "porcentaje": 59
+                },
+                {
+                    "valor": "No afiliado",
+                    "porcentaje": 41
+                }
+            ],
+            "genero": [
+                {
+                    "valor": "Hombre",
+                    "porcentaje": 51
+                },
+                {
+                    "valor": "Mujer",
+                    "porcentaje": 49
+                }
+            ],
+            "salario": [
+                {
+                    "valor": "Mas de 2 smlv",
+                    "porcentaje": 53
+                },
+                {
+                    "valor": "Hasta 2 smlv",
+                    "porcentaje": 47
+                }
+            ],
+            "edad": [
+                {
+                    "valor": "36 a 45 años",
+                    "porcentaje": 21
+                },
+                {
+                    "valor": "20 a 35 años",
+                    "porcentaje": 57
+                }
+            ],
+            "segmento": [
+                {
+                    "valor": "Medio",
+                    "porcentaje": 35
+                },
+                {
+                    "valor": "Joven",
+                    "porcentaje": 37
+                },
+                {
+                    "valor": "Básico",
+                    "porcentaje": 28
+                },
+                {
+                    "valor": "Alto",
+                    "porcentaje": 0
+                }
+            ],
+            "familia": [
+                {
+                    "valor": "Sin Grupo",
+                    "porcentaje": 68
+                },
+                {
+                    "valor": "Monoparental",
+                    "porcentaje": 10
+                },
+                {
+                    "valor": "Nuclear Integrada",
+                    "porcentaje": 9
+                },
+                {
+                    "valor": "Monoparental Ampliada",
+                    "porcentaje": 7
+                },
+                {
+                    "valor": "Pareja Conyugal",
+                    "porcentaje": 6
+                }
+            ],
+            "pac": [
+                {
+                    "valor": "Cero",
+                    "porcentaje": 68
+                },
+                {
+                    "valor": "Uno",
+                    "porcentaje": 3
+                },
+                {
+                    "valor": "Dos",
+                    "porcentaje": 3
+                },
+                {
+                    "valor": "Tres",
+                    "porcentaje": 22
+                },
+                {
+                    "valor": "Cuatro",
+                    "porcentaje": 4
+                }
+            ],
+            "estrato": [
+                {
+                    "valor": "Uno",
+                    "porcentaje": 16
+                },
+                {
+                    "valor": "Dos",
+                    "porcentaje": 9
+                },
+                {
+                    "valor": "Tres",
+                    "porcentaje": 7
+                },
+                {
+                    "valor": "Cuatro",
+                    "porcentaje": 0
+                }
+            ],
+            "top_empresas": [
+                {
+                    "valor": "COLSUBSIDIO",
+                    "cantidad": 7
+                },
+                {
+                    "valor": "TELEPERFORMANCE",
+                    "cantidad": 3
+                },
+                {
+                    "valor": "PROYECTA SOLUCIONES ELITE",
+                    "cantidad": 2
+                },
+                {
+                    "valor": "PERFILES Y SOLUCIONES LOGI",
+                    "cantidad": 2
+                },
+                {
+                    "valor": "IMPUESTOS Y ADUANAS",
+                    "cantidad": 2
+                },
+                {
+                    "valor": "MEDIAWISE SOLUTIONS SAS",
+                    "cantidad": 1
+                },
+                {
+                    "valor": "AUTOGERMANA S A S",
+                    "cantidad": 1
+                },
+                {
+                    "valor": "ARIDE S.A.S",
+                    "cantidad": 1
+                },
+                {
+                    "valor": "A M ELECTRICISTAS",
+                    "cantidad": 1
+                },
+                {
+                    "valor": "JOSE JOAQUIN GOMEZ C Y CIA",
+                    "cantidad": 1
+                },
+                {
+                    "valor": "CAPGEMINI COLOMBIA S.A.S.",
+                    "cantidad": 1
+                }
+            ],
+            "seg_empresas": [
+                {
+                    "valor": "Emp Top",
+                    "porcentaje": 7
+                },
+                {
+                    "valor": "Grandes",
+                    "porcentaje": 19
+                },
+                {
+                    "valor": "Micro Transaccional",
+                    "porcentaje": 53
+                },
+                {
+                    "valor": "Estándar",
+                    "porcentaje": 3
+                },
+                {
+                    "valor": "Medianas",
+                    "porcentaje": 16
+                },
+                {
+                    "valor": "Otros",
+                    "porcentaje": 25
+                }
+            ],
+            "departamento": [
+                {
+                    "valor": "Bogotá",
+                    "porcentaje": 49
+                }
+            ],
+            "localidades": [
+                {
+                    "valor": "Kennedy",
+                    "porcentaje": 4
+                },
+                {
+                    "valor": "Engativá",
+                    "porcentaje": 9
+                },
+                {
+                    "valor": "Teusaquillo",
+                    "porcentaje": 3
+                },
+                {
+                    "valor": "Sin informacion",
+                    "porcentaje": 62
+                }
+            ],
+            "entidadesFinancieras": [
+                {
+                    "valor": "Davivienda",
+                    "porcentaje": 31
+                },
+                {
+                    "valor": "Colsubsidio",
+                    "porcentaje": 28
+                },
+                {
+                    "valor": "Bancolombia",
+                    "porcentaje": 16
+                }
+            ]
+        }
+    },
+    {
+        "id": 12,
+        "nombre": "Versalles",
+        "ubicacion": "Ciudadela Maiporé",
+        "tipo_proyecto": "VIS",
+        "brochure_url": "https://heyzine.com/flip-book/be784b0d5c.html",
+        "tipologias": [
+            {
+                "nombre": "Tipo C",
+                "precio": 150000000
+            },
+            {
+                "nombre": "Tipo D",
+                "precio": 180000000
+            },
+            {
+                "nombre": "Tipo E",
+                "precio": 215000000
+            }
+        ],
+        "buyerPersona": {
+            "afiliacion": [
+                {
+                    "valor": "Afiliado",
+                    "porcentaje": 71
+                },
+                {
+                    "valor": "No afiliado",
+                    "porcentaje": 29
+                }
+            ],
+            "genero": [
+                {
+                    "valor": "Hombre",
+                    "porcentaje": 45
+                },
+                {
+                    "valor": "Mujer",
+                    "porcentaje": 55
+                }
+            ],
+            "salario": [
+                {
+                    "valor": "Mas de 2 smlv",
+                    "porcentaje": 0
+                },
+                {
+                    "valor": "Hasta 2 smlv",
+                    "porcentaje": 100
+                }
+            ],
+            "edad": [
+                {
+                    "valor": "36 a 45 años",
+                    "porcentaje": 29
+                },
+                {
+                    "valor": "20 a 35 años",
+                    "porcentaje": 61
+                }
+            ],
+            "segmento": [
+                {
+                    "valor": "Medio",
+                    "porcentaje": 42
+                },
+                {
+                    "valor": "Joven",
+                    "porcentaje": 20
+                },
+                {
+                    "valor": "Básico",
+                    "porcentaje": 38
+                },
+                {
+                    "valor": "Alto",
+                    "porcentaje": 0
+                }
+            ],
+            "familia": [
+                {
+                    "valor": "Sin Grupo",
+                    "porcentaje": 34
+                },
+                {
+                    "valor": "Monoparental",
+                    "porcentaje": 51
+                },
+                {
+                    "valor": "Monoparental Ampliada",
+                    "porcentaje": 2
+                },
+                {
+                    "valor": "Nuclear Integrada",
+                    "porcentaje": 13
+                }
+            ],
+            "pac": [
+                {
+                    "valor": "Cero",
+                    "porcentaje": 34
+                },
+                {
+                    "valor": "Uno",
+                    "porcentaje": 31
+                },
+                {
+                    "valor": "Dos",
+                    "porcentaje": 22
+                },
+                {
+                    "valor": "Tres",
+                    "porcentaje": 9
+                },
+                {
+                    "valor": "Cuatro",
+                    "porcentaje": 2
+                },
+                {
+                    "valor": "Cinco",
+                    "porcentaje": 2
+                }
+            ],
+            "estrato": [
+                {
+                    "valor": "Uno",
+                    "porcentaje": 4
+                },
+                {
+                    "valor": "Dos",
+                    "porcentaje": 11
+                },
+                {
+                    "valor": "Tres",
+                    "porcentaje": 8
+                }
+            ],
+            "top_empresas": [
+                {
+                    "valor": "JERONIMO MARTINS COLOMBI",
+                    "cantidad": 2
+                },
+                {
+                    "valor": "COLOMBIANA DE COMERCIO",
+                    "cantidad": 2
+                },
+                {
+                    "valor": "MEDICALL TALENTO HUMANO",
+                    "cantidad": 2
+                },
+                {
+                    "valor": "COLSUBSIDIO",
+                    "cantidad": 2
+                },
+                {
+                    "valor": "GMOVIL S A S",
+                    "cantidad": 2
+                },
+                {
+                    "valor": "SANIMAX DE COLOMBIA SAS",
+                    "cantidad": 1
+                },
+                {
+                    "valor": "MODANOVA S A S",
+                    "cantidad": 1
+                },
+                {
+                    "valor": "JUAN DAVID GRACIA CUBILLOS",
+                    "cantidad": 1
+                },
+                {
+                    "valor": "ALIANZA FIDUCIARIA S A",
+                    "cantidad": 1
+                },
+                {
+                    "valor": "PINABEN MOVIL CARGO SAS",
+                    "cantidad": 1
+                },
+                {
+                    "valor": "ALPINA",
+                    "cantidad": 1
+                }
+            ],
+            "seg_empresas": [
+                {
+                    "valor": "Emp Top",
+                    "porcentaje": 13
+                },
+                {
+                    "valor": "Grandes",
+                    "porcentaje": 20
+                },
+                {
+                    "valor": "Micro Transaccional",
+                    "porcentaje": 29
+                },
+                {
+                    "valor": "Estándar",
+                    "porcentaje": 7
+                },
+                {
+                    "valor": "Medianas",
+                    "porcentaje": 29
+                },
+                {
+                    "valor": "Otros",
+                    "porcentaje": 32
+                }
+            ],
+            "departamento": [
+                {
+                    "valor": "Soacha",
+                    "porcentaje": 7
+                },
+                {
+                    "valor": "Bogotá",
+                    "porcentaje": 41
+                },
+                {
+                    "valor": "Sibaté",
+                    "porcentaje": 1
+                }
+            ],
+            "localidades": [
+                {
+                    "valor": "R Uribe",
+                    "porcentaje": 4
+                },
+                {
+                    "valor": "Engativá",
+                    "porcentaje": 5
+                },
+                {
+                    "valor": "Chapinero",
+                    "porcentaje": 2
+                },
+                {
+                    "valor": "Sin informacion",
+                    "porcentaje": 68
+                }
+            ],
+            "entidadesFinancieras": [
+                {
+                    "valor": "Davivienda",
+                    "porcentaje": 25
+                },
+                {
+                    "valor": "Colsubsidio",
+                    "porcentaje": 28
+                },
+                {
+                    "valor": "Hipoteca",
+                    "porcentaje": 15
+                }
+            ]
+        }
+    },
+    {
+        "id": 14,
+        "nombre": "Payande",
+        "ubicacion": "Ricaute",
+        "tipo_proyecto": "VIS",
+        "brochure_url": "https://heyzine.com/flip-book/34ac4d8a9e.html",
+        "tipologias": [
+            {
+                "nombre": "Tipo C",
+                "precio": 145000000
+            },
+            {
+                "nombre": "Tipo D",
+                "precio": 172000000
+            },
+            {
+                "nombre": "Tipo E",
+                "precio": 200000000
+            }
+        ],
+        "buyerPersona": {
+            "afiliacion": [
+                {
+                    "valor": "Afiliado",
+                    "porcentaje": 64
+                },
+                {
+                    "valor": "No afiliado",
+                    "porcentaje": 36
+                }
+            ],
+            "genero": [
+                {
+                    "valor": "Hombre",
+                    "porcentaje": 48
+                },
+                {
+                    "valor": "Mujer",
+                    "porcentaje": 52
+                }
+            ],
+            "salario": [
+                {
+                    "valor": "Mas de 2 smlv",
+                    "porcentaje": 35
+                },
+                {
+                    "valor": "Hasta 2 smlv",
+                    "porcentaje": 65
+                }
+            ],
+            "edad": [
+                {
+                    "valor": "36 a 45 años",
+                    "porcentaje": 31
+                },
+                {
+                    "valor": "20 a 35 años",
+                    "porcentaje": 37
+                }
+            ],
+            "segmento": [
+                {
+                    "valor": "Medio",
+                    "porcentaje": 49
+                },
+                {
+                    "valor": "Joven",
+                    "porcentaje": 22
+                },
+                {
+                    "valor": "Básico",
+                    "porcentaje": 29
+                },
+                {
+                    "valor": "Alto",
+                    "porcentaje": 0
+                }
+            ],
+            "familia": [
+                {
+                    "valor": "Sin Grupo",
+                    "porcentaje": 51
+                },
+                {
+                    "valor": "Monoparental",
+                    "porcentaje": 31
+                },
+                {
+                    "valor": "Nuclear Integrada",
+                    "porcentaje": 9
+                },
+                {
+                    "valor": "Monoparental Ampliada",
+                    "porcentaje": 3
+                }
+            ],
+            "pac": [
+                {
+                    "valor": "Cero",
+                    "porcentaje": 51
+                },
+                {
+                    "valor": "Uno",
+                    "porcentaje": 26
+                },
+                {
+                    "valor": "Dos",
+                    "porcentaje": 11
+                },
+                {
+                    "valor": "Tres",
+                    "porcentaje": 11
+                },
+                {
+                    "valor": "Cuatro",
+                    "porcentaje": 1
+                }
+            ],
+            "estrato": [
+                {
+                    "valor": "Uno",
+                    "porcentaje": 4
+                },
+                {
+                    "valor": "Dos",
+                    "porcentaje": 15
+                },
+                {
+                    "valor": "Tres",
+                    "porcentaje": 7
+                },
+                {
+                    "valor": "Cuatro",
+                    "porcentaje": 4
+                }
+            ],
+            "top_empresas": [
+                {
+                    "valor": "COLSUBSIDIO",
+                    "cantidad": 18
+                },
+                {
+                    "valor": "MINUTO DE DIOS",
+                    "cantidad": 4
+                },
+                {
+                    "valor": "NTT DATA COLOMBIA S. A. S.",
+                    "cantidad": 3
+                },
+                {
+                    "valor": "INPEC",
+                    "cantidad": 3
+                },
+                {
+                    "valor": "CONSORCIO EXPRESS S A S",
+                    "cantidad": 3
+                },
+                {
+                    "valor": "DIRECCION SECC AMAZONAS",
+                    "cantidad": 3
+                },
+                {
+                    "valor": "BRINSA S A",
+                    "cantidad": 2
+                },
+                {
+                    "valor": "MULTIENLACE S A",
+                    "cantidad": 2
+                },
+                {
+                    "valor": "CLINICA COLSANITAS S.A.",
+                    "cantidad": 2
+                },
+                {
+                    "valor": "BANCO DE OCCIDENTE S A",
+                    "cantidad": 2
+                },
+                {
+                    "valor": "BISION CONSULTING S A S",
+                    "cantidad": 2
+                }
+            ],
+            "seg_empresas": [
+                {
+                    "valor": "Emp Top",
+                    "porcentaje": 8
+                },
+                {
+                    "valor": "Grandes",
+                    "porcentaje": 23
+                },
+                {
+                    "valor": "Micro Transaccional",
+                    "porcentaje": 47
+                },
+                {
+                    "valor": "Estándar",
+                    "porcentaje": 3
+                },
+                {
+                    "valor": "Medianas",
+                    "porcentaje": 14
+                },
+                {
+                    "valor": "Otros",
+                    "porcentaje": 26
+                }
+            ],
+            "departamento": [
+                {
+                    "valor": "Fusagasuga",
+                    "porcentaje": 2
+                },
+                {
+                    "valor": "Bogotá",
+                    "porcentaje": 50
+                },
+                {
+                    "valor": "Girardot",
+                    "porcentaje": 2
+                },
+                {
+                    "valor": "Soacha",
+                    "porcentaje": 1
+                }
+            ],
+            "localidades": [
+                {
+                    "valor": "Engativa",
+                    "porcentaje": 4
+                },
+                {
+                    "valor": "Kennedy",
+                    "porcentaje": 5
+                },
+                {
+                    "valor": "P Aranda",
+                    "porcentaje": 3
+                },
+                {
+                    "valor": "Sin informacion",
+                    "porcentaje": 63
+                }
+            ],
+            "entidadesFinancieras": [
+                {
+                    "valor": "B Bogota",
+                    "porcentaje": 24
+                },
+                {
+                    "valor": "Colsubsidio",
+                    "porcentaje": 35
+                },
+                {
+                    "valor": "Davivienda",
+                    "porcentaje": 15
+                }
+            ]
+        }
+    },
+    {
+        "id": 15,
+        "nombre": "Araucaria",
+        "ubicacion": "Ciudadela calle 80",
+        "tipo_proyecto": "NO VIS",
+        "brochure_url": "https://heyzine.com/flip-book/26d2b013cf.html",
+        "tipologias": [
+            {
+                "nombre": "Tipo Suite",
+                "precio": 320000000
+            },
+            {
+                "nombre": "Tipo Dúplex",
+                "precio": 410000000
+            }
+        ],
+        "buyerPersona": {
+            "afiliacion": [
+                {
+                    "valor": "Afiliado",
+                    "porcentaje": 38
+                },
+                {
+                    "valor": "No afiliado",
+                    "porcentaje": 62
+                }
+            ],
+            "genero": [
+                {
+                    "valor": "Hombre",
+                    "porcentaje": 47
+                },
+                {
+                    "valor": "Mujer",
+                    "porcentaje": 53
+                }
+            ],
+            "salario": [
+                {
+                    "valor": "Entre 6 y 8 smlv",
+                    "porcentaje": 19
+                },
+                {
+                    "valor": "Entre 4 y 6 smlv",
+                    "porcentaje": 25
+                },
+                {
+                    "valor": "Entre 2 y 3 smlv",
+                    "porcentaje": 3
+                },
+                {
+                    "valor": "Entre 3 y 4 smlv",
+                    "porcentaje": 22
+                }
+            ],
+            "edad": [
+                {
+                    "valor": "36 a 45 años",
+                    "porcentaje": 25
+                },
+                {
+                    "valor": "20 a 35 años",
+                    "porcentaje": 38
+                }
+            ],
+            "segmento": [
+                {
+                    "valor": "Medio",
+                    "porcentaje": 56
+                },
+                {
+                    "valor": "Joven",
+                    "porcentaje": 38
+                },
+                {
+                    "valor": "Básico",
+                    "porcentaje": 3
+                },
+                {
+                    "valor": "Alto",
+                    "porcentaje": 3
+                }
+            ],
+            "familia": [
+                {
+                    "valor": "Sin Grupo",
+                    "porcentaje": 47
+                },
+                {
+                    "valor": "Monoparental",
+                    "porcentaje": 28
+                },
+                {
+                    "valor": "Nuclear Integrada",
+                    "porcentaje": 16
+                },
+                {
+                    "valor": "Monoparental Ampliada",
+                    "porcentaje": 16
+                }
+            ],
+            "pac": [
+                {
+                    "valor": "Cero",
+                    "porcentaje": 47
+                },
+                {
+                    "valor": "Uno",
+                    "porcentaje": 25
+                },
+                {
+                    "valor": "Dos",
+                    "porcentaje": 22
+                },
+                {
+                    "valor": "Tres",
+                    "porcentaje": 6
+                },
+                {
+                    "valor": "Cuatro",
+                    "porcentaje": 0
+                },
+                {
+                    "valor": "Seis",
+                    "porcentaje": 3
+                }
+            ],
+            "estrato": [
+                {
+                    "valor": "Dos",
+                    "porcentaje": 34
+                },
+                {
+                    "valor": "Tres",
+                    "porcentaje": 34
+                },
+                {
+                    "valor": "Cuatro",
+                    "porcentaje": 3
+                }
+            ],
+            "top_empresas": [
+                {
+                    "valor": "BBVA",
+                    "cantidad": 2
+                },
+                {
+                    "valor": "ITAU",
+                    "cantidad": 1
+                },
+                {
+                    "valor": "AEROVIAS DE INTEGRACION",
+                    "cantidad": 1
+                },
+                {
+                    "valor": "NOKIA",
+                    "cantidad": 1
+                },
+                {
+                    "valor": "AMADEUS IT GROUP",
+                    "cantidad": 1
+                },
+                {
+                    "valor": "A GOMEZ K CIA S EN C",
+                    "cantidad": 1
+                },
+                {
+                    "valor": "AMAZON WEB SERVICES",
+                    "cantidad": 1
+                },
+                {
+                    "valor": "METROLOGICAL CENTER SAS",
+                    "cantidad": 1
+                },
+                {
+                    "valor": "AMWAY COLOMBIA",
+                    "cantidad": 1
+                },
+                {
+                    "valor": "PCM COLOMBIA S A S",
+                    "cantidad": 1
+                }
+            ],
+            "seg_empresas": [
+                {
+                    "valor": "Emp Top",
+                    "porcentaje": 6
+                },
+                {
+                    "valor": "Grandes",
+                    "porcentaje": 34
+                },
+                {
+                    "valor": "Micro Transaccional",
+                    "porcentaje": 34
+                },
+                {
+                    "valor": "Estándar",
+                    "porcentaje": 3
+                },
+                {
+                    "valor": "Medianas",
+                    "porcentaje": 19
+                },
+                {
+                    "valor": "Otros",
+                    "porcentaje": 9
+                }
+            ],
+            "departamento": [
+                {
+                    "valor": "Bogotá",
+                    "porcentaje": 56
+                },
+                {
+                    "valor": "Mosquera",
+                    "porcentaje": 3
+                }
+            ],
+            "localidades": [
+                {
+                    "valor": "Suba",
+                    "porcentaje": 9
+                },
+                {
+                    "valor": "Engativa",
+                    "porcentaje": 38
+                },
+                {
+                    "valor": "Teusaquillo",
+                    "porcentaje": 3
+                },
+                {
+                    "valor": "Sin informacion",
+                    "porcentaje": 44
+                }
+            ],
+            "entidadesFinancieras": [
+                {
+                    "valor": "Bancolombia",
+                    "porcentaje": 16
+                },
+                {
+                    "valor": "Colsubsidio",
+                    "porcentaje": 59
+                },
+                {
+                    "valor": "B Bogota",
+                    "porcentaje": 16
+                }
+            ]
+        }
+    },
+    {
+        "id": 17,
+        "nombre": "Verde Esperanza",
+        "ubicacion": "Ubate",
+        "tipo_proyecto": "VIP",
+        "brochure_url": "https://heyzine.com/flip-book/ea1997d7ae.html",
+        "tipologias": [
+            {
+                "nombre": "Tipo A",
+                "precio": 118000000
+            },
+            {
+                "nombre": "Tipo B",
+                "precio": 142000000
+            }
+        ],
+        "buyerPersona": {
+            "afiliacion": [
+                {
+                    "valor": "Afiliado",
+                    "porcentaje": 64
+                },
+                {
+                    "valor": "No afiliado",
+                    "porcentaje": 36
+                }
+            ],
+            "genero": [
+                {
+                    "valor": "Hombre",
+                    "porcentaje": 50
+                },
+                {
+                    "valor": "Mujer",
+                    "porcentaje": 50
+                }
+            ],
+            "salario": [
+                {
+                    "valor": "Mas de 2 smlv",
+                    "porcentaje": 6
+                },
+                {
+                    "valor": "Hasta 2 smlv",
+                    "porcentaje": 94
+                }
+            ],
+            "edad": [
+                {
+                    "valor": "36 a 45 años",
+                    "porcentaje": 23
+                },
+                {
+                    "valor": "20 a 35 años",
+                    "porcentaje": 52
+                }
+            ],
+            "segmento": [
+                {
+                    "valor": "Medio",
+                    "porcentaje": 30
+                },
+                {
+                    "valor": "Joven",
+                    "porcentaje": 11
+                },
+                {
+                    "valor": "Básico",
+                    "porcentaje": 59
+                },
+                {
+                    "valor": "Alto",
+                    "porcentaje": 0
+                }
+            ],
+            "familia": [
+                {
+                    "valor": "Sin Grupo",
+                    "porcentaje": 25
+                },
+                {
+                    "valor": "Monoparental",
+                    "porcentaje": 45
+                },
+                {
+                    "valor": "Nuclear Integrada",
+                    "porcentaje": 22
+                },
+                {
+                    "valor": "Monoparental Ampliada",
+                    "porcentaje": 4
+                }
+            ],
+            "pac": [
+                {
+                    "valor": "Cero",
+                    "porcentaje": 25
+                },
+                {
+                    "valor": "Uno",
+                    "porcentaje": 33
+                },
+                {
+                    "valor": "Dos",
+                    "porcentaje": 26
+                },
+                {
+                    "valor": "Tres",
+                    "porcentaje": 12
+                },
+                {
+                    "valor": "Cuatro",
+                    "porcentaje": 2
+                }
+            ],
+            "estrato": [
+                {
+                    "valor": "Uno",
+                    "porcentaje": 2
+                },
+                {
+                    "valor": "Dos",
+                    "porcentaje": 5
+                },
+                {
+                    "valor": "Tres",
+                    "porcentaje": 22
+                },
+                {
+                    "valor": "Cuatro",
+                    "porcentaje": 1
+                }
+            ],
+            "top_empresas": [
+                {
+                    "valor": "FLORES UBATE S A S",
+                    "cantidad": 10
+                },
+                {
+                    "valor": "FLORVAL S A S",
+                    "cantidad": 9
+                },
+                {
+                    "valor": "COLUMBIA COAL COMPANY",
+                    "cantidad": 5
+                },
+                {
+                    "valor": "C I CARBOCOQUE S A",
+                    "cantidad": 5
+                },
+                {
+                    "valor": "UNIDAD MEDICA ORLUZ SAS",
+                    "cantidad": 5
+                },
+                {
+                    "valor": "DOMINION COLOMBIA SAS",
+                    "cantidad": 4
+                },
+                {
+                    "valor": "PASTELERIA GOURMET MEGA",
+                    "cantidad": 4
+                },
+                {
+                    "valor": "UNIMINAS",
+                    "cantidad": 4
+                },
+                {
+                    "valor": "DOÑA LECHE ALIMENTOS S A",
+                    "cantidad": 3
+                },
+                {
+                    "valor": "INVERSIONES DE LA SABANA",
+                    "cantidad": 3
+                }
+            ],
+            "seg_empresas": [
+                {
+                    "valor": "Emp Top",
+                    "porcentaje": 10
+                },
+                {
+                    "valor": "Grandes",
+                    "porcentaje": 6
+                },
+                {
+                    "valor": "Micro Transaccional",
+                    "porcentaje": 37
+                },
+                {
+                    "valor": "Estándar",
+                    "porcentaje": 9
+                },
+                {
+                    "valor": "Medianas",
+                    "porcentaje": 36
+                }
+            ],
+            "departamento": [
+                {
+                    "valor": "Ubate",
+                    "porcentaje": 26
+                },
+                {
+                    "valor": "Bogota",
+                    "porcentaje": 11
+                },
+                {
+                    "valor": "Ubate",
+                    "porcentaje": 38
+                },
+                {
+                    "valor": "Mosquera",
+                    "porcentaje": 1
+                },
+                {
+                    "valor": "Sibate",
+                    "porcentaje": 1
+                }
+            ],
+            "localidades": [
+                {
+                    "valor": "Santafe",
+                    "porcentaje": 4
+                },
+                {
+                    "valor": "Kenedy",
+                    "porcentaje": 1
+                },
+                {
+                    "valor": "Sin informacion",
+                    "porcentaje": 65
+                }
+            ],
+            "entidadesFinancieras": [
+                {
+                    "valor": "Davivienda",
+                    "porcentaje": 1
+                },
+                {
+                    "valor": "Colsubsidio",
+                    "porcentaje": 99
+                }
+            ]
+        }
+    },
+    {
+        "id": 18,
+        "nombre": "Total",
+        "ubicacion": "",
+        "tipo_proyecto": "VIS",
+        "brochure_url": "",
+        "tipologias": [
+            {
+                "nombre": "Tipo D",
+                "precio": 150000000
+            },
+            {
+                "nombre": "Tipo E",
+                "precio": 180000000
+            },
+            {
+                "nombre": "Tipo F",
+                "precio": 200000000
+            }
+        ],
+        "buyerPersona": {
+            "afiliacion": [
+                {
+                    "valor": "Afiliado",
+                    "porcentaje": 62
+                },
+                {
+                    "valor": "No afiliado",
+                    "porcentaje": 38
+                }
+            ],
+            "genero": [
+                {
+                    "valor": "Hombre",
+                    "porcentaje": 49
+                },
+                {
+                    "valor": "Mujer",
+                    "porcentaje": 51
+                }
+            ],
+            "salario": [
+                {
+                    "valor": "Hasta 2 smlv",
+                    "porcentaje": 78
+                },
+                {
+                    "valor": "2 a 4 smlv",
+                    "porcentaje": 16
+                },
+                {
+                    "valor": "4 a 10 smlv",
+                    "porcentaje": 5
+                },
+                {
+                    "valor": "Mas de 10 smlv",
+                    "porcentaje": 1
+                }
+            ],
+            "edad": [
+                {
+                    "valor": "36 a 45 años",
+                    "porcentaje": 28
+                },
+                {
+                    "valor": "20 a 35 años",
+                    "porcentaje": 51
+                }
+            ],
+            "segmento": [
+                {
+                    "valor": "Medio",
+                    "porcentaje": 39
+                },
+                {
+                    "valor": "Joven",
+                    "porcentaje": 24
+                },
+                {
+                    "valor": "Básico",
+                    "porcentaje": 38
+                },
+                {
+                    "valor": "Alto",
+                    "porcentaje": 0
+                }
+            ],
+            "familia": [
+                {
+                    "valor": "Sin Grupo",
+                    "porcentaje": 43
+                },
+                {
+                    "valor": "Monoparental",
+                    "porcentaje": 39
+                },
+                {
+                    "valor": "Nuclear Integrada",
+                    "porcentaje": 10
+                },
+                {
+                    "valor": "Monoparental Ampliada",
+                    "porcentaje": 4
+                }
+            ],
+            "pac": [
+                {
+                    "valor": "Cero",
+                    "porcentaje": 43
+                },
+                {
+                    "valor": "Uno",
+                    "porcentaje": 29
+                },
+                {
+                    "valor": "Dos",
+                    "porcentaje": 18
+                },
+                {
+                    "valor": "Tres",
+                    "porcentaje": 8
+                },
+                {
+                    "valor": "Cuatro",
+                    "porcentaje": 2
+                },
+                {
+                    "valor": "Cinco",
+                    "porcentaje": 0
+                },
+                {
+                    "valor": "Seis",
+                    "porcentaje": 1
+                }
+            ],
+            "estrato": [
+                {
+                    "valor": "Uno",
+                    "porcentaje": 4
+                },
+                {
+                    "valor": "Dos",
+                    "porcentaje": 14
+                },
+                {
+                    "valor": "Tres",
+                    "porcentaje": 13
+                },
+                {
+                    "valor": "Cuatro",
+                    "porcentaje": 2
+                }
+            ],
+            "top_empresas": [
+                {
+                    "valor": "COLSUBSIDIO",
+                    "cantidad": 109
+                },
+                {
+                    "valor": "TELEPERFORMANCE",
+                    "cantidad": 44
+                },
+                {
+                    "valor": "CONSORCIO EXPRESS S A S",
+                    "cantidad": 41
+                },
+                {
+                    "valor": "SECURITAS COLOMBIA S A",
+                    "cantidad": 21
+                },
+                {
+                    "valor": "G DE CUNDINAMARCA",
+                    "cantidad": 18
+                },
+                {
+                    "valor": "TRANS INT DE BOGOTA SAS",
+                    "cantidad": 17
+                },
+                {
+                    "valor": "MEDICALL TALENTO HUMANO",
+                    "cantidad": 16
+                },
+                {
+                    "valor": "JERONIMO MARTINS COLOMBI",
+                    "cantidad": 16
+                },
+                {
+                    "valor": "G EMPRESARIAL EN LINEA SA",
+                    "cantidad": 12
+                },
+                {
+                    "valor": "IMP Y ADUANAS NACIONALES",
+                    "cantidad": 11
+                }
+            ],
+            "seg_empresas": [
+                {
+                    "valor": "Emp Top",
+                    "porcentaje": 14
+                },
+                {
+                    "valor": "Grandes",
+                    "porcentaje": 21
+                },
+                {
+                    "valor": "Micro Transaccional",
+                    "porcentaje": 34
+                },
+                {
+                    "valor": "Estándar",
+                    "porcentaje": 4
+                },
+                {
+                    "valor": "Medianas",
+                    "porcentaje": 25
+                }
+            ],
+            "departamento": [
+                {
+                    "valor": "Soacha",
+                    "porcentaje": 4
+                },
+                {
+                    "valor": "Bogota",
+                    "porcentaje": 44
+                },
+                {
+                    "valor": "Ubate",
+                    "porcentaje": 2
+                },
+                {
+                    "valor": "Chia",
+                    "porcentaje": 1
+                }
+            ],
+            "localidades": [
+                {
+                    "valor": "Suba",
+                    "porcentaje": 4
+                },
+                {
+                    "valor": "Engativa",
+                    "porcentaje": 5
+                },
+                {
+                    "valor": "Kenedy",
+                    "porcentaje": 3
+                },
+                {
+                    "valor": "Sin informacion",
+                    "porcentaje": 62
+                }
+            ],
+            "entidadesFinancieras": [
+                {
+                    "valor": "Davivienda",
+                    "porcentaje": 18
+                },
+                {
+                    "valor": "Colsubsidio",
+                    "porcentaje": 48
+                },
+                {
+                    "valor": "Bancolombia",
+                    "porcentaje": 6
+                },
+                {
+                    "valor": "F N Ahorro",
+                    "porcentaje": 8
+                }
+            ]
+        }
+    }
+]
