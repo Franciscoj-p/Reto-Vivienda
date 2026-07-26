@@ -1,64 +1,73 @@
-# Motor de Perfilamiento — Asesor Digital de Vivienda (Colsubsidio)
+# Plataforma VIVI — Motor Inteligente de Decisión y Reglas Configurable
 
-> Microservicio REST inteligente para perfilamiento, evaluación financiera de cuotas y subsidios, y recomendación de vivienda de interés social (VIS/VIP) para Colsubsidio.
-
----
-
-## 📌 Descripción del Proyecto
-
-El **Motor de Perfilamiento de Vivienda** es una solución tecnológica diseñada para automatizar la evaluación de elegibilidad legal, el cálculo de subsidios gubernamentales y de caja, y la recomendación de proyectos inmobiliarios.
-
-El sistema procesa leads de vivienda en tiempo real y construye un diagnóstico financiero completo, determinístico y transparente, listo para ser consumido por un CRM comercial (ej. Salesforce/Hubspot) o interfaces de usuario (Chatbots, WhatsApp, Web Apps).
+> **Core Backend del Ecosistema VIVI | Colsubsidio 2026**  
+> Microservicio REST inteligente (*stateless*, determinístico y configurable) que impulsa la toma de decisiones, evaluación financiera de cuotas y subsidios, y priorización de prospectos de vivienda de interés social (VIS/VIP).
 
 ---
 
-## ⚙️ Factores Clave de Diseño
+## 📌 Descripción General del Ecosistema VIVI
 
-- **100% Determinístico y Auditable (RNF-02):** Ninguna decisión es una caja negra. Cada evaluación entrega el desglose exacto de subsidios, score numérico (0-100), motivos de rechazo explicados y la matemática del cierre financiero.
-- **100% Configurable (`app/config.py`):** Todos los parámetros normativos (SMMLV 2026, topes VIS/VIP, matrices de subsidios, tasas de interés hipotecario, plazos y pesos de scoring) están centralizados en un único archivo de configuración editable sin alterar el código del motor.
-- **Capa de Abstracción de Datos Pluggable (`app/repositories/`):** Implementa el patrón Repositorio + Adaptador (`Protocol`). Las fuentes de prueba (CSV/JSON) pueden ser reemplazadas por bodegas de datos empresariales (SQL Server, Snowflake, Redshift) o APIs REST/gRPC externas mediante configuración limpia (`DATA_SOURCE`), **sin modificar la lógica de negocio del motor ni las reglas**.
-- **Estricta Separación de Responsabilidades:** Microservicio *stateless* desacoplado de las capas de presentación. No realiza procesamiento de lenguaje natural (NLP) ni genera elementos gráficos; consume JSON estructurado y devuelve JSON enriquecido.
-- **Matemática Financiera Real de Colombia (Ley de Vivienda):**
-  - **Cuota Inicial (30%):** Cubierta por cesantías, ahorros y subsidios concurrentes (Caja + Mi Casa Ya + SISBEN). Si existe saldo faltante, calcula la cuota mensual diferida en los meses de entrega del proyecto.
-  - **Crédito Hipotecario (70%):** Amortización fija (PMT) a 20 años al 12% E.A. validando que la cuota del crédito jamás supere el 40% del salario del comprador.
+La **Plataforma VIVI** es un ecosistema inteligente diseñado para transformar la gestión de prospectos en programas de vivienda de Colsubsidio, automatizando el proceso desde el primer contacto hasta la asignación priorizada a un asesor comercial.
 
----
+La plataforma combina una experiencia de atención cercana y personalizada en múltiples canales con un **Motor Inteligente de Decisión** (contenido en este repositorio) que automatiza el análisis, la validación financiera y la priorización de cada prospecto. De esta manera, los equipos comerciales en Salesforce/Hubspot pueden concentrarse en brindar una asesoría de alto valor, mientras la tecnología se encarga de las tareas operativas y analíticas.
 
-## 📈 ¿Por qué el Sistema es Escalable?
+### Arquitectura General de la Solución (4 Componentes)
 
-1. **Arquitectura Stateless (Escalamiento Horizontal Ilimitado):**
-   - El motor es 100% libre de estado (*stateless*). No guarda sesiones ni memoria compartida entre peticiones.
-   - Permite desplegar **múltiples réplicas en paralelo** en entornos como Kubernetes, AWS ECS o Google Cloud Run detrás de un balanceador de carga sin necesidad de sincronizar sesiones.
-2. **Baja Latencia y Alto Rendimiento (< 50 ms por respuesta):**
-   - Toda la evaluación se ejecuta en memoria con algoritmos optimizados, respondiendo en **menos de 50 milisegundos**, superando holgadamente la meta de latencia `< 2 segundos` (RNF-03).
-3. **Escalabilidad Funcional y Modularidad:**
-   - Diseñado bajo el principio de responsabilidad única y pipelines aislados (`Reglas ➔ Scoring ➔ Matching ➔ CRM`). Agregar una nueva regla legal o norma es tan simple como registrar una nueva función pura en la lista `_REGLAS_RECHAZO`.
-4. **Capa Abstraída de Datos (Fácil Integración con BDs y Caché):**
-   - Gracias al patrón Repositorio (`app/repositories/`), escalar la fuente de datos desde archivos locales hacia cachés distribuidas (Redis), réplicas de lectura SQL o bodegas de datos masivas (Snowflake/Redshift) solo requiere cambiar la configuración (`DATA_SOURCE`), sin alterar el core del motor.
-
----
-
-## 🚀 Funcionalidades Principales
-
-- [x] **Consulta de Afiliados (`GET /afiliados/{id_usuario}`):** Precarga automática de datos del afiliado (edad, categoría A/B/C, antigüedad, personas a cargo, estrato, zona urbana/rural).
-- [x] **Acceso de Datos Intercambiable (`app/repositories/`):** Arquitectura desacoplada mediante patrones de repositorio que permite conectar de ser necesario bodegas de datos reales, bases de datos SQL o APIs externas sin modificar el código core.
-- [x] **Evaluación de Reglas Duras:** Filtros de propietario previo, antigüedad mínima (≥6 meses), subsidio previo (con excepción legal de arrendamiento) y capacidad de crédito mínima.
-- [x] **Matriz de Subsidios 2026 (SMMLV $1.750.905):** Subsidio Colsubsidio (30 o 20 SMMLV), Subsidio Concurrente Mi Casa Ya (20 SMMLV) y SISBEN (matriz urbana/rural).
-- [x] **Segmentación Automática de Caja:** Clasificación en `Joven` (<39 años y sin personas a cargo), `Básico`, `Medio` o `Alto`.
-- [x] **Scoring y Priorización Comercial:** Regla 90/10 para afiliados (+25 puntos a afiliados / -10 penalización a no afiliados) y Override RN-04 para clientes financieramente resueltos.
-- [x] **Recomendación por Tipología y Brochure:** Exclusión estricta VIS/VIP por tope municipal (90, 135, 150 SMMLV) e inclusión de `brochure_url`.
-- [x] **Evaluación de Proyecto de Interés (`proyecto_interes`):** Respuesta explícita de viabilidad o motivo técnico de rechazo; priorización automática en la primera opción (`matching_projects[0]`) si es viable.
-- [x] **Ruta de Arrendamiento Sugerido:** Alternativa de ahorro (0.6 SMMLV/mes por 24 meses) si el lead no logra el cierre inicial hoy.
+```
+                       ┌─────────────────────────────────────────┐
+                       │           PLATAFORMA VIVI               │
+                       └────────────────────┬────────────────────┘
+                                            │
+         ┌──────────────────────────────────┼──────────────────────────────────┐
+         │                                  │                                  │
+┌────────┴─────────┐              ┌─────────┴────────┐                ┌────────┴────────┐
+│ VIVI Conversacional│              │ VIVI Roadmap     │                │ VIVI CRM        │
+│ (WhatsApp Bot)   │              │ Inteligente      │                │ Dashboard       │
+│ https://whatsapp.│              │ https://roadmap. │                │ https://crm.    │
+│ arnarcraft.uk    │              │ arnarcraft.uk    │                │ arnarcraft.uk   │
+└────────┬─────────┘              └─────────┬────────┘                └────────┬────────┘
+         │                                  │                                  │
+         └──────────────────────────────────┼──────────────────────────────────┘
+                                            │  (JSON API / REST)
+                                            ▼
+                       ┌─────────────────────────────────────────┐
+                       │     MOTOR INTELIGENTE DE DECISIÓN       │
+                       │     & REGLAS CONFIGURABLES (Este Repo)  │
+                       │     - Validación de requisitos          │
+                       │     - Cierre financiero (30%/70%)       │
+                       │     - Subsidios concurrentes 2026       │
+                       │     - Scoring 90/10 y priorización     │
+                       │     - Rutas de acompañamiento           │
+                       └─────────────────────────────────────────┘
+```
 
 ---
 
-## 🎨 Repositorios de Interfaz Visual
+## ⚙️ Capacidades del Motor de Decisión (Este Repositorio)
 
-El motor de perfilamiento se encuentra desacoplado y puede integrarse con diferentes interfaces visuales. Los repositorios de simulación visual asociados son:
+Este repositorio contiene la **lógica central de negocio, matemática financiera y motor de reglas configurables** que alimenta a todo el ecosistema VIVI:
 
-- 💬 **Interfaz Simulación CRM:** [Repositorio CRM Sim](https://github.com/Franciscoj-p/SimCrm)
-- 📱 **Interfaz Simulación WhatsApp / Bot:** [Repositorio WhatsApp Sim](https://github.com/Franciscoj-p/SimWha) 
-- 👾 **Interfaz Simulación Roadmap Interactivo** [Repositorio Roadmap](https://github.com/maker1dytecnologia-star/vivienda)
+1. **Motor de Reglas Configurable (`app/config.py`):**
+   - Las políticas comerciales, valores de SMMLV 2026 ($1.750.905 COP), matrices de subsidio (Colsubsidio, Mi Casa Ya, SISBEN), topes de vivienda (90, 135, 150 SMMLV) y tasas de interés hipotecario están centralizados en `config.py` y pueden ser modificados por personal autorizado sin tocar el código fuente.
+2. **Matemática Financiera Real de Colombia (Cierre 30% / 70%):**
+   - **Cuota Inicial (30%):** Suma de cesantías, ahorros y subsidios concurrentes. Si existe un saldo faltante, calcula la cuota mensual diferida en el plazo de entrega del proyecto (ej. 24 meses).
+   - **Crédito Hipotecario (70%):** Amortización fija (PMT) a 20 años al 12% E.A., asegurando que la cuota no supere el **40% de los ingresos del hogar**.
+3. **Priorización Comercial y Scoring (0 a 100 puntos):**
+   - Aplica la **Regla 90/10 de afiliados** (+25 pts a afiliados / -10 pts de penalización a no afiliados) y el **Override RN-04** para compradores resueltos financieramente.
+4. **Evaluación Transparente del Proyecto de Interés (`proyecto_interes`):**
+   - Si el lead consulta por un proyecto específico (ej. *Versalles*), el motor evalúa su viabilidad. Si es viable, lo posiciona en el **lugar #1 de recomendaciones (`matching_projects[0]`)**; si no lo es, explica el motivo técnico exacto al asesor.
+5. **Rutas de Acompañamiento ("Un prospecto no elegible hoy es un futuro comprador"):**
+   - Cuando el motor identifica que una persona aún no logra el cierre financiero hoy, no la descarta. Asigna la **Ruta de Arrendamiento Sugerido** (Subsidio de $1.050.543/mes por 24 meses = $25.213.032 COP) como plan estructurado de ahorro previo.
+6. **Arquitectura *Stateless* y Repositorios Pluggable (`app/repositories/`):**
+   - Permite cambiar la fuente de datos (CSV ➔ SQL Server, Snowflake, Redshift o APIs externas) modificando una variable de entorno (`DATA_SOURCE`), sin alterar el core del motor.
+
+---
+
+## 📈 ¿Por qué el Motor es Escalable?
+
+1. **Sin Estado (*Stateless*):** No guarda sesiones en memoria entre peticiones. Permite escalamiento horizontal ilimitado en Kubernetes, AWS ECS o Google Cloud Run.
+2. **Baja Latencia (< 50 ms):** Responde en menos de 50 milisegundos por evaluación, superando la meta de latencia de 2 segundos (RNF-03).
+3. **Desacoplamiento Total:** La experiencia de usuario en WhatsApp o Web es 100% independiente del motor de decisión.
 
 ---
 
@@ -68,18 +77,18 @@ El motor de perfilamiento se encuentra desacoplado y puede integrarse con difere
 - Python 3.10+
 - `pip`
 
-### 1. Clonar e Instalar Dependencias
+### 1. Instalación
 ```bash
 git clone https://github.com/usuario/Reto-Vivienda.git
 cd Reto-Vivienda
 pip install -r requirements.txt
 ```
 
-### 2. Ejecutar el Servidor
+### 2. Ejecución del Servidor
 ```bash
 uvicorn main:app --reload --host 0.0.0.0 --port 8000
 ```
-
+- **Portal de Navegación del Ecosistema:** `http://localhost:8000/`
 - **Documentación Interactiva (Swagger):** `http://localhost:8000/docs`
 - **Health Check:** `http://localhost:8000/health`
 
@@ -87,12 +96,12 @@ uvicorn main:app --reload --host 0.0.0.0 --port 8000
 
 ## 📖 Ejemplos de Uso de la API
 
-### Consulta de Afiliado (`GET /afiliados/{id_usuario}`)
+### 1. Consulta de Afiliado (`GET /afiliados/{id_usuario}`)
 ```bash
 curl -X GET http://localhost:8000/afiliados/1018300400
 ```
 
-### Perfilamiento de Lead (`POST /perfilar`)
+### 2. Perfilamiento de Lead (`POST /perfilar`)
 ```bash
 curl -X POST http://localhost:8000/perfilar \
   -H "Content-Type: application/json" \
@@ -114,18 +123,19 @@ curl -X POST http://localhost:8000/perfilar \
 │   ├── api/                # Endpoints FastAPI y esquemas Pydantic (schemas.py, routes.py)
 │   ├── core/               # Lógica del motor (reglas.py, scoring.py)
 │   ├── data/               # Adaptadores de datos (afiliados_csv.py, catalogo.py)
-│   ├── repositories/       # Abstracción e interfaces de datos (interfaces.py, afiliados_csv.py)
-│   ├── config.py           # Parámetros editables de negocio y matemática financiera
+│   ├── repositories/       # Abstracción de datos (interfaces.py, afiliados_csv.py)
+│   ├── config.py           # Reglas de negocio y parámetros editables
 │   └── motor.py            # Orquestador del flujo de perfilamiento
 ├── data/
 │   ├── afiliados.csv       # Simulación de bodega de datos de afiliados Colsubsidio
-│   └── proyectos.json      # Catálogo de proyectos, tipologías y buyer personas
-├── docs/                   # Documentación técnica detallada
-│   ├── API.md              # Especificación técnica de contratos API
-│   ├── rules.md            # Explicación funcional de reglas de negocio
-│   ├── REVISION_SISTEMA.md # Análisis crítico del algoritmo y evaluación CRM
-│   └── CHECKLIST_DEMO.md   # Checklist de funcionalidades y guía para la demo
-├── main.py                 # Punto de entrada de la aplicación FastAPI
+│   └── proyectos.json      # Catálogo de proyectos y tipologías
+├── docs/                   # Documentación técnica y especificaciones
+│   ├── API.md              # Contratos y especificación API
+│   ├── rules.md            # Explicación de reglas de negocio
+│   ├── REVISION_SISTEMA.md # Análisis crítico y evaluación CRM
+│   └── CHECKLIST_DEMO.md   # Checklist para la presentación
+├── index.html              # Portal visual de navegación del Ecosistema VIVI
+├── main.py                 # Punto de entrada de la API FastAPI
 └── README.md
 ```
 
@@ -133,6 +143,6 @@ curl -X POST http://localhost:8000/perfilar \
 
 ## ⚠️ Disclaimer / Exención de Responsabilidad
 
-> **Nota:** Este proyecto fue desarrollado para el **Reto Vivienda**. Los datos de prueba, proyectos y perfiles de afiliados utilizados en el sistema son **simulados**, asumiendo atributos y estructuras que en un entorno de producción real se obtendrían de fuentes empresariales externas (como la **bodega de datos de afiliados de Colsubsidio** y sistemas CRM).  
+> **Nota:** Los datos de prueba, proyectos y perfiles de afiliados utilizados en el sistema son **simulados**, asumiendo atributos que en un entorno de producción real se obtendrían de fuentes empresariales externas (como la **bodega de datos de afiliados de Colsubsidio** y sistemas CRM).  
 > 
-> Asimismo, las matrices de subsidio, tasas de interés, plazos y parámetros de scoring fueron construidos a partir de **información pública recopilada de portales oficiales de Colsubsidio y normatividad colombiana vigente para el año 2026**. Todos los parámetros y reglas son **100% configurables** en el archivo `app/config.py` para adaptarse a cualquier actualización futura de la caja o regulación gubernamental sin requerir modificaciones en el código fuente.
+> Asimismo, las matrices de subsidio, tasas de interés, plazos y parámetros de scoring fueron construidos a partir de **información pública recopilada de portales oficiales de Colsubsidio y normatividad colombiana vigente para el año 2026**. Todos los parámetros y reglas son **100% configurables** en el archivo `app/config.py`.

@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Asesor Digital de Vivienda | Colsubsidio</title>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "primary-fixed-dim": "#a0c9ff",
+                    "on-tertiary": "#ffffff",
+                    "on-tertiary-container": "#ffdbc6",
+                    "surface-container-high": "#eae8e7",
+                    "outline": "#717782",
+                    "on-secondary": "#ffffff",
+                    "error": "#ba1a1a",
+                    "tertiary": "#7b3b00",
+                    "surface-white": "#FFFFFF",
+                    "inverse-primary": "#a0c9ff",
+                    "on-background": "#1b1c1c",
+                    "on-primary-container": "#d2e4ff",
+                    "tertiary-fixed": "#ffdcc6",
+                    "surface-container": "#f0eded",
+                    "surface-container-highest": "#e4e2e1",
+                    "secondary-fixed": "#ffe086",
+                    "on-primary-fixed-variant": "#00497f",
+                    "on-error-container": "#93000a",
+                    "surface-container-low": "#f6f3f2",
+                    "on-error": "#ffffff",
+                    "on-primary-fixed": "#001c37",
+                    "error-container": "#ffdad6",
+                    "surface-dim": "#dcd9d9",
+                    "on-surface": "#1b1c1c",
+                    "on-secondary-fixed": "#231b00",
+                    "inverse-on-surface": "#f3f0f0",
+                    "tertiary-fixed-dim": "#ffb786",
+                    "primary": "#004f89",
+                    "surface-container-lowest": "#ffffff",
+                    "background": "#fbf9f8",
+                    "surface": "#fbf9f8",
+                    "on-secondary-fixed-variant": "#574500",
+                    "primary-fixed": "#d2e4ff",
+                    "on-tertiary-fixed-variant": "#723600",
+                    "on-secondary-container": "#745c00",
+                    "on-tertiary-fixed": "#311300",
+                    "secondary-container": "#ffd651",
+                    "tertiary-container": "#9f4e00",
+                    "secondary": "#735c00",
+                    "alert-red": "#E32B2B",
+                    "surface-bright": "#fbf9f8",
+                    "inverse-surface": "#303030",
+                    "secondary-fixed-dim": "#eac33f",
+                    "primary-container": "#0067b1",
+                    "surface-tint": "#0061a7",
+                    "on-surface-variant": "#414751",
+                    "on-primary": "#ffffff",
+                    "surface-variant": "#e4e2e1",
+                    "outline-variant": "#c1c7d3"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "margin-mobile": "20px",
+                    "margin-desktop": "64px",
+                    "base": "8px",
+                    "container-max-width": "1280px",
+                    "gutter": "24px"
+            },
+            "fontFamily": {
+                    "label-sm": ["Inter"],
+                    "headline-md": ["Plus Jakarta Sans"],
+                    "headline-lg": ["Plus Jakarta Sans"],
+                    "body-lg": ["Plus Jakarta Sans"],
+                    "label-md": ["Inter"],
+                    "headline-lg-mobile": ["Plus Jakarta Sans"],
+                    "body-md": ["Plus Jakarta Sans"],
+                    "headline-xl": ["Plus Jakarta Sans"]
+            },
+            "fontSize": {
+                    "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-xl": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .card-hover:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px -20px rgba(0, 0, 0, 0.1);
+        }
+        .bg-gradient-colsubsidio {
+            background: linear-gradient(135deg, #004f89 0%, #0067b1 100%);
+        }
+        .glass-header {
+            backdrop-filter: blur(8px);
+            background: rgba(251, 249, 248, 0.85);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 glass-header shadow-sm h-16 flex justify-between items-center px-margin-mobile md:px-margin-desktop">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center overflow-hidden">
+<span class="text-on-primary font-bold text-xs">VIVI</span>
+</div>
+<h1 class="font-headline-md text-headline-md font-bold text-primary">Plataforma VIVI</h1>
+</div>
+<nav class="hidden md:flex items-center gap-8">
+<a class="font-label-md text-label-md text-primary font-bold border-b-2 border-primary pb-1" href="#">Inicio</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="https://crm.arnarcraft.uk" target="_blank">VIVI CRM</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="https://whatsapp.arnarcraft.uk" target="_blank">VIVI WhatsApp</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="https://roadmap.arnarcraft.uk" target="_blank">VIVI Roadmap</a>
+</nav>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-primary p-2 hover:bg-surface-container-low rounded-full transition-colors active:scale-95 duration-200">notifications</button>
+<div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-secondary-container">person</span>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="flex-grow pt-32 pb-24 px-margin-mobile md:px-margin-desktop max-w-container-max-width mx-auto w-full">
+<!-- Hero Section -->
+<section class="text-center mb-16 space-y-4">
+<div class="inline-block bg-primary-fixed text-on-primary-fixed px-4 py-1.5 rounded-full font-label-sm text-label-sm mb-2">
+                PLATAFORMA VIVI | ECOSISTEMA INTELIGENTE DE VIVIENDA
+            </div>
+<h2 class="font-headline-xl text-headline-xl md:text-[56px] tracking-tight text-primary">Plataforma VIVI</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mx-auto">
+                Explora el Motor Inteligente de Decisión y las 3 experiencias de atención del ecosistema VIVI para Colsubsidio.
+            </p>
+</section>
+<!-- Bento Grid / Cards Section -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+<!-- Card 1: CRM -->
+<div class="bg-surface-white border border-outline-variant p-base rounded-xl flex flex-col h-full card-hover transition-all duration-300">
+<div class="p-8 space-y-6 flex-grow">
+<div class="w-16 h-16 bg-primary-fixed-dim/20 rounded-2xl flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-[32px]">analytics</span>
+</div>
+<div>
+<h3 class="font-headline-md text-headline-md text-primary mb-3">VIVI CRM & Gestión Comercial</h3>
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+                            Panel de gestión comercial para asesores de venta con priorización inteligente de leads, reglas de decisión y contextualización previa.
+                        </p>
+</div>
+</div>
+<div class="p-8 pt-0">
+<a href="https://crm.arnarcraft.uk" target="_blank" class="w-full h-12 bg-primary hover:bg-primary-container text-on-primary rounded-full font-label-md text-label-md flex items-center justify-center gap-2 transition-all active:scale-95">
+                        Abrir VIVI CRM
+                        <span class="material-symbols-outlined text-[18px]">open_in_new</span>
+</a>
+</div>
+</div>
+<!-- Card 2: WhatsApp -->
+<div class="bg-surface-white border border-outline-variant p-base rounded-xl flex flex-col h-full card-hover transition-all duration-300">
+<div class="p-8 space-y-6 flex-grow">
+<div class="w-16 h-16 bg-secondary-container/20 rounded-2xl flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary text-[32px]">smartphone</span>
+</div>
+<div>
+<h3 class="font-headline-md text-headline-md text-primary mb-3">VIVI Interfaz Conversacional</h3>
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+                            Asistente conversacional en lenguaje natural vía WhatsApp Bot con diagnósticos inmediatos, respuesta a proyectos y brochures.
+                        </p>
+</div>
+</div>
+<div class="p-8 pt-0">
+<a href="https://whatsapp.arnarcraft.uk" target="_blank" class="w-full h-12 bg-secondary hover:bg-secondary-container hover:text-on-secondary-container text-on-secondary rounded-full font-label-md text-label-md flex items-center justify-center gap-2 transition-all active:scale-95">
+                        Abrir WhatsApp Bot
+                        <span class="material-symbols-outlined text-[18px]">send</span>
+</a>
+</div>
+</div>
+<!-- Card 3: RoadMap Interactivo -->
+<div class="bg-surface-white border border-outline-variant p-base rounded-xl flex flex-col h-full card-hover transition-all duration-300">
+<div class="p-8 space-y-6 flex-grow">
+<div class="w-16 h-16 bg-tertiary-fixed/20 rounded-2xl flex items-center justify-center">
+<span class="material-symbols-outlined text-tertiary text-[32px]">foundation</span>
+</div>
+<div>
+<h3 class="font-headline-md text-headline-md text-primary mb-3">VIVI Roadmap Inteligente</h3>
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+                            Experiencia guiada con formulario dinámico que, mientras consulta el perfilamiento, construye visualmente la vivienda ideal del usuario.
+                        </p>
+</div>
+</div>
+<div class="p-8 pt-0">
+<a href="https://roadmap.arnarcraft.uk" target="_blank" class="w-full h-12 border-2 border-primary text-primary hover:bg-primary-fixed rounded-full font-label-md text-label-md flex items-center justify-center gap-2 transition-all active:scale-95">
+                        Abrir Roadmap
+                        <span class="material-symbols-outlined text-[18px]">house</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Navigation (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 w-full z-50 rounded-t-xl bg-surface-container-lowest shadow-[0_-4px_20px_0_rgba(0,0,0,0.04)] h-20 flex justify-around items-center pb-2">
+<button class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-4 py-1 active:scale-90 duration-150">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-sm text-label-sm">Inicio</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-all active:scale-90 duration-150">
+<span class="material-symbols-outlined">map</span>
+<span class="font-label-sm text-label-sm">Asesor</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-all active:scale-90 duration-150">
+<span class="material-symbols-outlined">chat</span>
+<span class="font-label-sm text-label-sm">WhatsApp</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-all active:scale-90 duration-150">
+<span class="material-symbols-outlined">settings_input_component</span>
+<span class="font-label-sm text-label-sm">Gestión</span>
+</button>
+</nav>
+<!-- Footer -->
+<footer class="bg-surface-container-lowest py-12 px-margin-mobile md:px-margin-desktop border-t border-outline-variant" style="margin: 20px;">
+<div class="max-w-container-max-width mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
+<span class="text-white font-bold text-[10px]">C</span>
+</div>
+<span class="font-label-md text-label-md font-bold text-primary">Colsubsidio Vivienda</span>
+</div>
+<div class="text-center md:text-right">
+<p class="font-label-sm text-label-sm text-on-surface-variant mb-1">
+                    Motor de Perfilamiento de Vivienda <span class="font-bold">Hackathon Colsubsidio 2026</span>
+</p>
+<p class="text-[11px] text-outline uppercase tracking-widest">
+                    Microservicio Stateless • RNF-02 Auditable
+                </p>
+</div>
+</div>
+</footer>
+<script>
+        // Simple scroll effect for header
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 20) {
+                header.classList.add('shadow-md');
+                header.classList.remove('shadow-sm');
+            } else {
+                header.classList.add('shadow-sm');
+                header.classList.remove('shadow-md');
+            }
+        });
+
+        // Interactions for buttons
+        document.querySelectorAll('button').forEach(button => {
+            button.addEventListener('mousedown', () => {
+                button.classList.add('scale-95');
+            });
+            button.addEventListener('mouseup', () => {
+                button.classList.remove('scale-95');
+            });
+            button.addEventListener('mouseleave', () => {
+                button.classList.remove('scale-95');
+            });
+        });
+    </script>
+</body></html>
