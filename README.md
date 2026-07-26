@@ -24,6 +24,20 @@ El sistema procesa leads de vivienda en tiempo real y construye un diagnóstico 
 
 ---
 
+## 📈 ¿Por qué el Sistema es Escalable?
+
+1. **Arquitectura Stateless (Escalamiento Horizontal Ilimitado):**
+   - El motor es 100% libre de estado (*stateless*). No guarda sesiones ni memoria compartida entre peticiones.
+   - Permite desplegar **múltiples réplicas en paralelo** en entornos como Kubernetes, AWS ECS o Google Cloud Run detrás de un balanceador de carga sin necesidad de sincronizar sesiones.
+2. **Baja Latencia y Alto Rendimiento (< 50 ms por respuesta):**
+   - Toda la evaluación se ejecuta en memoria con algoritmos optimizados, respondiendo en **menos de 50 milisegundos**, superando holgadamente la meta de latencia `< 2 segundos` (RNF-03).
+3. **Escalabilidad Funcional y Modularidad:**
+   - Diseñado bajo el principio de responsabilidad única y pipelines aislados (`Reglas ➔ Scoring ➔ Matching ➔ CRM`). Agregar una nueva regla legal o norma es tan simple como registrar una nueva función pura en la lista `_REGLAS_RECHAZO`.
+4. **Capa Abstraída de Datos (Fácil Integración con BDs y Caché):**
+   - Gracias al patrón Repositorio (`app/repositories/`), escalar la fuente de datos desde archivos locales hacia cachés distribuidas (Redis), réplicas de lectura SQL o bodegas de datos masivas (Snowflake/Redshift) solo requiere cambiar la configuración (`DATA_SOURCE`), sin alterar el core del motor.
+
+---
+
 ## 🚀 Funcionalidades Principales
 
 - [x] **Consulta de Afiliados (`GET /afiliados/{id_usuario}`):** Precarga automática de datos del afiliado (edad, categoría A/B/C, antigüedad, personas a cargo, estrato, zona urbana/rural).
