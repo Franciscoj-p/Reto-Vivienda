@@ -1,6 +1,6 @@
 # Plataforma VIVI — Motor Inteligente de Decisión y Reglas Configurable
 
-> **Core Backend del Ecosistema VIVI | Colsubsidio 2026**  
+> **Core Backend del Ecosistema VIVI **  
 > Microservicio REST inteligente (*stateless*, determinístico y configurable) que impulsa la toma de decisiones, evaluación financiera de cuotas y subsidios, y priorización de prospectos de vivienda de interés social (VIS/VIP).
 
 ---
